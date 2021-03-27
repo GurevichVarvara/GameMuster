@@ -6,10 +6,10 @@ from gameMuster.views import index
 class TestUrls(SimpleTestCase):
     """Tests for urls
 
-    Tests if urls call proper function.
+    Tests if urls call proper functions.
     """
 
-    def test_index_url_is_resolve(self):
+    def test_index_url_resolves(self):
         url = reverse('index')
 
         self.assertEquals(resolve(url).func, index)
