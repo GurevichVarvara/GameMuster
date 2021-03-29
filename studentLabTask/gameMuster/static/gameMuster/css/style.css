@@ -1,0 +1,87 @@
+main {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+main > * {
+  flex-shrink: 0;
+}
+
+.navbar {
+    background-color: #efeed1;
+}
+
+.row {
+    flex-wrap: wrap;
+    height: 100vh;
+}
+
+/* Removing row wrapping */
+.nowrap {
+    flex-wrap: nowrap;
+}
+
+.side-bar {
+    background-color: #efbc9e;
+}
+
+.btn {
+    margin-left: 130px;
+}
+
+.btn-menu {
+    margin-left: 5px;
+    margin-top: 15px;
+    background-color: #efbc9e;
+    border: none;
+}
+
+.material-icons {
+    line-height: normal;
+}
+
+.container {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.search-bar {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 20px;
+    margin-top: 20px;
+}
+
+.card-body {
+    background-color: #cac891;
+    bottom: 0;
+}
+
+.card-body > * {
+    color: #333217;
+}
+.game-card {
+    height: 300px;
+    width: 300px;
+}
+
+/* Buttons which are inside of image card description */
+.img-btn-group > .btn {
+    color: #333217;
+    border-color: #333217;
+}
+
+.btn-group > .btn {
+    margin: 0;
+}
+
+.scrollarea {
+  overflow-y: auto;
+}
+
+.fw-semibold { font-weight: 600; }
+.lh-tight { line-height: 1.25; }
