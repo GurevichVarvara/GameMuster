@@ -5,7 +5,7 @@
 
 <div class="container">
       <div class="row nowrap">
-          <div class="col-lg-3 side-bar p-3">
+          <div class="col-lg-3 side-bar p-3" id="sidebar">
                   <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
                     <span class="fs-5 fw-semibold">Filters</span>
                   </a>
@@ -55,12 +55,12 @@
             </div>
 
             <div class="col-lg-1">
-                <button type="button" class="btn btn-menu">
+                <button type="button" class="btn btn-menu" onclick="get_sidebar()">
                     <span class="material-icons">menu</span>
                 </button>
             </div>
 
-            <div class="col-lg-8">
+            <div class="col-lg-8 games-list">
                 <div class="flex-row">
                     <div class="input-group search-bar rounded">
                           <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"

@@ -24,7 +24,10 @@ main > * {
 }
 
 .side-bar {
+    display: none;
+    width: 20%;
     background-color: #efbc9e;
+    transition: width 1200ms ease;
 }
 
 .btn {
@@ -46,6 +49,11 @@ main > * {
     max-width: 100%;
     margin-left: 0;
     margin-right: 0;
+}
+
+.games-list {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .search-bar {
