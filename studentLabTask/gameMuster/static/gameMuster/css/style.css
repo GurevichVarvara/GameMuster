@@ -65,8 +65,8 @@ main > * {
     color: #333217;
 }
 .game-card {
-    height: 300px;
-    width: 300px;
+    height: 200px;
+    width: 200px;
 }
 
 /* Buttons which are inside of image card description */
@@ -78,6 +78,31 @@ main > * {
 .btn-group > .btn {
     margin: 0;
 }
+
+.carousel {
+    background-color: #cccbbf;
+}
+
+.carousel-item {
+    width:700px;
+    height:500px;
+    overflow:hidden;
+}
+
+.carousel-item-container {
+    width: 620px;
+    height: 400px;
+    margin-top: 70px;
+    margin-left: 80px;
+}
+
+.col-of-game-cards {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 
 .scrollarea {
   overflow-y: auto;
