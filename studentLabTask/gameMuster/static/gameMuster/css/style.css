@@ -13,14 +13,8 @@ main > * {
     background-color: #efeed1;
 }
 
-.row {
-    flex-wrap: wrap;
+.row_height_100vh {
     height: 100vh;
-}
-
-/* Removing row wrapping */
-.nowrap {
-    flex-wrap: nowrap;
 }
 
 .side-bar {
@@ -31,7 +25,7 @@ main > * {
 }
 
 .btn-apply {
-    margin-left: 95px;
+    margin-left: 80px;
 }
 
 .btn-menu {
@@ -56,6 +50,12 @@ main > * {
     margin-right: auto;
 }
 
+.games-container {
+    width: 100%;
+    height: 400px;
+    margin-top: 100px;
+}
+
 .search-bar {
     width: 80%;
     margin-left: auto;
@@ -64,59 +64,45 @@ main > * {
     margin-top: 20px;
 }
 
-.row-of-game-cards {
-    margin-left: 20px;
-    width: 900px;
+.card {
+    width: 250px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.gamescarousel {
-    margin-top: 60px;
-}
-
-.carousel-item.active, .carousel-item, .row-of-game-cards {
-    width: 800px;
-}
-
-.card-body {
+.card__card-body {
+    padding: 20px;
     background-color: #cac891;
     bottom: 0;
 }
 
-.card-body > * {
+.card__card-body > * {
     color: #333217;
 }
-.game-card {
-    height: 200px;
-    width: 200px;
-}
+
 
 /* Buttons which are inside of image card description */
-.img-btn-group > .btn {
+.img-btn-group__btn {
+    margin: 0;
     color: #333217;
     border-color: #333217;
 }
 
-.btn-group > .btn {
-    margin: 0;
+.pagination {
+    margin-top: 100px;
 }
 
-.carousel {
-    background-color: #cccbbf;
+.step-links {
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.carousel-item {
-    width:730px;
-    height:500px;
-    overflow:hidden;
+.step-links > a {
+    color: black;
+    font-size: 20px;
+    text-decoration: none;
+    color: #333217;
 }
-
-.col-of-game-cards {
-    width: 300px;
-    margin-top: 70px;
-    padding-left: 65px;
-    padding-right: 0;
-}
-
 
 .scrollarea {
   overflow-y: auto;

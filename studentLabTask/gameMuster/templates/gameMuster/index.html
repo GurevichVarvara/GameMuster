@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="container">
-      <div class="row nowrap">
+      <div class="row row_height_100vh">
           <div class="col-lg-3 side-bar p-3" id="sidebar">
                   <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
                     <span class="fs-5 fw-semibold">Filters</span>
@@ -72,115 +72,43 @@
                           </button>
                     </div>
                 </div>
-                <div class="flex-row p-4">
-                    <div id="carouselExampleCaptions" class="carousel slide gamescarousel" data-interval="false">
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                        </div>
-                        <div class="carousel-inner carousel-inner-gamescaruosel">
-                            <div class="carousel-item active">
-                                <div class="row row-of-game-cards">
-                                    <div class="col col-of-game-cards">
-                                        <div class="card game-card">
-                                            <img src="https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg" class="card-img-top" alt="...">
-                                            <div class="card-body">
-                                                <h5 class="card-title">PACMAN</h5>
-                                                <p class="card-text">Arcade oldschool</p>
-                                                <div class="btn-group img-btn-group" role="group" aria-label="First group">
-                                                    <button type="button" class="btn btn-outline-secondary">Open</button>
-                                                    <button type="button" class="btn btn-outline-secondary">Must</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div class="col col-of-game-cards">
-                                        <div class="card game-card">
-                                            <img src="https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg" class="card-img-top" alt="...">
-                                            <div class="card-body">
+                {% if game_list %}
+                    <div class="games-container">
+                        <div class="row row__width_100%">
+                            {% for game in page_obj %}
+                                    <div class="col-sm">
+                                      <div class="card">
+                                            <img src="https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg" class="card-img-top" alt="game icon">
+                                            <div class="card__card-body">
                                                 <h5 class="card-title">PACMAN</h5>
                                                 <p class="card-text">Arcade oldschool</p>
                                                 <div class="btn-group img-btn-group" role="group" aria-label="First group">
-                                                    <button type="button" class="btn btn-outline-secondary">Open</button>
-                                                    <button type="button" class="btn btn-outline-secondary">Must</button>
+                                                    <button type="button" class="img-btn-group__btn btn btn-outline-secondary">Open</button>
+                                                    <button type="button" class="img-btn-group__btn btn btn-outline-secondary">Must</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="col col-of-game-cards">
-                                        <div class="card game-card">
-                                            <img src="https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg" class="card-img-top" alt="...">
-                                            <div class="card-body">
-                                                <h5 class="card-title">PACMAN</h5>
-                                                <p class="card-text">Arcade oldschool</p>
-                                                <div class="btn-group img-btn-group" role="group" aria-label="First group">
-                                                    <button type="button" class="btn btn-outline-secondary">Open</button>
-                                                    <button type="button" class="btn btn-outline-secondary">Must</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="row row-of-game-cards">
-                                    <div class="col col-of-game-cards">
-                                        <div class="card game-card">
-                                            <img src="https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg" class="card-img-top" alt="...">
-                                            <div class="card-body">
-                                                <h5 class="card-title">PACMAN</h5>
-                                                <p class="card-text">Arcade oldschool</p>
-                                                <div class="btn-group img-btn-group" role="group" aria-label="First group">
-                                                    <button type="button" class="btn btn-outline-secondary">Open</button>
-                                                    <button type="button" class="btn btn-outline-secondary">Must</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col col-of-game-cards">
-                                        <div class="card game-card">
-                                            <img src="https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg" class="card-img-top" alt="...">
-                                            <div class="card-body">
-                                                <h5 class="card-title">PACMAN</h5>
-                                                <p class="card-text">Arcade oldschool</p>
-                                                <div class="btn-group img-btn-group" role="group" aria-label="First group">
-                                                    <button type="button" class="btn btn-outline-secondary">Open</button>
-                                                    <button type="button" class="btn btn-outline-secondary">Must</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col col-of-game-cards">
-                                        <div class="card game-card">
-                                            <img src="https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg" class="card-img-top" alt="...">
-                                            <div class="card-body">
-                                                <h5 class="card-title">PACMAN</h5>
-                                                <p class="card-text">Arcade oldschool</p>
-                                                <div class="btn-group img-btn-group" role="group" aria-label="First group">
-                                                    <button type="button" class="btn btn-outline-secondary">Open</button>
-                                                    <button type="button" class="btn btn-outline-secondary">Must</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
+                            {% endfor %}
                         </div>
                     </div>
-                </div>
+
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if page_obj.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
+                                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                            {% endif %}
+
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endif %}
+
             </div>
       </div>
 </div>
