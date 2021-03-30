@@ -39,18 +39,18 @@ main > * {
     line-height: normal;
 }
 
-.container {
+.index-container {
     max-width: 100%;
     margin-left: 0;
     margin-right: 0;
 }
 
-.games-list {
+.games-col {
     margin-left: auto;
     margin-right: auto;
 }
 
-.games-container {
+.games-col__games-container {
     width: 100%;
     height: 400px;
     margin-top: 100px;
@@ -82,22 +82,22 @@ main > * {
 
 
 /* Buttons which are inside of image card description */
-.img-btn-group__btn {
+.card-btn-group__btn {
     margin: 0;
     color: #333217;
     border-color: #333217;
 }
 
-.pagination {
+.card_pagination {
     margin-top: 100px;
 }
 
-.step-links {
+.card_pagination__step-links {
     margin-left: auto;
     margin-right: auto;
 }
 
-.step-links > a {
+.card_pagination__step-links > a {
     color: black;
     font-size: 20px;
     text-decoration: none;

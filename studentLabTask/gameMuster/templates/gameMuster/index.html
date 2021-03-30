@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container index-container">
       <div class="row row_height_100vh">
           <div class="col-lg-3 side-bar p-3" id="sidebar">
                   <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
@@ -60,7 +60,7 @@
                 </button>
             </div>
 
-            <div class="col-lg-8 games-list">
+            <div class="col-lg-8 games-col">
                 <div class="flex-row">
                     <div class="input-group search-bar rounded">
                           <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
@@ -74,8 +74,8 @@
                 </div>
 
                 {% if game_list %}
-                    <div class="games-container">
-                        <div class="row row__width_100%">
+                    <div class="games-col__games-container">
+                        <div class="row">
                             {% for game in page_obj %}
                                     <div class="col-sm">
                                       <div class="card">
@@ -83,9 +83,9 @@
                                             <div class="card__card-body">
                                                 <h5 class="card-title">PACMAN</h5>
                                                 <p class="card-text">Arcade oldschool</p>
-                                                <div class="btn-group img-btn-group" role="group" aria-label="First group">
-                                                    <button type="button" class="img-btn-group__btn btn btn-outline-secondary">Open</button>
-                                                    <button type="button" class="img-btn-group__btn btn btn-outline-secondary">Must</button>
+                                                <div class="btn-group card-btn-group" role="group" aria-label="First group">
+                                                    <button type="button" class="card-btn-group__btn btn btn-outline-secondary">Open</button>
+                                                    <button type="button" class="card-btn-group__btn btn btn-outline-secondary">Must</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -94,8 +94,8 @@
                         </div>
                     </div>
 
-                    <div class="pagination">
-                        <span class="step-links">
+                    <div class="pagination card_pagination">
+                        <span class="card_pagination__step-links">
                             {% if page_obj.has_previous %}
                                 <a href="?page=1">&laquo; first</a>
                                 <a href="?page={{ page_obj.previous_page_number }}">previous</a>
