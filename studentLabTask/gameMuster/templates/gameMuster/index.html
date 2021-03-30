@@ -30,7 +30,7 @@
                         </li>
 
                         <li class="mb-4">
-                            <label for="customRange3" class="form-label">Generes</label>
+                            <label for="customRange3" class="form-label">Genres</label>
                             <div>
                                 <div class="form-check form-check-inline">
                                   <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="gener1" value="platformer">
@@ -49,7 +49,7 @@
                         </li>
 
                         <li>
-                            <button type="button" class="btn btn-apply btn-primary">Apply</button>
+                            <button type="button" class="btn side-bar__btn-apply btn-primary">Apply</button>
                         </li>
                   </ul>
             </div>
@@ -79,10 +79,10 @@
                             {% for game in page_obj %}
                                     <div class="col-sm">
                                       <div class="card">
-                                            <img src="https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg" class="card-img-top" alt="game icon">
+                                            <img src={{ game.img_url }} class="card-img-top" alt="game icon">
                                             <div class="card__card-body">
-                                                <h5 class="card-title">PACMAN</h5>
-                                                <p class="card-text">Arcade oldschool</p>
+                                                <h5 class="card-title">{{ game.name }}</h5>
+                                                <p class="card-text">{{ game.genres }}</p>
                                                 <div class="btn-group card-btn-group" role="group" aria-label="First group">
                                                     <button type="button" class="card-btn-group__btn btn btn-outline-secondary">Open</button>
                                                     <button type="button" class="card-btn-group__btn btn btn-outline-secondary">Must</button>
@@ -96,15 +96,13 @@
 
                     <div class="pagination card_pagination">
                         <span class="card_pagination__step-links">
-                            {% if page_obj.has_previous %}
-                                <a href="?page=1">&laquo; first</a>
-                                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                            {% endif %}
-
-                            {% if page_obj.has_next %}
-                                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                            {% endif %}
+                            {% for num_of_page in page_obj.paginator.page_range %}
+                                {% if num_of_page == page_obj.number %}
+                                    <a class="page-number-link page-number-link_font-size_30" href="?page={{ num_of_page }}">{{ num_of_page }}</a>
+                                {% else %}
+                                    <a class="page-number-link" href="?page={{ num_of_page }}">{{ num_of_page }}</a>
+                                {% endif %}
+                            {% endfor %}
                         </span>
                     </div>
                 {% endif %}
