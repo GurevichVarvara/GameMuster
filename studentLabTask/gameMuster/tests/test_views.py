@@ -14,3 +14,10 @@ class TestViews(SimpleTestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'gameMuster/index.html')
+
+    def test_detail_GET(self):
+        client = Client()
+        response = client.get(reverse('detail'))
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'gameMuster/detail.html')
