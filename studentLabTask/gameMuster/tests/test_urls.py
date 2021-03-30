@@ -14,7 +14,7 @@ class TestUrls(SimpleTestCase):
 
         self.assertEquals(resolve(url).func, index)
 
-    def test_delail_url_resolves(self):
+    def test_detail_url_resolves(self):
         url = reverse('detail')
 
         self.assertEquals(resolve(url).func, detail)

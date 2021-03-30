@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 
 
@@ -7,4 +6,4 @@ def index(request):
 
 
 def detail(request):
-    pass
+    return render(request, 'gameMuster/detail.html')
