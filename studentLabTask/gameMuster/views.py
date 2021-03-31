@@ -1,13 +1,10 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from gameMuster.temp_models import Game
+from gameMuster.temp_models import ModelManager
 
 
 def index(request):
-    game_list = [Game('PACKMAN',
-                      'https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg',
-                      'Arcade',
-                      'Oldschool')] * 10
+    game_list = [ModelManager.get_temp_instance_of_game()] * 10
     game_paginator = Paginator(game_list, 4)
 
     page_number = request.GET.get('page')
@@ -17,5 +14,6 @@ def index(request):
                                                      'page_obj': page_obj})
 
 
-def detail(request):
+def detail(request, game_id):
+
     return render(request, 'gameMuster/detail.html')
