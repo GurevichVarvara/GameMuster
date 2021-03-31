@@ -17,4 +17,5 @@ def index(request):
 def detail(request, game_id):
     game = ModelManager.get_temp_instance_of_game()
 
-    return render(request, 'gameMuster/detail.html', {'game': game})
+    return render(request, 'gameMuster/detail.html', {'game': game,
+                                                      'tweet_list': game.tweets})

@@ -39,8 +39,8 @@ class ModelManager:
             'In 1999, Billy Mitchell of Hollywood, Florida became the first person to obtain a perfect score '
             'of 3,333,360 at Pac-Man, eating every possible dot, energizer, ghost, and bonus on every level '
             'without losing a single life in the process.',
-            'somebody',
-            datetime.now())] * 3
+            datetime.now(),
+            'somebody')] * 3
 
         game = Game('PACKMAN',
                     'Pac-Man is a maze chase video game; the player controls the eponymous character through an '

@@ -8,7 +8,7 @@
             <div>
                 <h1 class="game-name__title">{{ game.name }}
                     {% if game.must %}
-                        <span class="badge basic">Must</span>
+                        <div class="badge">Must</div>
                     {% endif %}
                 </h1>
             </div>
@@ -45,45 +45,55 @@
 
             <div class="rating-container">
                 <h3>Rating</h3>
-                <span class="badge rating user">
+                <div class="badge rating user">
                     <div class="row rating-reviews-container">
-                        <div class="col-2">
+                        <div class="col-4">
                             <p class="rating-text">Users</p>
                         </div>
-                        <div class="col-7">
-                            <p class="rating-text reviews">{{ game.user_rating }} ({{ game.user_rating_count }} reviews)</p>
+                        <div class="col-8">
+                            <p class="rating-text">{{ game.user_rating }} ({{ game.user_rating_count }} reviews)</p>
                         </div>
                     </div>
-                </span>
+                </div>
 
-                <span class="badge rating critics">
+                <div class="badge rating critics">
                     <div class="row rating-reviews-container">
-                        <div class="col-2">
+                        <div class="col-4">
                             <p class="rating-text">Critics</p>
                         </div>
-                        <div class="col-7">
-                            <p class="rating-text reviews">{{ game.critics_rating }} ({{ game.critics_rating_count }} reviews)</p>
+                        <div class="col-8">
+                            <p class="rating-text">{{ game.critics_rating }} ({{ game.critics_rating_count }} reviews)</p>
                         </div>
                     </div>
-                </span>
+                </div>
             </div>
 
             <div>
                 <h3>Genres</h3>
                 {% for genre in game.genres %}
-                    <span class="badge basic">{{ genre }}</span>
+                    <div class="badge basic ">{{ genre }}</div>
                 {% endfor %}
             </div>
 
             <div>
                 <h3>Platform</h3>
                 {% for platform in game.platforms %}
-                    <span class="badge basic">{{ platform }}</span>
+                <div class="badge basic">{{ platform }}</div>
                 {% endfor %}
             </div>
         </div>
 
-        <div class="col-3 col-of-game-info">
+        <div class="col-3 social-media-content-container">
+            <h3>#Pacman Tweets</h3>
+            {% for tweet in tweet_list %}
+                <div class="text-background-rectangle">
+                    <p>{{ tweet.content }}</p>
+                    <div class="row">
+                        <div class="col-5"><p>@{{ tweet.user }}</p></div>
+                        <div class="col-7"><p>{{ tweet.date }}</p></div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </div>
