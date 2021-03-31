@@ -5,7 +5,7 @@ class Game:
 
     def __init__(self, name, description, release_date,
                  img_url, user_rating, user_rating_count,
-                 critics_rating, critics_rating_count,
+                 critics_rating, critics_rating_count, must=False,
                  **kwargs):
         self.id = 1
         self.name = name
@@ -16,7 +16,8 @@ class Game:
         self.user_rating_count = user_rating_count
         self.critics_rating = critics_rating
         self.critics_rating_count = critics_rating_count
-        self.genres = ' '.join(kwargs['genres'])
+        self.must = must
+        self.genres = kwargs['genres']
         self.screenshots = kwargs['screenshots']
         self.platforms = kwargs['platforms']
         self.tweets = kwargs['tweets']
@@ -57,6 +58,7 @@ class ModelManager:
                     123,
                     4.0,
                     123,
+                    True,
                     genres=['Arcade', 'Oldschool'],
                     screenshots=['https://99px.ru/sstorage/53/2012/03/tmb_36321_9414.jpg',
                                  'https://st3.depositphotos.com/1635692/16714/v/600/depos'

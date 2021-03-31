@@ -17,7 +17,7 @@ main > * {
     height: 100vh;
 }
 
-/* Index-page main container style */
+/* Main container for all pages style */
 .index-container {
     max-width: 100%;
     margin-left: 0;
@@ -108,6 +108,24 @@ main > * {
     text-decoration: none;
     color: #333217;
     padding: 20px;
+}
+
+/* Detail page title style */
+.detail-container {
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.col-of-game-ifo > * {
+    margin-top: 30px;
+}
+.game-genres > h6{
+    display: inline-block;
+}
+
+.game-name__title > .badge {
+    background-color: #efbc9e;
 }
 
 .page-number-link_font-size_30 {

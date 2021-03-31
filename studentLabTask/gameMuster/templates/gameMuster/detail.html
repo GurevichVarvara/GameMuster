@@ -2,6 +2,40 @@
 
 {% block content %}
 
+<div class="container detail-container">
+    <div class="row">
+        <div class="col-6 col-of-game-ifo">
+            <div>
+                <h1 class="game-name__title">{{ game.name }}
+                    {% if game.must %}
+                        <span class="badge">Must</span>
+                    {% endif %}
+                </h1>
+            </div>
 
+            <div class="game-genres">
+                {% for genre in game.genres %}
+                    <h6>{{ genre }}</h6>
+                {% endfor %}
+            </div>
+
+            <div>
+                <h3>Description</h3>
+                <span>{{ game.description }}</span>
+            </div>
+
+            <div>
+                <h3>Release Date</h3>
+                <span>{{  }}</span>
+            </div>
+        </div>
+        <div class="col-3">
+          One of three columns
+        </div>
+        <div class="col-3">
+          One of three columns
+        </div>
+    </div>
+</div>
 
 {% endblock %}

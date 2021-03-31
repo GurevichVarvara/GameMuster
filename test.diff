@@ -1,0 +1,11 @@
+diff --git a/.gitignore b/.gitignore
+index a81c8ee..7d3b987 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -136,3 +136,6 @@ dmypy.json
+ 
+ # Cython debug symbols
+ cython_debug/
++
++# IDE and Editor files
++.idea
