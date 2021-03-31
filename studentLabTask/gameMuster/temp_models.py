@@ -61,8 +61,9 @@ class ModelManager:
                     True,
                     genres=['Arcade', 'Oldschool'],
                     screenshots=['https://99px.ru/sstorage/53/2012/03/tmb_36321_9414.jpg',
-                                 'https://st3.depositphotos.com/1635692/16714/v/600/depos'
-                                 'itphotos_167140316-stock-illustration-pac-man-traffic-jam.jpg'],
+                                 'https://99px.ru/sstorage/53/2012/03/tmb_36321_9414.jpg',
+                                 'https://99px.ru/sstorage/53/2012/03/tmb_36321_9414.jpg',
+                                 'https://99px.ru/sstorage/53/2012/03/tmb_36321_9414.jpg',],
                     platforms=['PC', 'PS4'],
                     tweets=tweets)
 

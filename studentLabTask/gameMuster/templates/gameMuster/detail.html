@@ -4,11 +4,11 @@
 
 <div class="container detail-container">
     <div class="row">
-        <div class="col-6 col-of-game-ifo">
+        <div class="col-6 col-of-game-info">
             <div>
                 <h1 class="game-name__title">{{ game.name }}
                     {% if game.must %}
-                        <span class="badge">Must</span>
+                        <span class="badge basic">Must</span>
                     {% endif %}
                 </h1>
             </div>
@@ -21,19 +21,69 @@
 
             <div>
                 <h3>Description</h3>
-                <span>{{ game.description }}</span>
+                <p>{{ game.description }}</p>
             </div>
 
             <div>
                 <h3>Release Date</h3>
-                <span>{{  }}</span>
+                <p>{{ game.release_date|date:'M Y' }}</p>
+            </div>
+
+            <div>
+                <h3>Screenshots</h3>
+
+                <div class="screenshot-grid">
+                    {% for screenshot in game.screenshots %}
+                        <div class="screenshot-grid-item">
+                            <img class="screenshot-img" src="{{ screenshot }}">
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-        <div class="col-3">
-          One of three columns
+        <div class="col-3 col-of-game-info">
+
+            <div class="rating-container">
+                <h3>Rating</h3>
+                <span class="badge rating user">
+                    <div class="row rating-reviews-container">
+                        <div class="col-2">
+                            <p class="rating-text">Users</p>
+                        </div>
+                        <div class="col-7">
+                            <p class="rating-text reviews">{{ game.user_rating }} ({{ game.user_rating_count }} reviews)</p>
+                        </div>
+                    </div>
+                </span>
+
+                <span class="badge rating critics">
+                    <div class="row rating-reviews-container">
+                        <div class="col-2">
+                            <p class="rating-text">Critics</p>
+                        </div>
+                        <div class="col-7">
+                            <p class="rating-text reviews">{{ game.critics_rating }} ({{ game.critics_rating_count }} reviews)</p>
+                        </div>
+                    </div>
+                </span>
+            </div>
+
+            <div>
+                <h3>Genres</h3>
+                {% for genre in game.genres %}
+                    <span class="badge basic">{{ genre }}</span>
+                {% endfor %}
+            </div>
+
+            <div>
+                <h3>Platform</h3>
+                {% for platform in game.platforms %}
+                    <span class="badge basic">{{ platform }}</span>
+                {% endfor %}
+            </div>
         </div>
-        <div class="col-3">
-          One of three columns
+
+        <div class="col-3 col-of-game-info">
         </div>
     </div>
 </div>
