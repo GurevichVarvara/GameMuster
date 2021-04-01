@@ -1,0 +1,73 @@
+/* Detail page title style */
+.detail-container {
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.col-of-game-info > * {
+    margin-top: 30px;
+}
+.game-genres > h6{
+    display: inline-block;
+}
+
+/* Badges for rating */
+.badge.rating {
+    height: 60px;
+    margin-top: 30px;
+    font-side: 80px;
+}
+
+.screenshot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.screenshot-grid-item {
+    padding-bottom: 20px;
+}
+
+.screenshot-img {
+    height: 100px;
+    width: 170px;
+}
+
+.social-media-content-container {
+    margin-top: 35px;
+}
+
+.characteristics_display_inline {
+    display: inline;
+}
+
+/* Color of card with review */
+
+.badge.rating.user {
+    background-color: #199e49;
+
+}
+
+.badge.rating.critics {
+    background-color: #ee943d;
+
+}
+
+/* Text inside of a card with review */
+.rating-reviews-container {
+    margin-top: 15px;
+}
+
+.rating-text {
+    font-size: 20px;
+}
+
+.text-background-rectangle {
+    background-color: #efbc9e;
+    padding: 10px;
+    font-size: 15px;
+    line-height: 1;
+    color: #333217;
+    border-radius: .50rem;
+    margin-top: 35px;
+}
