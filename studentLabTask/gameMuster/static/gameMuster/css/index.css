@@ -43,6 +43,15 @@
     margin-top: 20px;
 }
 
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.card-grid-item {
+    padding: 20px;
+}
+
 /* Style for one card with game */
 .card {
     width: 250px;

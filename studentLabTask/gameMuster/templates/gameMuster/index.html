@@ -80,21 +80,21 @@
 
                 {% if game_list %}
                     <div class="games-col__games-container">
-                        <div class="row">
+                        <div class="card-grid">
                             {% for game in page_obj %}
-                                    <div class="col-sm">
-                                      <div class="card">
-                                            <img src={{ game.img_url }} class="card-img-top" alt="game icon">
-                                            <div class="card__card-body">
-                                                <h5 class="card-title">{{ game.name }}</h5>
-                                                <p class="card-text">{{ game.genres }}</p>
-                                                <div class="btn-group card-btn-group" role="group" aria-label="First group">
-                                                    <a href="{% url 'detail' game.id %}" type="button" class="card-btn-group__btn btn btn-outline-secondary">Open</a>
-                                                    <a type="button" class="card-btn-group__btn btn btn-outline-secondary">Must</a>
-                                                </div>
-                                            </div>
+                            <div class="card-grid-item">
+                                <div class="card">
+                                    <img src={{ game.img_url }} class="card-img-top" alt="game icon">
+                                    <div class="card__card-body">
+                                        <h5 class="card-title">{{ game.name }}</h5>
+                                        <p class="card-text">{{ game.genres }}</p>
+                                        <div class="btn-group card-btn-group" role="group" aria-label="First group">
+                                            <a href="{% url 'detail' game.id %}" type="button" class="card-btn-group__btn btn btn-outline-secondary">Open</a>
+                                            <a type="button" class="card-btn-group__btn btn btn-outline-secondary">Must</a>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
