@@ -41,30 +41,3 @@ class ModelManager:
             'without losing a single life in the process.',
             datetime.now(),
             'somebody')] * 3
-
-        game = Game('PACMAN',
-                    'Pac-Man is a maze chase video game; the player controls the eponymous character through an '
-                    'enclosed maze. The objective of the game is to eat all of the dots placed in the maze while '
-                    'avoiding four colored ghosts — Blinky (red), Pinky (pink), Inky (cyan), and Clyde (orange) — '
-                    'that pursue him. When all of the dots are eaten, the player advances to the next level. If '
-                    'Pac-Man makes contact with a ghost, he will lose a life; the game ends when all lives are '
-                    'lost. Each of the four ghosts have their own unique, distinct artificial intelligence (A.I.), '
-                    'or "personalities"; Blinky gives direct chase to Pac-Man, Pinky and Inky try to position '
-                    'themselves in front of Pac-Man, usually by cornering him, and Clyde will switch between '
-                    'chasing Pac-Man and fleeing from him ',
-                    datetime.now(),
-                    'https://i1.sndcdn.com/avatars-000527330727-10g55j-t240x240.jpg',
-                    7.8,
-                    123,
-                    4.0,
-                    123,
-                    True,
-                    genres=['Arcade', 'Oldschool'],
-                    screenshots=['https://99px.ru/sstorage/53/2012/03/tmb_36321_9414.jpg',
-                                 'https://99px.ru/sstorage/53/2012/03/tmb_36321_9414.jpg',
-                                 'https://99px.ru/sstorage/53/2012/03/tmb_36321_9414.jpg',
-                                 'https://99px.ru/sstorage/53/2012/03/tmb_36321_9414.jpg',],
-                    platforms=['PC', 'PS4'],
-                    tweets=tweets)
-
-        return game
