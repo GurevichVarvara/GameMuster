@@ -23,13 +23,6 @@
                                       <label class="form-check-label" for="platform_{{ platform }}">{{ platform }}</label>
                                     </div>
                                 {% endfor %}
-
-                                {% for platform in platforms_not_available %}
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="platform_{{ platform }}" value="{{ platform }}" disabled>
-                                      <label class="form-check-label" for="platform_{{ platform }}">{{ platform }}</label>
-                                    </div>
-                                {% endfor %}
                             </div>
                         </li>
 
@@ -39,13 +32,6 @@
                                 {% for genre in genres_available %}
                                     <div class="form-check form-check-inline">
                                       <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="genre_{{ genre }}" value="{{ genre }}">
-                                      <label class="form-check-label" for="genre_{{ genre }}">{{ genre }}</label>
-                                    </div>
-                                {% endfor %}
-
-                                {% for genre in genres_not_available %}
-                                    <div class="form-check form-check-inline">
-                                      <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="genre_{{ genre }}" value="{{ genre }}" disabled>
                                       <label class="form-check-label" for="genre_{{ genre }}">{{ genre }}</label>
                                     </div>
                                 {% endfor %}
