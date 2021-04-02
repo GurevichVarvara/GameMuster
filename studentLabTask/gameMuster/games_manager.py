@@ -1,4 +1,5 @@
 import requests
+from gameMuster.temp_models import Game
 
 IGDB_CLIENT_ID = 'gf9n0dlg05nzp9uecs4dtrwyqob4f2'
 IGDB_CLIENT_SECRET = 'lyiongrvu9cj696o62t281sgcndwfa'
@@ -27,7 +28,15 @@ class GamesManager:
             self.header = GamesManager.get_access_token()
 
     def generate_games(self):
-        requests.post(self.igdb_main_url + 'games/', headers=self.header).json()
-        print()
+        params = {'fields': 'id, name, cover, summary,'
+                            'created_at, aggregated_rating,'
+                            'rating_count, genres, screenshots, '
+                            'platforms'}
+        result_games = requests.post(self.igdb_main_url + 'games/',
+                                     headers=self.header,
+                                     params=params).json()[0]
+        print(result_games)
+
+
 
 
