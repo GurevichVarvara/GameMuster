@@ -5,11 +5,9 @@ from gameMuster.games_manager import GamesManager
 
 
 def index(request):
-    import os
-    print(os.environ['HOME'])
     game_manager = GamesManager()
-
-    game_list = [ModelManager.get_temp_instance_of_game()] * 10
+    game_manager.generate_games()
+    game_list = []
     game_paginator = Paginator(game_list, 4)
 
     page_number = request.GET.get('page')
