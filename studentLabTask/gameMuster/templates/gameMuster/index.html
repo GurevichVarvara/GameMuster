@@ -74,7 +74,7 @@
                             {% for game in page_obj %}
                             <div class="card-grid-item">
                                 <div class="card">
-                                    <img src={{ game.img_url }} class="card-img-top" alt="game icon">
+                                    <img src={{ game.img_url }} class="card__image" alt="game icon">
                                     <div class="card__card-body">
                                         <h5 class="card-title">{{ game.name }}</h5>
                                         <p class="card-text">{{ game.genres }}</p>
