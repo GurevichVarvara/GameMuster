@@ -1,8 +1,9 @@
 import requests
 from gameMuster.temp_models import Game
+import os
 
-IGDB_CLIENT_ID = 'gf9n0dlg05nzp9uecs4dtrwyqob4f2'
-IGDB_CLIENT_SECRET = 'o38ky7c3iqhk4l6b1f35hayaca8ii9'
+IGDB_CLIENT_ID = os.environ.get('IGDB_CLIENT_ID')
+IGDB_CLIENT_SECRET = os.environ.get('IGDB_CLIENT_SECRET')
 
 
 class GamesManager:
@@ -13,6 +14,8 @@ class GamesManager:
 
     @staticmethod
     def _get_access_igdb_token():
+        print(IGDB_CLIENT_ID)
+        print(IGDB_CLIENT_SECRET)
         access_token = requests.post('https://id.twitch.tv/oauth2/'
                                      'token?client_id={}&client_secret'
                                      '={}&grant_type=client_credentials'.format(

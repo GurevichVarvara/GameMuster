@@ -140,4 +140,3 @@ cython_debug/
 # IDE and Editor files
 .idea
 
-credentials.json
