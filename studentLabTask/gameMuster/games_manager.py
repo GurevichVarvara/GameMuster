@@ -1,9 +1,14 @@
+from django.shortcuts import get_object_or_404
 import requests
-from gameMuster.temp_models import Game
+from gameMuster.temp_models import Game, Tweet
 import os
+import datetime
 
 IGDB_CLIENT_ID = os.environ.get('IGDB_CLIENT_ID')
 IGDB_CLIENT_SECRET = os.environ.get('IGDB_CLIENT_SECRET')
+
+# Would be removed after creating a DB
+games_storage = {}
 
 
 class GamesManager:
@@ -35,7 +40,8 @@ class GamesManager:
 
         return response_from_api.json()
 
-    def _get_img(self, img_id):
+    @staticmethod
+    def _get_img(img_id):
         return 'https://images.igdb.com/igdb/image/upload/t_cover_big/{}.jpg'.format(img_id)
 
     def generate_list_of_games(self):
@@ -50,10 +56,13 @@ class GamesManager:
 
         games = []
         for game in result_games:
-            games.append(Game(game['id'],
-                              game['name'],
-                              self._get_img(game['cover']['image_id']),
-                              [genre['name'] for genre in game['genres']]))
+            game = Game(game['id'],
+                        game['name'],
+                        self._get_img(game['cover']['image_id']),
+                        [genre['name'] for genre in game['genres']])
+
+            games.append(game)
+            games_storage[game.game_id] = game
 
         return games
 
@@ -71,10 +80,9 @@ class GamesManager:
         return ([platform['name'] for platform in result_platforms],
                 [genre['name'] for genre in result_genres])
 
-    def get_list_of_genres(self):
-        pass
-
     def get_description_of_game(self, game_id):
+        game = games_storage[game_id]
+
         params = {'fields': 'summary, release_dates,'
                             'aggregated_rating,'
                             'aggregated_rating_count,'
@@ -82,6 +90,32 @@ class GamesManager:
                             'screenshots.image_id,'
                             'platforms.name',
                   'filter[id][eq]': game_id}
+        result_game = self._get_api_response(self._get_access_igdb_token,
+                                             self.igdb_main_url + 'games/',
+                                             self.igdb_header,
+                                             params)[0]
+
+        release_date = datetime.datetime.fromtimestamp(result_game['release_dates'][0]) \
+                        if 'release_dates' in result_game else 'no release date'
+        tweets = [Tweet(
+            'In 1999, Billy Mitchell of Hollywood, Florida became the first person to obtain a perfect score '
+            'of 3,333,360 at Pac-Man, eating every possible dot, energizer, ghost, and bonus on every level '
+            'without losing a single life in the process.',
+            datetime.datetime.now(),
+            'somebody')] * 3
+        game.set_full_description(result_game['summary'],
+                                  release_date,
+                                  result_game.get('rating', 0),
+                                  result_game.get('rating_count', 0),
+                                  result_game.get('aggregated_rating', 0),
+                                  result_game.get('aggregated_rating_count', 0),
+                                  screenshots=[self._get_img(screenshot['image_id']) \
+                                               for screenshot in result_game['screenshots']],
+                                  platforms=[platform['name'] for platform \
+                                             in result_game['platforms']],
+                                  tweets=tweets)
+
+        return game
 
 
 

@@ -31,7 +31,11 @@
 
             <div>
                 <h3>Release Date</h3>
-                <p>{{ game.release_date|date:'M Y' }}</p>
+                {% if game.release_date != 'no release date' %}
+                    <p>{{ game.release_date|date:'M Y' }}</p>
+                {% else %}
+                    <p>{{ game.release_date }}</p>
+                {% endif %}
             </div>
 
             <div>
@@ -52,10 +56,10 @@
                 <h3>Rating</h3>
                 <div class="badge rating user">
                     <div class="row rating-reviews-container">
-                        <div class="col-4">
+                        <div class="col-5">
                             <p class="rating-text">Users</p>
                         </div>
-                        <div class="col-8">
+                        <div class="col-7">
                             <p class="rating-text">{{ game.user_rating }} ({{ game.user_rating_count }} reviews)</p>
                         </div>
                     </div>
@@ -63,10 +67,10 @@
 
                 <div class="badge rating critics">
                     <div class="row rating-reviews-container">
-                        <div class="col-4">
+                        <div class="col-5">
                             <p class="rating-text">Critics</p>
                         </div>
-                        <div class="col-8">
+                        <div class="col-7">
                             <p class="rating-text">{{ game.critics_rating }} ({{ game.critics_rating_count }} reviews)</p>
                         </div>
                     </div>
