@@ -62,7 +62,8 @@
 }
 
 .card__image {
-    height: 200px;
+    height: 210px;
+    width: 210px;
 }
 
 .card__card-body {

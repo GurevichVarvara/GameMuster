@@ -33,15 +33,3 @@ class Tweet:
         self.content = content
         self.date = date
         self.user = user
-
-
-class ModelManager:
-
-    @staticmethod
-    def get_temp_instance_of_game():
-        tweets = [Tweet(
-            'In 1999, Billy Mitchell of Hollywood, Florida became the first person to obtain a perfect score '
-            'of 3,333,360 at Pac-Man, eating every possible dot, energizer, ghost, and bonus on every level '
-            'without losing a single life in the process.',
-            datetime.now(),
-            'somebody')] * 3

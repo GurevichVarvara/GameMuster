@@ -36,6 +36,7 @@ class GamesManager:
 
     def _get_igdb_api_response(self, url, headers, params):
         response_from_api = requests.post(url, headers=headers, params=params)
+        print(params)
 
         # if access token has expired
         if response_from_api.status_code != 200:
@@ -48,14 +49,14 @@ class GamesManager:
     def _get_img(img_id):
         return 'https://images.igdb.com/igdb/image/upload/t_cover_big/{}.jpg'.format(img_id)
 
-    def generate_list_of_games(self):
+    def generate_list_of_games(self, params_from_filter):
         params = {'fields': 'id, name, cover.image_id, genres.name',
                   'filter[cover][not_eq]': 'null',
                   'filter[genres][not_eq]': 'null',
                   'filter[screenshots][not_eq]': 'null'}
         result_games = self._get_igdb_api_response(self.igdb_main_url + 'games/',
                                                    self.igdb_header,
-                                                   params)
+                                                   {**params, **params_from_filter})
 
         games = []
         for result_game in result_games:
@@ -78,8 +79,7 @@ class GamesManager:
                                                     self.igdb_header,
                                                     params)
 
-        return ([platform['name'] for platform in result_platforms],
-                [genre['name'] for genre in result_genres])
+        return result_platforms, result_genres
 
     def get_tweets_by_game_name(self, game_name, count_of_tweets=3):
         params = {'q': '%23{}'.format(game_name.replace(' ', '')),
