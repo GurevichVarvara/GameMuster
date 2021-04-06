@@ -26,4 +26,5 @@ def detail(request, game_id):
     game = game_manager.get_description_of_game(game_id)
 
     return render(request, 'gameMuster/detail.html', {'game': game,
-                                                      'tweet_list': game.tweets})
+                                                      'tweet_list': game.tweets,
+                                                      'game_name': game.name.replace(' ', '')})

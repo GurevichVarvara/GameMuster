@@ -93,13 +93,13 @@
         </div>
 
         <div class="col-3 social-media-content-container">
-            <h3>#Pacman Tweets</h3>
+            <h3>#{{ game_name }} Tweets</h3>
             {% for tweet in tweet_list %}
                 <div class="text-background-rectangle">
                     <p>{{ tweet.content }}</p>
                     <div class="row">
                         <div class="col-5"><p>@{{ tweet.user }}</p></div>
-                        <div class="col-7"><p>{{ tweet.date }}</p></div>
+                        <div class="col-7"><p>{{ tweet.date|date:'M Y' }}</p></div>
                     </div>
                 </div>
             {% endfor %}
