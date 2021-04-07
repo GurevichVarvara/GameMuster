@@ -53,7 +53,7 @@ def index(request):
 
 def detail(request, game_id):
     game_manager = GamesManager()
-    game = game_manager.get_description_of_game(game_id)
+    game = game_manager.get_game_by_id(game_id)
 
     return render(request, 'gameMuster/detail.html', {'game': game,
                                                       'tweet_list': game.tweets,

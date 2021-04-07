@@ -1,21 +1,19 @@
-from datetime import datetime
 
 
 class Game:
 
     def __init__(self, game_id, name,
-                 img_url, genres, must=False):
+                 img_url, genres, description,
+                 release_date, user_rating,
+                 user_rating_count, critics_rating,
+                 critics_rating_count, must=False,
+                 **kwargs):
         self.game_id = game_id
         self.name = name
         self.img_url = img_url
         self.genres = genres
         self.genres_str = ' '.join(genres)
         self.must = must
-
-    def set_full_description(self, description, release_date,
-                             user_rating, user_rating_count,
-                             critics_rating, critics_rating_count,
-                             **kwargs):
         self.description = description
         self.release_date = release_date
         self.user_rating = user_rating
