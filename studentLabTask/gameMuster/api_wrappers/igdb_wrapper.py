@@ -64,12 +64,12 @@ class IgdbWrapper:
             if 'release_dates' in game:
                 game['release_dates'] = datetime.fromtimestamp(game['release_dates'][0])
             else:
-                game['release_dates'] = 'no release date'
+                game['release_dates'] = None
 
-            game['rating'] = round(game.get('rating', 0), 1)
-            game['rating_count'] = game.get('rating_count', 0)
-            game['aggregated_rating'] = round(game.get('aggregated_rating', 0), 1)
-            game['aggregated_rating_count'] = game.get('aggregated_rating_count', 0)
+            game['rating'] = game.get('rating', None)
+            game['rating_count'] = game.get('rating_count', None)
+            game['aggregated_rating'] = game.get('aggregated_rating', None)
+            game['aggregated_rating_count'] = game.get('aggregated_rating_count', None)
 
             game['screenshots'] = [self.get_img_path(screenshot['image_id']) for screenshot in
                                    game['screenshots']]

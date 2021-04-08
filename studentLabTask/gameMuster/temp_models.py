@@ -12,7 +12,6 @@ class Game:
         self.name = name
         self.img_url = img_url
         self.genres = genres
-        self.genres_str = ' '.join(genres)
         self.must = must
         self.description = description
         self.release_date = release_date

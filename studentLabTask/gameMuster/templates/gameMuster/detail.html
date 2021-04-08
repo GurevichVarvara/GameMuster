@@ -31,10 +31,10 @@
 
             <div>
                 <h3>Release Date</h3>
-                {% if game.release_date != 'no release date' %}
+                {% if game.release_date %}
                     <p>{{ game.release_date|date:'M Y' }}</p>
                 {% else %}
-                    <p>{{ game.release_date }}</p>
+                    <p>no release date</p>
                 {% endif %}
             </div>
 
@@ -60,7 +60,14 @@
                             <p class="rating-text">Users</p>
                         </div>
                         <div class="col-7">
-                            <p class="rating-text">{{ game.user_rating }} ({{ game.user_rating_count }} reviews)</p>
+                            <p class="rating-text">
+                                {% if game.user_rating and game.user_rating_count %}
+                                    {{ game.user_rating|floatformat:1 }} ({{ game.user_rating_count }}
+                                {% else %}
+                                    0 (0
+                                {% endif %}
+                                reviews)
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -71,7 +78,14 @@
                             <p class="rating-text">Critics</p>
                         </div>
                         <div class="col-7">
-                            <p class="rating-text">{{ game.critics_rating }} ({{ game.critics_rating_count }} reviews)</p>
+                            <p class="rating-text">
+                                {% if game.critics_rating and game.critics_rating_count %}
+                                    {{ game.critics_rating|floatformat:1 }} ({{ game.critics_rating_count }}
+                                {% else %}
+                                    0 (0
+                                {% endif %}
+                                reviews)
+                            </p>
                         </div>
                     </div>
                 </div>
