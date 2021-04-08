@@ -44,16 +44,16 @@ class IgdbWrapper:
                f'image/upload/t_cover_big/{img_id}.jpg'
 
     def get_games(self, additional_params=None):
-        params = {**{'fields': 'id, name, cover.image_id, genres.name,'
-                               'summary, release_dates,'
-                               'aggregated_rating,'
-                               'aggregated_rating_count,'
-                               'rating, rating_count,'
-                               'screenshots.image_id,'
-                               'platforms.name',
-                     'filter[cover][not_eq]': 'null',
-                     'filter[genres][not_eq]': 'null',
-                     'filter[screenshots][not_eq]': 'null'},
+        params = {'fields': 'id, name, cover.image_id, genres.name,'
+                            'summary, release_dates,'
+                            'aggregated_rating,'
+                            'aggregated_rating_count,'
+                            'rating, rating_count,'
+                            'screenshots.image_id,'
+                            'platforms.name',
+                  'filter[cover][not_eq]': 'null',
+                  'filter[genres][not_eq]': 'null',
+                  'filter[screenshots][not_eq]': 'null',
                   **additional_params}
 
         games = self._post('games/', params)
