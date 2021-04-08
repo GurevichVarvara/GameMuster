@@ -12,7 +12,7 @@ class TwitterWrapper:
     def _get_header(self):
         return {'Authorization': 'Bearer {}'.format(self.bearer_token)}
 
-    def request(self, params=None):
+    def _post(self, params=None):
         return requests.get(self.twitter_search_url,
                             headers=self._get_header(),
                             params=params).json()
@@ -23,7 +23,7 @@ class TwitterWrapper:
                   'tweet.fields': 'full_text, created_at, user.name',
                   'count': count_of_tweets}
 
-        tweets = self.request(params)['statuses']
+        tweets = self._post(params)['statuses']
 
         for tweet in tweets:
             tweet['created_at'] = datetime.datetime.strptime(tweet['created_at'],

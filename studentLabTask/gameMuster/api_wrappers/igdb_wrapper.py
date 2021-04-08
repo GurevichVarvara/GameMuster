@@ -22,7 +22,7 @@ class IgdbWrapper:
         return {'Client-ID': self.client_id,
                 'Authorization': 'Bearer {}'.format(response.json()['access_token'])}
 
-    def request(self, endpoint, params=None):
+    def _post(self, endpoint, params=None):
         url = self.main_url + endpoint
 
         response = requests.post(url,
@@ -56,7 +56,7 @@ class IgdbWrapper:
                      'filter[screenshots][not_eq]': 'null'},
                   **additional_params}
 
-        games = self.request('games/', params)
+        games = self._post('games/', params)
 
         for game in games:
             game['cover'] = self.get_img_path(game['cover']['image_id'])
@@ -80,7 +80,7 @@ class IgdbWrapper:
         return games
 
     def get_platforms(self, params=None):
-        return self.request('platforms/', params)
+        return self._post('platforms/', params)
 
     def get_genres(self, params=None):
-        return self.request('genres/', params)
+        return self._post('genres/', params)
