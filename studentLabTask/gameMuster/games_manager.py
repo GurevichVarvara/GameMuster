@@ -1,18 +1,15 @@
-import os
 from gameMuster.temp_models import Game, Tweet
 from gameMuster.api_wrappers.igdb_wrapper import IgdbWrapper
 from gameMuster.api_wrappers.twitter_wrapper import TwitterWrapper
-
-IGDB_CLIENT_ID = os.environ.get('IGDB_CLIENT_ID')
-IGDB_CLIENT_SECRET = os.environ.get('IGDB_CLIENT_SECRET')
-TWITTER_BEARER_TOKEN = os.environ.get('TWITTER_BEARER_TOKEN')
+from django.conf import settings
 
 
 class GamesManager:
 
     def __init__(self):
-        self.igdb_wrapper = IgdbWrapper(IGDB_CLIENT_ID, IGDB_CLIENT_SECRET)
-        self.twitter_wrapper = TwitterWrapper(TWITTER_BEARER_TOKEN)
+        self.igdb_wrapper = IgdbWrapper(settings.IGDB_CLIENT_ID,
+                                        settings.IGDB_CLIENT_SECRET)
+        self.twitter_wrapper = TwitterWrapper(settings.TWITTER_BEARER_TOKEN)
 
     def create_game_from_igdb_response(self, response_game):
         return Game(response_game['id'], response_game['name'], response_game['cover'],
