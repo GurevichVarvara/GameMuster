@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from gameMuster.games_manager import GamesManager
+from gameMuster.mocked_data.mocked_games_manager import MockedGameManager
 
 
 def add_option_to_chosen_params(params_from_filter,
@@ -14,6 +15,7 @@ def add_option_to_chosen_params(params_from_filter,
 
 def index(request):
     game_manager = GamesManager()
+    #game_manager = MockedGameManager()
     data_from_filter = request.GET
     params_from_filter = {}
     chosen_params = {'platforms': set(),
@@ -53,6 +55,7 @@ def index(request):
 
 def detail(request, game_id):
     game_manager = GamesManager()
+    #game_manager = MockedGameManager()
     game = game_manager.get_game_by_id(game_id)
 
     return render(request, 'gameMuster/detail.html', {'game': game,

@@ -140,3 +140,4 @@ cython_debug/
 # IDE and Editor files
 .idea
 
+mocked_data/
