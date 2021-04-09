@@ -21,20 +21,21 @@ class GamesManager:
                     platforms=response_game['platforms'],
                     tweets=self.get_tweets_by_game_name(response_game['name']))
 
-    def generate_list_of_games(self, params_from_filter):
-        games = self.igdb_wrapper.get_games(params_from_filter)
+    def generate_list_of_games(self, genres=None, platforms=None, rating=None):
+        games = self.igdb_wrapper.get_games(genres=genres,
+                                            platforms=platforms,
+                                            rating=rating)
 
         return [self.create_game_from_igdb_response(game) for game in games]
 
     def get_game_by_id(self, game_id):
-        game = self.igdb_wrapper.get_games({'filter[id][eq]': game_id})[0]
+        game = self.igdb_wrapper.get_games(id=[game_id])[0]
 
         return self.create_game_from_igdb_response(game)
 
     def get_list_of_filters(self):
-        params = {'fields': 'name'}
-        platforms = self.igdb_wrapper.get_platforms(params)
-        genres = self.igdb_wrapper.get_genres(params)
+        platforms = self.igdb_wrapper.get_platforms()
+        genres = self.igdb_wrapper.get_genres()
 
         return platforms, genres
 

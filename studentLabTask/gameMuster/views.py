@@ -1,41 +1,40 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from gameMuster.games_manager import GamesManager
+from django.http import HttpResponseNotFound
 from gameMuster.mocked_data.mocked_games_manager import MockedGameManager
 
 
-def add_option_to_chosen_params(params_from_filter,
-                                option, chosen_params,
+def add_option_to_chosen_params(option, chosen_params,
                                 chosen_params_container):
-    params_from_filter['filter[' + option + '][eq]'] = '(' + ','.join(chosen_params) + ')'
-
     for param in chosen_params:
-        chosen_params_container[option].add(int(param))
+        chosen_params_container[option].append(int(param))
 
 
 def index(request):
     game_manager = GamesManager()
     #game_manager = MockedGameManager()
     data_from_filter = request.GET
-    params_from_filter = {}
-    chosen_params = {'platforms': set(),
-                     'genres': set(),
+    chosen_params = {'platforms': None,
+                     'genres': None,
                      'rating': 50}
 
     if 'platforms' in data_from_filter:
-        add_option_to_chosen_params(params_from_filter,
-                                    'platforms', data_from_filter.getlist('platforms'),
+        chosen_params['platforms'] = []
+        add_option_to_chosen_params('platforms', data_from_filter.getlist('platforms'),
                                     chosen_params)
 
     if 'genres' in data_from_filter:
-        add_option_to_chosen_params(params_from_filter,
-                                    'genres', data_from_filter.getlist('genres'),
+        chosen_params['genres'] = []
+        add_option_to_chosen_params('genres', data_from_filter.getlist('genres'),
                                     chosen_params)
 
     if 'rating' in data_from_filter:
-        chosen_params['rating'] = params_from_filter['filter[rating][gte]'] = int(data_from_filter['rating'])
+        chosen_params['rating'] = int(data_from_filter['rating'])
 
-    game_list = game_manager.generate_list_of_games(params_from_filter)
+    game_list = game_manager.generate_list_of_games(genres=chosen_params['genres'],
+                                                    platforms=chosen_params['platforms'],
+                                                    rating=chosen_params['rating'])
 
     game_paginator = Paginator(game_list, 4)
     page_number = request.GET.get('page')
@@ -54,9 +53,12 @@ def index(request):
 
 
 def detail(request, game_id):
-    game_manager = GamesManager()
-    #game_manager = MockedGameManager()
-    game = game_manager.get_game_by_id(game_id)
+    try:
+        game_manager = GamesManager()
+        #game_manager = MockedGameManager()
+        game = game_manager.get_game_by_id(game_id)
+    except LookupError as error:
+        return HttpResponseNotFound(f'<h1>{error}</h1>')
 
     return render(request, 'gameMuster/detail.html', {'game': game,
                                                       'tweet_list': game.tweets,
