@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gameMuster',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,6 @@ STATICFILES_FINDERS = (
 IGDB_CLIENT_ID = os.environ.get('IGDB_CLIENT_ID')
 IGDB_CLIENT_SECRET = os.environ.get('IGDB_CLIENT_SECRET')
 TWITTER_BEARER_TOKEN = os.environ.get('TWITTER_BEARER_TOKEN')
+
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
