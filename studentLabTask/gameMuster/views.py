@@ -5,29 +5,22 @@ from django.http import HttpResponseNotFound
 from gameMuster.mocked_data.mocked_games_manager import MockedGameManager
 
 
-def add_option_to_chosen_params(option, chosen_params,
-                                chosen_params_container):
-    for param in chosen_params:
-        chosen_params_container[option].append(int(param))
+def get_list_of_filters(option, data_from_filter):
+    return list(map(int, data_from_filter.getlist(option)))
 
 
 def index(request):
     game_manager = GamesManager()
-    #game_manager = MockedGameManager()
     data_from_filter = request.GET
     chosen_params = {'platforms': None,
                      'genres': None,
                      'rating': 50}
 
     if 'platforms' in data_from_filter:
-        chosen_params['platforms'] = []
-        add_option_to_chosen_params('platforms', data_from_filter.getlist('platforms'),
-                                    chosen_params)
+        chosen_params['platforms'] = get_list_of_filters('platforms', data_from_filter)
 
     if 'genres' in data_from_filter:
-        chosen_params['genres'] = []
-        add_option_to_chosen_params('genres', data_from_filter.getlist('genres'),
-                                    chosen_params)
+        chosen_params['genres'] = get_list_of_filters('genres', data_from_filter)
 
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
@@ -55,7 +48,6 @@ def index(request):
 def detail(request, game_id):
     try:
         game_manager = GamesManager()
-        #game_manager = MockedGameManager()
         game = game_manager.get_game_by_id(game_id)
     except LookupError as error:
         return HttpResponseNotFound(f'<h1>{error}</h1>')
