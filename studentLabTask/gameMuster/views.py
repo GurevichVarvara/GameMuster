@@ -12,7 +12,6 @@ def add_option_to_chosen_params(option, chosen_params,
 
 
 def index(request):
-    #game_manager = GamesManager()
     game_manager = MockedGameManager()
     data_from_filter = request.GET
     chosen_params = {'platforms': None,
@@ -54,7 +53,6 @@ def index(request):
 
 def detail(request, game_id):
     try:
-        #game_manager = GamesManager()
         game_manager = MockedGameManager()
         game = game_manager.get_game_by_id(game_id)
     except LookupError as error:

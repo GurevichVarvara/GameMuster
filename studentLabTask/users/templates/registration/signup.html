@@ -1,12 +1,12 @@
 {% extends 'gameMuster/base.html' %}
-{% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
 <h2>Sing Up</h2>
 <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
+  {{ form|crispy }}
   <button type="submit">Sing Up</button>
 </form>
 

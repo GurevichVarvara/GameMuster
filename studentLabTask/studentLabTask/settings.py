@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gameMuster',
-    'users'
+    'users',
+    "crispy_forms",
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,5 @@ TWITTER_BEARER_TOKEN = os.environ.get('TWITTER_BEARER_TOKEN')
 
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
+CRISPY_TEMPLATE_PACK="bootstrap4"
