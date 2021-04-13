@@ -39,41 +39,53 @@ class IgdbWrapper:
         return response.json()
 
     @staticmethod
-    def _add_enumeration_filters_to_params(additional_filters,
-                                           query):
-        for name in additional_filters:
-            if additional_filters[name]:
-                query[f'filter[{name}][eq]'] = \
-                    '(' + ','.join(map(str, additional_filters[name])) + ')'
+    def _compose_query(default_params,
+                       enumeration_filters=None,
+                       rating=None):
+        result_query = {**default_params}
+
+        if enumeration_filters:
+            for name, values in enumeration_filters.items():
+                if not enumeration_filters[name]:
+                    continue
+
+                joined_values = ','.join(str(v) for v in values)
+                result_query[f'filter[{name}][eq]'] = f'({joined_values})'
+
+        if rating:
+            result_query['filter[rating][gte]'] = rating
+
+        return result_query
 
     @staticmethod
     def get_img_path(img_id):
         return 'https://images.igdb.com/igdb/' \
                f'image/upload/t_cover_big/{img_id}.jpg'
 
-    def get_games(self, rating=None, **enumeration_filters):
-        q_params = {'fields': 'id, name, cover.image_id, genres.name,'
-                              'summary, release_dates,'
-                              'aggregated_rating,'
-                              'aggregated_rating_count,'
-                              'rating, rating_count,'
-                              'screenshots.image_id,'
-                              'platforms.name',
-                    'filter[cover][not_eq]': 'null',
-                    'filter[genres][not_eq]': 'null',
-                    'filter[screenshots][not_eq]': 'null',
-                    'filter[rating][gte]': f'{rating if rating else 0}'}
+    def get_games(self, genres=None, platforms=None,
+                  ids=None, rating=None):
+        default_params = {'fields': 'id, name, cover.image_id, genres.name,'
+                                    'summary, release_dates,'
+                                    'aggregated_rating,'
+                                    'aggregated_rating_count,'
+                                    'rating, rating_count,'
+                                    'screenshots.image_id,'
+                                    'platforms.name',
+                          'filter[cover][not_eq]': 'null',
+                          'filter[genres][not_eq]': 'null',
+                          'filter[screenshots][not_eq]': 'null'}
 
-        additional_filters = {}
-        for name, params in enumeration_filters.items():
-            additional_filters[name] = params
+        enumeration_filters = {'genres': genres,
+                               'platforms': platforms,
+                               'id': ids}
 
-        self._add_enumeration_filters_to_params(additional_filters,
-                                                q_params)
+        query = self._compose_query(default_params,
+                                    enumeration_filters,
+                                    rating)
 
-        games = self._post('games/', q_params)
+        games = self._post('games/', query)
 
-        if not len(games):
+        if not games:
             raise LookupError('Game not found')
 
         for game in games:
@@ -98,7 +110,9 @@ class IgdbWrapper:
         return games
 
     def get_platforms(self):
-        return self._post('platforms/', {'fields': 'name'})
+        return self._post('platforms/',
+                          self._compose_query({'fields': 'name'}))
 
     def get_genres(self):
-        return self._post('genres/', {'fields': 'name'})
+        return self._post('genres/',
+                          self._compose_query({'fields': 'name'}))
