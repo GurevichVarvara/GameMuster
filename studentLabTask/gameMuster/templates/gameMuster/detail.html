@@ -100,9 +100,11 @@
 
             <div>
                 <h3>Platform</h3>
-                {% for platform in game.platforms %}
-                <div class="badge basic">{{ platform }}</div>
-                {% endfor %}
+                {% if game.platforms %}
+                    {% for platform in game.platforms %}
+                    <div class="badge basic">{{ platform }}</div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
 

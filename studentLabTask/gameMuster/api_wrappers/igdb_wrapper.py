@@ -104,7 +104,7 @@ class IgdbWrapper:
             game['screenshots'] = [self.get_img_path(screenshot['image_id']) for screenshot in
                                    game['screenshots']]
             game['platforms'] = [platform['name'] for platform
-                                 in game['platforms']] if 'platforms' in game else ['All']
+                                 in game['platforms']] if 'platforms' in game else None
             game['genres'] = [genre['name'] for genre in game['genres']]
 
         return games
