@@ -1,0 +1,15 @@
+<div class="row rating-reviews-container">
+    <div class="col-5">
+        <p class="rating-text">{{ rating_title }}</p>
+    </div>
+    <div class="col-7">
+        <p class="rating-text">
+            {% if rating and rating_count %}
+                {{ rating|floatformat:1 }} ({{ rating_count }}
+            {% else %}
+                0 (0
+            {% endif %}
+            reviews)
+        </p>
+    </div>
+</div>

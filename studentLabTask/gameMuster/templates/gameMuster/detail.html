@@ -55,39 +55,11 @@
             <div class="rating-container">
                 <h3>Rating</h3>
                 <div class="badge rating user">
-                    <div class="row rating-reviews-container">
-                        <div class="col-5">
-                            <p class="rating-text">Users</p>
-                        </div>
-                        <div class="col-7">
-                            <p class="rating-text">
-                                {% if game.user_rating and game.user_rating_count %}
-                                    {{ game.user_rating|floatformat:1 }} ({{ game.user_rating_count }}
-                                {% else %}
-                                    0 (0
-                                {% endif %}
-                                reviews)
-                            </p>
-                        </div>
-                    </div>
+                    {% include 'gameMuster/rating.html' with rating_title='Users' rating=game.user_rating rating_count=game.user_rating_count %}
                 </div>
 
                 <div class="badge rating critics">
-                    <div class="row rating-reviews-container">
-                        <div class="col-5">
-                            <p class="rating-text">Critics</p>
-                        </div>
-                        <div class="col-7">
-                            <p class="rating-text">
-                                {% if game.critics_rating and game.critics_rating_count %}
-                                    {{ game.critics_rating|floatformat:1 }} ({{ game.critics_rating_count }}
-                                {% else %}
-                                    0 (0
-                                {% endif %}
-                                reviews)
-                            </p>
-                        </div>
-                    </div>
+                    {% include 'gameMuster/rating.html' with rating_title='Critics' rating=game.critics_rating rating_count=game.critics_rating_count %}
                 </div>
             </div>
 
