@@ -9,6 +9,16 @@ class IgdbWrapper:
         self.client_id = client_id
         self.client_secret = client_secret
         self.header = self._get_header()
+        self.params_for_games = {'fields': 'id, name, cover.image_id, genres.name,'
+                                           'summary, release_dates,'
+                                           'aggregated_rating,'
+                                           'aggregated_rating_count,'
+                                           'rating, rating_count,'
+                                           'screenshots.image_id,'
+                                           'platforms.name',
+                                 'filter[cover][not_eq]': 'null',
+                                 'filter[genres][not_eq]': 'null',
+                                 'filter[screenshots][not_eq]': 'null'}
 
     def _get_header(self):
         response = requests.post('https://id.twitch.tv/oauth2/'
@@ -64,29 +74,15 @@ class IgdbWrapper:
 
     def get_games(self, genres=None, platforms=None,
                   ids=None, rating=None):
-        default_params = {'fields': 'id, name, cover.image_id, genres.name,'
-                                    'summary, release_dates,'
-                                    'aggregated_rating,'
-                                    'aggregated_rating_count,'
-                                    'rating, rating_count,'
-                                    'screenshots.image_id,'
-                                    'platforms.name',
-                          'filter[cover][not_eq]': 'null',
-                          'filter[genres][not_eq]': 'null',
-                          'filter[screenshots][not_eq]': 'null'}
-
         enumeration_filters = {'genres': genres,
                                'platforms': platforms,
                                'id': ids}
 
-        query = self._compose_query(default_params,
+        query = self._compose_query(self.params_for_games,
                                     enumeration_filters,
                                     rating)
 
         games = self._post('games/', query)
-
-        if not games:
-            raise LookupError('Game not found')
 
         for game in games:
             game['cover'] = self.get_img_path(game['cover']['image_id'])
@@ -108,6 +104,14 @@ class IgdbWrapper:
             game['genres'] = [genre['name'] for genre in game['genres']]
 
         return games
+
+    def get_game_by_id(self, game_id):
+        games = self.get_games(ids=[game_id])
+
+        if not games:
+            raise LookupError('Game not found')
+
+        return games[0]
 
     def get_platforms(self):
         return self._post('platforms/',
