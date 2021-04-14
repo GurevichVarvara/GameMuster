@@ -36,7 +36,9 @@ def send_confirmation_email(request, form):
         fail_silently=False,
     )
 
-    return render(request, 'users/confirmation_require.html')
+    return render(request, 'users/base_message.html',
+                  {'message': 'Please confirm your email address '
+                              'to complete the registration'})
 
 
 class SignUpView(CreateView):
