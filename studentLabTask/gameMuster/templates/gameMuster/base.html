@@ -20,6 +20,15 @@
       <a class="navbar-brand" href="{% url 'index' %}">
         <span class="fs-4 px-4">GameMuster</span>
       </a>
+
+        <div class="navbar-nav mr-auto  my-2 my-lg-0">
+            {% if user.is_authenticated %}
+                <a class="nav-link" href="users/logout">LogOut</a>
+            {% else %}
+                <a class="nav-link" href="users/login">LogIn</a>
+            {% endif %}
+            <a class="nav-link" href="users/signup">SignUp</a>
+        </div>
     </nav>
 
     <main>

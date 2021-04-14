@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
@@ -45,6 +45,9 @@ class SignUpView(CreateView):
     template_name = 'users/signup.html'
 
     def form_valid(self, form):
+        if self.request.user.is_authenticated:
+            logout(self.request)
+
         return send_confirmation_email(self.request, form)
 
 
