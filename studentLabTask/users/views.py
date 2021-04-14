@@ -1,11 +1,13 @@
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.views.generic import CreateView
 
@@ -18,9 +20,7 @@ def send_confirmation_email(request, form):
 
     # Don't let user to login before email confirmation
     user.is_active = False
-
-    # Save user to database
-
+    user.save()
 
     current_site = get_current_site(request)
     send_mail(
@@ -36,7 +36,7 @@ def send_confirmation_email(request, form):
         fail_silently=False,
     )
 
-    return HttpResponse('Please confirm your email address to complete the registration')
+    return render(request, 'users/confirmation_require.html')
 
 
 class SignUpView(CreateView):
@@ -49,4 +49,20 @@ class SignUpView(CreateView):
 
 
 def activate(request, uidb64, token):
-    print('Yesss')
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except User.DoesNotExist:
+        user = None
+
+    if user is not None \
+            and EmailConfirmationTokenGenerator().check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect('index')
+    else:
+        return HttpResponse('Activation link is invalid!')
+
+
+
