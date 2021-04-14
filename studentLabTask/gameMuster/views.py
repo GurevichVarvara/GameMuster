@@ -5,10 +5,8 @@ from django.http import HttpResponseNotFound
 from gameMuster.mocked_data.mocked_games_manager import MockedGameManager
 
 
-def add_option_to_chosen_params(option, chosen_params,
-                                chosen_params_container):
-    for param in chosen_params:
-        chosen_params_container[option].append(int(param))
+def get_list_of_filters(option, data_from_filter):
+    return list(map(int, data_from_filter.getlist(option)))
 
 
 def index(request):
@@ -19,14 +17,10 @@ def index(request):
                      'rating': 50}
 
     if 'platforms' in data_from_filter:
-        chosen_params['platforms'] = []
-        add_option_to_chosen_params('platforms', data_from_filter.getlist('platforms'),
-                                    chosen_params)
+        chosen_params['platforms'] = get_list_of_filters('platforms', data_from_filter)
 
     if 'genres' in data_from_filter:
-        chosen_params['genres'] = []
-        add_option_to_chosen_params('genres', data_from_filter.getlist('genres'),
-                                    chosen_params)
+        chosen_params['genres'] = get_list_of_filters('genres', data_from_filter)
 
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])

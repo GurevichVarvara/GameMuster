@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime
+from django.http import Http404
 
 
 class IgdbWrapper:
@@ -9,6 +10,16 @@ class IgdbWrapper:
         self.client_id = client_id
         self.client_secret = client_secret
         self.header = self._get_header()
+        self.params_for_games = {'fields': 'id, name, cover.image_id, genres.name,'
+                                           'summary, release_dates,'
+                                           'aggregated_rating,'
+                                           'aggregated_rating_count,'
+                                           'rating, rating_count,'
+                                           'screenshots.image_id,'
+                                           'platforms.name',
+                                 'filter[cover][not_eq]': 'null',
+                                 'filter[genres][not_eq]': 'null',
+                                 'filter[screenshots][not_eq]': 'null'}
 
     def _get_header(self):
         response = requests.post('https://id.twitch.tv/oauth2/'
@@ -36,45 +47,46 @@ class IgdbWrapper:
                                      headers=self.header,
                                      params=params)
 
+        if not response.ok:
+            raise Http404
+
         return response.json()
 
     @staticmethod
-    def _add_enumeration_filters_to_params(additional_filters,
-                                           query):
-        for name in additional_filters:
-            if additional_filters[name]:
-                query[f'filter[{name}][eq]'] = \
-                    '(' + ','.join(map(str, additional_filters[name])) + ')'
+    def _compose_query(default_params,
+                       enumeration_filters=None,
+                       rating=None):
+        result_query = {**default_params}
+
+        if enumeration_filters:
+            for name, values in enumeration_filters.items():
+                if not enumeration_filters[name]:
+                    continue
+
+                joined_values = ','.join(str(v) for v in values)
+                result_query[f'filter[{name}][eq]'] = f'({joined_values})'
+
+        if rating:
+            result_query['filter[rating][gte]'] = rating
+
+        return result_query
 
     @staticmethod
     def get_img_path(img_id):
         return 'https://images.igdb.com/igdb/' \
                f'image/upload/t_cover_big/{img_id}.jpg'
 
-    def get_games(self, rating=None, **enumeration_filters):
-        q_params = {'fields': 'id, name, cover.image_id, genres.name,'
-                              'summary, release_dates,'
-                              'aggregated_rating,'
-                              'aggregated_rating_count,'
-                              'rating, rating_count,'
-                              'screenshots.image_id,'
-                              'platforms.name',
-                    'filter[cover][not_eq]': 'null',
-                    'filter[genres][not_eq]': 'null',
-                    'filter[screenshots][not_eq]': 'null',
-                    'filter[rating][gte]': f'{rating if rating else 0}'}
+    def get_games(self, genres=None, platforms=None,
+                  ids=None, rating=None):
+        enumeration_filters = {'genres': genres,
+                               'platforms': platforms,
+                               'id': ids}
 
-        additional_filters = {}
-        for name, params in enumeration_filters.items():
-            additional_filters[name] = params
+        query = self._compose_query(self.params_for_games,
+                                    enumeration_filters,
+                                    rating)
 
-        self._add_enumeration_filters_to_params(additional_filters,
-                                                q_params)
-
-        games = self._post('games/', q_params)
-
-        if not len(games):
-            raise LookupError('Game not found')
+        games = self._post('games/', query)
 
         for game in games:
             game['cover'] = self.get_img_path(game['cover']['image_id'])
@@ -92,13 +104,23 @@ class IgdbWrapper:
             game['screenshots'] = [self.get_img_path(screenshot['image_id']) for screenshot in
                                    game['screenshots']]
             game['platforms'] = [platform['name'] for platform
-                                 in game['platforms']] if 'platforms' in game else ['All']
+                                 in game['platforms']] if 'platforms' in game else None
             game['genres'] = [genre['name'] for genre in game['genres']]
 
         return games
 
+    def get_game_by_id(self, game_id):
+        games = self.get_games(ids=[game_id])
+
+        if not games:
+            raise LookupError('Game not found')
+
+        return games[0]
+
     def get_platforms(self):
-        return self._post('platforms/', {'fields': 'name'})
+        return self._post('platforms/',
+                          self._compose_query({'fields': 'name'}))
 
     def get_genres(self):
-        return self._post('genres/', {'fields': 'name'})
+        return self._post('genres/',
+                          self._compose_query({'fields': 'name'}))

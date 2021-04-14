@@ -29,7 +29,7 @@ class GamesManager:
         return [self.create_game_from_igdb_response(game) for game in games]
 
     def get_game_by_id(self, game_id):
-        game = self.igdb_wrapper.get_games(id=[game_id])[0]
+        game = self.igdb_wrapper.get_game_by_id(game_id)
 
         return self.create_game_from_igdb_response(game)
 
