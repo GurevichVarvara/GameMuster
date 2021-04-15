@@ -63,3 +63,7 @@ main > * {
     vertical-align: baseline;
     border-radius: .25rem;
 }
+
+.page-title {
+    margin-top: 30px;
+}

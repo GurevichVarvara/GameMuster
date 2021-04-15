@@ -15,32 +15,6 @@ from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm
 
 
-def send_confirmation_email(request, form):
-    user = form.save(commit=False)
-
-    # Don't let user to login before email confirmation
-    user.is_active = False
-    user.save()
-
-    current_site = get_current_site(request)
-    send_mail(
-        subject='Email confirmation',
-        message=render_to_string('users/account_activation.html', {
-            'user': user,
-            'domain': current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token': EmailConfirmationTokenGenerator().make_token(user),
-        }),
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user.email],
-        fail_silently=False,
-    )
-
-    return render(request, 'users/base_message.html',
-                  {'message': 'Please confirm your email address '
-                              'to complete the registration'})
-
-
 class SignUpView(CreateView):
     form_class = SignupForm
     success_url = reverse_lazy('login')
@@ -50,7 +24,29 @@ class SignUpView(CreateView):
         if self.request.user.is_authenticated:
             logout(self.request)
 
-        return send_confirmation_email(self.request, form)
+        user = form.save(commit=False)
+
+        # Don't let user to login before email confirmation
+        user.is_active = False
+        user.save()
+
+        current_site = get_current_site(self.request)
+        send_mail(
+            subject='Email confirmation',
+            message=render_to_string('users/account_activation.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': EmailConfirmationTokenGenerator().make_token(user),
+            }),
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
+
+        return render(self.request, 'users/base_message.html',
+                      {'message': 'Please confirm your email address '
+                                  'to complete the registration'})
 
 
 def activate(request, uidb64, token):
@@ -68,6 +64,10 @@ def activate(request, uidb64, token):
         return redirect('index')
     else:
         return HttpResponse('Activation link is invalid!')
+
+
+def profile(request):
+    return render(request, 'users/profile.html')
 
 
 

@@ -1,0 +1,22 @@
+{% extends 'users/base_auth.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css/profile.css' %}">
+{% endblock styles %}
+
+{% block content %}
+<h2 class="page-title">User Profile</h2>
+<div class="profile-container">
+
+    {% include 'users/user_profile_row.html' with field_name='Username' user_data=user.username %}
+    {% include 'users/user_profile_row.html' with field_name='First Name' user_data=user.first_name %}
+    {% include 'users/user_profile_row.html' with field_name='Second Name' user_data=user.last_name %}
+    {% include 'users/user_profile_row.html' with field_name='Email' user_data=user.email %}
+
+    <div class="profile-row">
+        <a class="link-secondary edit-link" href="{% url 'logout' %}">Edit</a>
+    </div>
+</div>
+
+{% endblock %}
