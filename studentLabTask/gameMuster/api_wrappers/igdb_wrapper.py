@@ -1,6 +1,6 @@
 import requests
 from datetime import datetime
-from django.http import Http404
+from django.http import HttpResponseServerError
 
 
 class IgdbWrapper:
@@ -48,7 +48,7 @@ class IgdbWrapper:
                                      params=params)
 
         if not response.ok:
-            raise Http404
+            raise HttpResponseServerError
 
         return response.json()
 
