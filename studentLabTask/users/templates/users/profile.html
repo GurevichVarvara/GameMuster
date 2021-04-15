@@ -15,7 +15,7 @@
     {% include 'users/user_profile_row.html' with field_name='Email' user_data=user.email %}
 
     <div class="profile-row">
-        <a class="link-secondary edit-link" href="{% url 'logout' %}">Edit</a>
+        <a class="link-secondary edit-link" href="{% url 'profile-edit' user.id %}">Edit</a>
     </div>
 </div>
 
