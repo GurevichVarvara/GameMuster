@@ -126,6 +126,6 @@ STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 )
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'gameMuster', 'static'),
-)
+IGDB_CLIENT_ID = os.environ.get('IGDB_CLIENT_ID')
+IGDB_CLIENT_SECRET = os.environ.get('IGDB_CLIENT_SECRET')
+TWITTER_BEARER_TOKEN = os.environ.get('TWITTER_BEARER_TOKEN')

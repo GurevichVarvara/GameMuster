@@ -55,6 +55,7 @@
 
 /* Text inside of a card with review */
 .rating-reviews-container {
+    width: 300px;
     margin-top: 15px;
 }
 

@@ -31,7 +31,11 @@
 
             <div>
                 <h3>Release Date</h3>
-                <p>{{ game.release_date|date:'M Y' }}</p>
+                {% if game.release_date %}
+                    <p>{{ game.release_date|date:'M Y' }}</p>
+                {% else %}
+                    <p>no release date</p>
+                {% endif %}
             </div>
 
             <div>
@@ -51,25 +55,11 @@
             <div class="rating-container">
                 <h3>Rating</h3>
                 <div class="badge rating user">
-                    <div class="row rating-reviews-container">
-                        <div class="col-4">
-                            <p class="rating-text">Users</p>
-                        </div>
-                        <div class="col-8">
-                            <p class="rating-text">{{ game.user_rating }} ({{ game.user_rating_count }} reviews)</p>
-                        </div>
-                    </div>
+                    {% include 'gameMuster/rating.html' with rating_title='Users' rating=game.user_rating rating_count=game.user_rating_count %}
                 </div>
 
                 <div class="badge rating critics">
-                    <div class="row rating-reviews-container">
-                        <div class="col-4">
-                            <p class="rating-text">Critics</p>
-                        </div>
-                        <div class="col-8">
-                            <p class="rating-text">{{ game.critics_rating }} ({{ game.critics_rating_count }} reviews)</p>
-                        </div>
-                    </div>
+                    {% include 'gameMuster/rating.html' with rating_title='Critics' rating=game.critics_rating rating_count=game.critics_rating_count %}
                 </div>
             </div>
 
@@ -82,20 +72,22 @@
 
             <div>
                 <h3>Platform</h3>
-                {% for platform in game.platforms %}
-                <div class="badge basic">{{ platform }}</div>
-                {% endfor %}
+                {% if game.platforms %}
+                    {% for platform in game.platforms %}
+                    <div class="badge basic">{{ platform }}</div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
 
         <div class="col-3 social-media-content-container">
-            <h3>#Pacman Tweets</h3>
+            <h3>#{{ game_name }} Tweets</h3>
             {% for tweet in tweet_list %}
                 <div class="text-background-rectangle">
                     <p>{{ tweet.content }}</p>
                     <div class="row">
                         <div class="col-5"><p>@{{ tweet.user }}</p></div>
-                        <div class="col-7"><p>{{ tweet.date }}</p></div>
+                        <div class="col-7"><p>{{ tweet.date|date:'M Y' }}</p></div>
                     </div>
                 </div>
             {% endfor %}
