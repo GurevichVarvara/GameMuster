@@ -73,20 +73,16 @@ class UserEditView(UpdateView):
 
 
 def activate(request, uidb64, token):
-    try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except User.DoesNotExist:
-        user = None
+    uid = force_text(urlsafe_base64_decode(uidb64))
+    user = User.objects.filter(pk=uid).first()
 
-    if user is not None \
-            and EmailConfirmationTokenGenerator().check_token(user, token):
-        user.active_time = datetime.now()
-        user.save()
-        login(request, user)
-        return redirect('index')
-    else:
+    if not (user and EmailConfirmationTokenGenerator().check_token(user, token)):
         return HttpResponse('Activation link is invalid!')
+
+    user.active_time = datetime.now()
+    user.save()
+    login(request, user)
+    return redirect('index')
 
 
 def profile(request):
