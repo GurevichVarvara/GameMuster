@@ -12,7 +12,8 @@ class CustomUserAdmin(UserAdmin):
                     'email',
                     'birthday',
                     'first_name',
-                    'last_name']
+                    'last_name',
+                    'active_time']
 
 
 admin.site.register(User, CustomUserAdmin)

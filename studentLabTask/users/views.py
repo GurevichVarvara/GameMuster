@@ -10,6 +10,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.views.generic import CreateView, UpdateView
+from datetime import datetime
 
 from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm
@@ -19,11 +20,7 @@ def send_confirmation_email(request, form):
     if request.user.is_authenticated:
         logout(request)
 
-    user = form.save(commit=False)
-
-    # Don't let user to login before email confirmation
-    user.is_active = False
-    user.save()
+    user = form.save()
 
     current_site = get_current_site(request)
     send_mail(
@@ -84,7 +81,7 @@ def activate(request, uidb64, token):
 
     if user is not None \
             and EmailConfirmationTokenGenerator().check_token(user, token):
-        user.is_active = True
+        user.active_time = datetime.now()
         user.save()
         login(request, user)
         return redirect('index')
