@@ -47,6 +47,8 @@ AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = ['users.backends.UserBackend']
 
+DEV_DATA_MODE = bool(os.environ.get('DEV_DATA_MODE', True))
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
