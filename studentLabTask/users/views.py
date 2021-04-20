@@ -1,5 +1,5 @@
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
+from .models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -39,7 +39,7 @@ def send_confirmation_email(request, form):
         fail_silently=False,
     )
 
-    return render(request, 'users/base_message.html',
+    return render(request, 'users/message.html',
                   {'message': 'Please confirm your email address '
                               'to complete the registration'})
 
@@ -61,8 +61,7 @@ def is_user_email_changed(prev_email, form):
 
 class UserEditView(UpdateView):
     model = User
-    fields = ['username', 'first_name',
-              'last_name', 'email']
+    fields = ['username', 'email']
     template_name = 'users/user_update_form.html'
     success_url = reverse_lazy('profile')
 

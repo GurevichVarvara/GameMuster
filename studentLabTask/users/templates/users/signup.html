@@ -1,12 +1,18 @@
 {% extends 'users/base_auth.html' %}
-{% load crispy_forms_tags %}
 
 {% block content %}
 
 <h2>Sing Up</h2>
 <form class="auth-form" method="post">
   {% csrf_token %}
-  {{ form|crispy }}
+  {% include 'users/form_base/input_base.html' with field=form.username %}
+  {% include 'users/form_base/input_base.html' with field=form.email %}
+  {% include 'users/form_base/input_base.html' with field=form.birthday %}
+  {% include 'users/form_base/input_base.html' with field=form.first_name %}
+  {% include 'users/form_base/input_base.html' with field=form.last_name %}
+  {% include 'users/form_base/input_base.html' with field=form.password1 %}
+  {% include 'users/form_base/input_base.html' with field=form.password2 %}
+
   <button class="btn btn-success" type="submit">Sing Up</button>
 </form>
 

@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'gameMuster',
     'users',
-    "crispy_forms",
+    'widget_tweaks',
 ]
 
 AUTH_USER_MODEL = 'users.User'

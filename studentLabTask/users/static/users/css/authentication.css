@@ -8,7 +8,3 @@ main {
 main > * {
     margin-top: 50px;
 }
-
-.auth-form > * {
-    margin-top: 20px;
-}
