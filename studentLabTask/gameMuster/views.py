@@ -2,15 +2,21 @@ from django.shortcuts import render
 from django.core.paginator import Paginator
 from gameMuster.games_manager import GamesManager
 from django.http import HttpResponseNotFound
-from gameMuster.mocked_data.mocked_games_manager import MockedGameManager
+from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
+from django.conf import settings
 
 
 def get_list_of_filters(option, data_from_filter):
     return list(map(int, data_from_filter.getlist(option)))
 
 
+def get_games_manager():
+    return MockedGamesManager() if \
+        settings.DEV_DATA_MODE else GamesManager()
+
+
 def index(request):
-    game_manager = MockedGameManager()
+    game_manager = get_games_manager()
     data_from_filter = request.GET
     chosen_params = {'platforms': None,
                      'genres': None,
@@ -47,7 +53,7 @@ def index(request):
 
 def detail(request, game_id):
     try:
-        game_manager = MockedGameManager()
+        game_manager = get_games_manager()
         game = game_manager.get_game_by_id(game_id)
     except LookupError as error:
         return HttpResponseNotFound(f'<h1>{error}</h1>')

@@ -26,9 +26,10 @@
                 <a class="nav-link" href="{% url 'profile' %}">Profile</a>
                 <a class="nav-link" href="{% url 'logout' %}">LogOut</a>
             {% else %}
+
                 <a class="nav-link" href="{% url 'login' %}">LogIn</a>
+                <a class="nav-link" href="{% url 'signup' %}">SignUp</a>
             {% endif %}
-            <a class="nav-link" href="{% url 'signup' %}">SignUp</a>
         </div>
     </nav>
 
