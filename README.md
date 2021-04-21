@@ -22,7 +22,7 @@ And this time the game you like won’t go out of your head, just click on must-
 - [x] [Twitter](https://developer.twitter.com/en/docs) API
 - [ ] [Heroku](https://www.heroku.com/) deployment :cloud:
 - [ ] REST API using DRF
-- 
+
 ## Run locally
 
 Install dependencies from the requirements.txt:
