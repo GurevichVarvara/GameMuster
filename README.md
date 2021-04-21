@@ -20,8 +20,8 @@ And this time the game you like won’t go out of your head, just click on must-
 - [x] CSS
 - [x] [Internet Game Database](https://www.igdb.com/api) API 
 - [x] [Twitter](https://developer.twitter.com/en/docs) API
-- [] [Heroku](https://www.heroku.com/) deployment :cloud:
-- [] REST API using DRF
+- [ ] [Heroku](https://www.heroku.com/) deployment :cloud:
+- [ ] REST API using DRF
 - 
 ## Run locally
 
