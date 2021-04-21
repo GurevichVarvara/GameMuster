@@ -13,7 +13,7 @@ from django.views.generic import CreateView, UpdateView
 from datetime import datetime
 
 from users.tokens import EmailConfirmationTokenGenerator
-from users.forms import SignupForm
+from users.forms import SignupForm, UserEditForm
 
 
 def send_confirmation_email(request, form, message):
@@ -59,10 +59,10 @@ def is_user_email_changed(prev_email, form):
 
 
 class UserEditView(UpdateView):
+    form_class = UserEditForm
     model = User
-    fields = ['username', 'email']
-    template_name = 'users/user_update_form.html'
     success_url = reverse_lazy('profile')
+    template_name = 'users/user_update_form.html'
 
     def form_valid(self, form):
         if is_user_email_changed(self.get_object().email,
