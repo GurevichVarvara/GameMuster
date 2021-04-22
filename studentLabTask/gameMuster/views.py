@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from gameMuster.games_manager import GamesManager
 from django.http import HttpResponseNotFound
 from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
 from django.conf import settings
+from django.urls import reverse_lazy
+
+from .models import FavoriteGame
 
 
 def get_list_of_filters(option, data_from_filter):
@@ -61,3 +64,11 @@ def detail(request, game_id):
     return render(request, 'gameMuster/detail.html', {'game': game,
                                                       'tweet_list': game.tweets,
                                                       'game_name': game.name.replace(' ', '')})
+
+
+def add_to_favorite(request, game_id):
+    if not FavoriteGame.objects.filter(game_id=game_id).first():
+        FavoriteGame.objects.create(game_id=game_id,
+                                    user=request.user)
+
+    return redirect('index')

@@ -88,7 +88,7 @@
                                         <p class="card-text">{{ game.genres|join:' ' }}</p>
                                         <div class="btn-group card-btn-group" role="group" aria-label="First group">
                                             <a href="{% url 'detail' game.game_id %}" type="button" class="card-btn-group__btn btn btn-outline-secondary">Open</a>
-                                            <a type="button" class="card-btn-group__btn btn btn-outline-secondary">Must</a>
+                                            <a href="{% url 'add_to_favorite' game.game_id %}"  type="button" class="card-btn-group__btn btn btn-outline-secondary">Must</a>
                                         </div>
                                     </div>
                                 </div>
