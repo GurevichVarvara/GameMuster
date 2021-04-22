@@ -4,7 +4,6 @@ from gameMuster.games_manager import GamesManager
 from django.http import HttpResponseNotFound
 from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
 from django.conf import settings
-from django.urls import reverse_lazy
 
 from .models import FavoriteGame
 
@@ -18,8 +17,17 @@ def get_games_manager():
         settings.DEV_DATA_MODE else GamesManager()
 
 
+def get_page_obj(request,
+                 page_count,
+                 obj_list):
+    game_paginator = Paginator(obj_list, page_count)
+    page_number = request.GET.get('page')
+    page_obj = game_paginator.get_page(page_number)
+
+    return page_obj
+
+
 def index(request):
-    game_manager = get_games_manager()
     data_from_filter = request.GET
     chosen_params = {'platforms': None,
                      'genres': None,
@@ -34,19 +42,17 @@ def index(request):
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
 
-    game_list = game_manager.generate_list_of_games(genres=chosen_params['genres'],
-                                                    platforms=chosen_params['platforms'],
-                                                    rating=chosen_params['rating'])
+    game_list = get_games_manager().generate_list_of_games(genres=chosen_params['genres'],
+                                                           platforms=chosen_params['platforms'],
+                                                           rating=chosen_params['rating'])
 
-    game_paginator = Paginator(game_list, 4)
-    page_number = request.GET.get('page')
-    page_obj = game_paginator.get_page(page_number)
-
-    platforms, genres = game_manager.get_list_of_filters()
+    platforms, genres = get_games_manager().get_list_of_filters()
 
     return render(request, 'gameMuster/index.html',
                   {'game_list': game_list,
-                   'page_obj': page_obj,
+                   'page_obj': get_page_obj(request,
+                                            4,
+                                            game_list),
                    'platforms': platforms,
                    'genres': genres,
                    'platforms_chosen': chosen_params['platforms'],
@@ -56,8 +62,7 @@ def index(request):
 
 def detail(request, game_id):
     try:
-        game_manager = get_games_manager()
-        game = game_manager.get_game_by_id(game_id)
+        game = get_games_manager().get_game_by_id(game_id)
     except LookupError as error:
         return HttpResponseNotFound(f'<h1>{error}</h1>')
 
@@ -66,9 +71,25 @@ def detail(request, game_id):
                                                       'game_name': game.name.replace(' ', '')})
 
 
+def favorite(request):
+    favorite_games_id = FavoriteGame.objects.filter(user=request.user)
+    print(favorite_games_id[1].game_id)
+    favorite_games = [get_games_manager().get_game_by_id(game.game_id)
+                      for game in favorite_games_id]
+
+    return render(request,
+                  'gameMuster/favorite_games.html',
+                  {'game_list': favorite_games,
+                   'page_obj': get_page_obj(request,
+                                            4,
+                                            favorite_games)})
+
+
 def add_to_favorite(request, game_id):
     if not FavoriteGame.objects.filter(game_id=game_id).first():
         FavoriteGame.objects.create(game_id=game_id,
                                     user=request.user)
+
+    # As we don't have game model so we won't change its must field yet
 
     return redirect('index')
