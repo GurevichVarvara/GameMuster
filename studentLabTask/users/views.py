@@ -13,10 +13,10 @@ from django.views.generic import CreateView, UpdateView
 from datetime import datetime
 
 from users.tokens import EmailConfirmationTokenGenerator
-from users.forms import SignupForm
+from users.forms import SignupForm, UserEditForm
 
 
-def send_confirmation_email(request, form):
+def send_confirmation_email(request, form, message):
     if request.user.is_authenticated:
         logout(request)
 
@@ -37,8 +37,7 @@ def send_confirmation_email(request, form):
     )
 
     return render(request, 'users/message.html',
-                  {'message': 'Please confirm your email address '
-                              'to complete the registration'})
+                  {'message': message})
 
 
 class SignUpView(CreateView):
@@ -47,7 +46,10 @@ class SignUpView(CreateView):
     template_name = 'users/signup.html'
 
     def form_valid(self, form):
-        return send_confirmation_email(self.request, form)
+        return send_confirmation_email(self.request,
+                                       form,
+                                       'Please confirm your email address '
+                                       'to complete the registration')
 
 
 def is_user_email_changed(prev_email, form):
@@ -57,15 +59,18 @@ def is_user_email_changed(prev_email, form):
 
 
 class UserEditView(UpdateView):
+    form_class = UserEditForm
     model = User
-    fields = ['username', 'email']
-    template_name = 'users/user_update_form.html'
     success_url = reverse_lazy('profile')
+    template_name = 'users/user_update_form.html'
 
     def form_valid(self, form):
         if is_user_email_changed(self.get_object().email,
                                  form):
-            response = send_confirmation_email(self.request, form)
+            response = send_confirmation_email(self.request,
+                                               form,
+                                               'Please confirm your '
+                                               'new email address')
         else:
             response = super(UserEditView, self).form_valid(form)
 

@@ -7,4 +7,5 @@ class UserBackend(ModelBackend):
         """
         Reject users with active_time=None
         """
-        return user.active_time is not None
+        return user.active_time is not None or \
+            user.is_staff
