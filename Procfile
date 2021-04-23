@@ -1,0 +1,1 @@
+web: gunicorn studentLabTask.wsgi:application

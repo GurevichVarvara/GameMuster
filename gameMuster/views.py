@@ -4,6 +4,7 @@ from gameMuster.games_manager import GamesManager
 from django.http import HttpResponseNotFound
 from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 from .models import FavoriteGame
 
@@ -32,6 +33,7 @@ def get_favorite_games_id(request):
                in FavoriteGame.objects.filter(user=request.user))
 
 
+@login_required
 def index(request):
     data_from_filter = request.GET
     chosen_params = {'platforms': None,
@@ -67,6 +69,7 @@ def index(request):
                    'rating': chosen_params['rating']})
 
 
+@login_required
 def detail(request, game_id):
     try:
         game = get_games_manager().get_game_by_id(game_id)
@@ -80,6 +83,7 @@ def detail(request, game_id):
                    'game_name': game.name.replace(' ', '')})
 
 
+@login_required
 def favorite(request):
     favorite_games_id = FavoriteGame.objects.filter(user=request.user)
     favorite_games = [get_games_manager().get_game_by_id(game.game_id)
@@ -95,6 +99,7 @@ def favorite(request):
                                             favorite_games)})
 
 
+@login_required
 def add_to_favorite(request, game_id):
     if not FavoriteGame.objects.filter(game_id=game_id,
                                        user=request.user).first():
@@ -105,6 +110,7 @@ def add_to_favorite(request, game_id):
                                      'index'))
 
 
+@login_required
 def remove_from_favorite(request, game_id):
     favorite_game = FavoriteGame.objects.filter(game_id=game_id,
                                                 user=request.user).first()

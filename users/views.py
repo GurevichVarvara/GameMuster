@@ -58,6 +58,7 @@ def is_user_email_changed(prev_email, form):
     return current_email != prev_email
 
 
+@login_required
 class UserEditView(UpdateView):
     form_class = UserEditForm
     model = User
@@ -90,5 +91,6 @@ def activate(request, uidb64, token):
     return redirect('index')
 
 
+@login_required
 def profile(request):
     return render(request, 'users/profile.html')
