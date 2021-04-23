@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'gameMuster',
     'users',
     'safedelete',
+    'whitenoise',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
