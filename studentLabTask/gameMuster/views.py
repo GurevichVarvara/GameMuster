@@ -27,6 +27,11 @@ def get_page_obj(request,
     return page_obj
 
 
+def get_favorite_games_id(request):
+    return set(game.game_id for game
+               in FavoriteGame.objects.filter(user=request.user))
+
+
 def index(request):
     data_from_filter = request.GET
     chosen_params = {'platforms': None,
@@ -48,8 +53,10 @@ def index(request):
 
     platforms, genres = get_games_manager().get_list_of_filters()
 
-    return render(request, 'gameMuster/index.html',
+    return render(request,
+                  'gameMuster/index.html',
                   {'game_list': game_list,
+                   'favorite_game_list': get_favorite_games_id(request),
                    'page_obj': get_page_obj(request,
                                             4,
                                             game_list),
@@ -66,30 +73,43 @@ def detail(request, game_id):
     except LookupError as error:
         return HttpResponseNotFound(f'<h1>{error}</h1>')
 
-    return render(request, 'gameMuster/detail.html', {'game': game,
-                                                      'tweet_list': game.tweets,
-                                                      'game_name': game.name.replace(' ', '')})
+    return render(request,
+                  'gameMuster/detail.html',
+                  {'game': game,
+                   'tweet_list': game.tweets,
+                   'game_name': game.name.replace(' ', '')})
 
 
 def favorite(request):
     favorite_games_id = FavoriteGame.objects.filter(user=request.user)
-    print(favorite_games_id[1].game_id)
     favorite_games = [get_games_manager().get_game_by_id(game.game_id)
                       for game in favorite_games_id]
-
+    print(favorite_games[0].game_id)
+    print(get_favorite_games_id(request))
     return render(request,
                   'gameMuster/favorite_games.html',
                   {'game_list': favorite_games,
+                   'favorite_game_list': get_favorite_games_id(request),
                    'page_obj': get_page_obj(request,
                                             4,
                                             favorite_games)})
 
 
 def add_to_favorite(request, game_id):
-    if not FavoriteGame.objects.filter(game_id=game_id).first():
+    if not FavoriteGame.objects.filter(game_id=game_id,
+                                       user=request.user).first():
         FavoriteGame.objects.create(game_id=game_id,
                                     user=request.user)
 
-    # As we don't have game model so we won't change its must field yet
+    return redirect(request.META.get('HTTP_REFERER',
+                                     'index'))
 
-    return redirect('index')
+
+def remove_from_favorite(request, game_id):
+    favorite_game = FavoriteGame.objects.filter(game_id=game_id,
+                                                user=request.user).first()
+    if favorite_game:
+        favorite_game.delete()
+
+    return redirect(request.META.get('HTTP_REFERER',
+                                     'index'))
