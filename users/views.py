@@ -11,6 +11,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.views.generic import CreateView, UpdateView
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 
 from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm, UserEditForm
@@ -58,7 +59,6 @@ def is_user_email_changed(prev_email, form):
     return current_email != prev_email
 
 
-@login_required
 class UserEditView(UpdateView):
     form_class = UserEditForm
     model = User
