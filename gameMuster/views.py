@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from gameMuster.games_manager import GamesManager
 from django.http import HttpResponseNotFound
-from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
@@ -14,8 +13,7 @@ def get_list_of_filters(option, data_from_filter):
 
 
 def get_games_manager():
-    return MockedGamesManager() if \
-        settings.DEV_DATA_MODE else GamesManager()
+    return GamesManager()
 
 
 def get_page_obj(request,
