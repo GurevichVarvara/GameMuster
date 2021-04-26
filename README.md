@@ -1,6 +1,6 @@
 # Game Muster
 
-https://best-of-the-best-gamemuster.herokuapp.com/
+https://best-of-the-best-gamemuster.herokuapp.com
 
 This is iTechArt internship task
 
