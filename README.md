@@ -1,5 +1,7 @@
 # Game Muster
 
+https://best-of-the-best-gamemuster.herokuapp.com/
+
 This is iTechArt internship task
 
 The main goal is to develop architecture and code structuring skills :muscle:
@@ -10,7 +12,7 @@ The site is created for those who’s looking for games to play.
 
 You can discover latest games selected by rating, genre and platform. Beautiful icon pics, related tweets and detailed description would help you to choose what game you are take a fancy :hearts: 
 
-And this time the game you like won’t go out of your head, just click on must-button on a game preview card and it’d imminently be included to your favorite games page (still working on that, would appear soon :stuck_out_tongue_winking_eye:) 
+And this time the game you like won’t go out of your head, just click on must-button on a game preview card and it’d imminently be included to your favorite games page
 
 ## Technologies
 
@@ -20,7 +22,7 @@ And this time the game you like won’t go out of your head, just click on must-
 - [x] CSS
 - [x] [Internet Game Database](https://www.igdb.com/api) API 
 - [x] [Twitter](https://developer.twitter.com/en/docs) API
-- [ ] [Heroku](https://www.heroku.com/) deployment :cloud:
+- [x] :cloud: [Heroku](https://www.heroku.com/) :cloud: deployment
 - [ ] REST API using DRF
 
 ## Run locally
