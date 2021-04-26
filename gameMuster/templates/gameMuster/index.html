@@ -17,9 +17,9 @@
                       <form action="{% url 'index' %}" method="get">
                         <li class="mb-4">
                             <label for="customRange3" class="form-label">Platform</label>
-                            <div>
+                            <div class="container-block">
                                 {% for platform in platforms %}
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check">
                                         <input class="form-check-input" type="checkbox" name="platforms" id="platform_{{ platform.id }}" value="{{ platform.id }}"
                                                {% if platform.id in platforms_chosen %}
                                                checked
@@ -32,9 +32,9 @@
 
                         <li class="mb-4">
                             <label for="customRange3" class="form-label">Genres</label>
-                            <div>
+                            <div class="container-block">
                                 {% for genre in genres %}
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check">
                                         <input class="form-check-input" type="checkbox" name="genres" id="genre_{{ genre.id }}" value="{{ genre.id }}"
                                                {% if genre.id in genres_chosen %}
                                                checked
@@ -50,7 +50,7 @@
                             <input type="range" class="form-range" value="{{ rating }}" name="rating" min="0" max="100" step="5" id="customRange3">
                         </li>
 
-                        <li>
+                        <li class="container-block">
                             <button type="submit" class="btn side-bar__btn-apply btn-primary">Apply</button>
                         </li>
                       </form>
