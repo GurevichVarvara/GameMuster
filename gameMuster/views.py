@@ -12,10 +12,6 @@ def get_list_of_filters(option, data_from_filter):
     return list(map(int, data_from_filter.getlist(option)))
 
 
-def get_games_manager():
-    return GamesManager()
-
-
 def get_page_obj(request,
                  page_count,
                  obj_list):
@@ -47,11 +43,11 @@ def index(request):
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
 
-    game_list = get_games_manager().generate_list_of_games(genres=chosen_params['genres'],
+    game_list = GamesManager().generate_list_of_games(genres=chosen_params['genres'],
                                                            platforms=chosen_params['platforms'],
                                                            rating=chosen_params['rating'])
 
-    platforms, genres = get_games_manager().get_list_of_filters()
+    platforms, genres = GamesManager().get_list_of_filters()
 
     return render(request,
                   'gameMuster/index.html',
@@ -70,7 +66,7 @@ def index(request):
 @login_required
 def detail(request, game_id):
     try:
-        game = get_games_manager().get_game_by_id(game_id)
+        game = GamesManager().get_game_by_id(game_id)
     except LookupError as error:
         return HttpResponseNotFound(f'<h1>{error}</h1>')
 
@@ -84,7 +80,7 @@ def detail(request, game_id):
 @login_required
 def favorite(request):
     favorite_games_id = FavoriteGame.objects.filter(user=request.user)
-    favorite_games = [get_games_manager().get_game_by_id(game.game_id)
+    favorite_games = [GamesManager().get_game_by_id(game.game_id)
                       for game in favorite_games_id]
     print(favorite_games[0].game_id)
     print(get_favorite_games_id(request))
