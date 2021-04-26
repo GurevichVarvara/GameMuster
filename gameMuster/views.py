@@ -16,6 +16,7 @@ except ImportError:
 def get_list_of_filters(option, data_from_filter):
     return list(map(int, data_from_filter.getlist(option)))
 
+
 def get_games_manager():
     return MockedGamesManager() if \
         settings.DEV_DATA_MODE else GamesManager()
@@ -52,6 +53,7 @@ def index(request):
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
 
+        
     game_list = get_games_manager().generate_list_of_games(genres=chosen_params['genres'],
                                                            platforms=chosen_params['platforms'],
                                                            rating=chosen_params['rating'])
@@ -65,6 +67,7 @@ def index(request):
                    'page_obj': get_page_obj(request,
                                             4,
                                             game_list),
+
                    'platforms': platforms,
                    'genres': genres,
                    'platforms_chosen': chosen_params['platforms'],
