@@ -94,8 +94,7 @@ def favorite(request):
     favorite_games_id = FavoriteGame.objects.filter(user=request.user)
     favorite_games = [get_games_manager().get_game_by_id(game.game_id)
                       for game in favorite_games_id]
-    print(favorite_games[0].game_id)
-    print(get_favorite_games_id(request))
+
     return render(request,
                   'gameMuster/favorite_games.html',
                   {'game_list': favorite_games,
