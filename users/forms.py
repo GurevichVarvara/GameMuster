@@ -11,7 +11,7 @@ class BaseUserForm(forms.Form):
     email = forms.EmailField(max_length=200, required=True, help_text='Required')
     first_name = forms.CharField(max_length=40, required=True, help_text='Required')
     last_name = forms.CharField(max_length=40, required=True, help_text='Required')
-    birthday = forms.DateField(widget=DateInput)
+    birthday = forms.DateField(widget=DateInput, required=False)
 
 
 class SignupForm(UserCreationForm, BaseUserForm):
