@@ -4,7 +4,7 @@ from django.http import HttpResponseNotFound
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
-from gameMuster.models import FavoriteGame, Game, Platform, Genre, Tweet
+from gameMuster.models import FavoriteGame, Game, Platform, Genre, Tweet, Screenshot
 from gameMuster.games_manager import GamesManager
 
 try:
@@ -85,7 +85,8 @@ def detail(request, game_id):
     return render(request,
                   'gameMuster/detail.html',
                   {'game': game,
-                   'tweet_list': game.tweets,
+                   'tweets': Tweet.objects.filter(game=game),
+                   'screenshots': Screenshot.objects.filter(game=game),
                    'game_name': game.name.replace(' ', '')})
 
 
