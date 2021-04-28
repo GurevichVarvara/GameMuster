@@ -20,7 +20,7 @@ class Genre(models.Model):
 
 class Game(models.Model):
     game_id = models.IntegerField()
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=100)
     must = models.BooleanField(default=False)
     release_date = models.DateTimeField()
     img_url = models.CharField(max_length=120)
