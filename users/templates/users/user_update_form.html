@@ -1,0 +1,16 @@
+{% extends 'users/base_auth.html' %}
+
+{% block content %}
+
+<h2>User Edit</h2>
+<form class="auth-form" method="post">
+  {% csrf_token %}
+  {% include 'users/form_base/input_base.html' with field=form.username %}
+  {% include 'users/form_base/input_base.html' with field=form.email %}
+  {% include 'users/form_base/input_base.html' with field=form.birthday %}
+  {% include 'users/form_base/input_base.html' with field=form.first_name %}
+  {% include 'users/form_base/input_base.html' with field=form.last_name %}
+  <button class="btn btn-success" type="submit">Save</button>
+</form>
+
+{% endblock %}

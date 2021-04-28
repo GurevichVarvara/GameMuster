@@ -1,0 +1,30 @@
+main {
+    display: block;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-container {
+    margin-top: 100px;
+}
+
+.profile-row {
+    font-size: 30px;
+    margin-top: 40px;
+}
+
+.profile-container__user-field {
+    font-weight: bold;
+    color: white;
+    width: 50%;
+}
+
+.profile-container__user-data {
+    text-align: center;
+}
+
+.edit-link {
+    text-decoration: none;
+}
+

@@ -1,0 +1,14 @@
+{% extends 'users/base_auth.html' %}
+
+{% block content %}
+
+<h2>Log In</h2>
+<form class="auth-form" method="post">
+  {% csrf_token %}
+  {% include 'users/form_base/input_base.html' with field=form.username %}
+  {% include 'users/form_base/input_base.html' with field=form.password %}
+  <button class="btn btn-success" type="submit">Log In</button>
+  <a class="btn" href="{% url 'password_reset' %}">Forgot password</a>
+</form>
+
+{% endblock %}
