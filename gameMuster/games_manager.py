@@ -62,17 +62,6 @@ class GamesManager:
 
         return games
 
-    def get_game_by_id(self, game_id):
-        game = self.igdb_wrapper.get_game_by_id(game_id)
-
-        return self.create_game_from_igdb_response(game)
-
-    def get_list_of_filters(self):
-        platforms = self.igdb_wrapper.get_platforms()
-        genres = self.igdb_wrapper.get_genres()
-
-        return platforms, genres
-
     def _create_tweets_by_game_name(self, game, count_of_tweets=None):
         for tweet in self.twitter_wrapper.get_tweets_by_game_name(game.name,
                                                                   count_of_tweets):
