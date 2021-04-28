@@ -35,13 +35,13 @@ class GamesManager:
                      else Platform.objects.create(name=platform)
                      for platform in response_game['platforms']]
 
-        genres = [Genres.objects.filter(name=genre).first()
-                  if Genres.objects.filter(name=genre).first()
-                  else Genres.objects.create(name=genre)
+        genres = [Genre.objects.filter(name=genre).first()
+                  if Genre.objects.filter(name=genre).first()
+                  else Genre.objects.create(name=genre)
                   for genre in response_game['genres']]
 
         for platform in platforms:
-            game.plaforms.add(platform)
+            game.platforms.add(platform)
 
         for genre in genres:
             game.genres.add(genre)
