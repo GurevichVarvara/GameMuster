@@ -53,7 +53,6 @@ def index(request):
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
 
-        
     game_list = get_games_manager().generate_list_of_games(genres=chosen_params['genres'],
                                                            platforms=chosen_params['platforms'],
                                                            rating=chosen_params['rating'])
@@ -106,10 +105,13 @@ def favorite(request):
 
 @login_required
 def add_to_favorite(request, game_id):
-    if not FavoriteGame.objects.filter(game_id=game_id,
-                                       user=request.user).first():
+    current_favorite_game = FavoriteGame.all_objects.filter(game_id=game_id,
+                                                            user=request.user).first()
+    if not current_favorite_game:
         FavoriteGame.objects.create(game_id=game_id,
                                     user=request.user)
+    else:
+        current_favorite_game.restore()
 
     return redirect(request.META.get('HTTP_REFERER',
                                      'index'))
