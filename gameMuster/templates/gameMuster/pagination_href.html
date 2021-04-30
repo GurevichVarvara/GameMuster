@@ -1,9 +1,0 @@
-{% load slicing %}
-
-{% if '?' in request.get_full_path and 'page' in request.get_full_path %}
-    href="{{ request.get_full_path|cut_last_char}}{{num_of_page }}"
-{% elif '?' in request.get_full_path %}
-    href="{{ request.get_full_path }}&page={{ num_of_page }}"
-{% else %}
-    href="{{ request.get_full_path }}?page={{ num_of_page }}"
-{% endif %}
