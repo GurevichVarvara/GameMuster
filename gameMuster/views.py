@@ -37,7 +37,6 @@ def get_favorite_games_id(request):
                in FavoriteGame.objects.filter(user=request.user))
 
 
-@login_required
 def index(request):
     data_from_filter = request.GET
     chosen_params = {'platforms': None,
@@ -62,7 +61,9 @@ def index(request):
     return render(request,
                   'gameMuster/index.html',
                   {'game_list': game_list,
-                   'favorite_game_list': get_favorite_games_id(request),
+                   'favorite_game_list': get_favorite_games_id(request)
+                   if request.user.is_authenticated
+                   else set(),
                    'page_obj': get_page_obj(request,
                                             4,
                                             game_list),
@@ -74,7 +75,6 @@ def index(request):
                    'rating': chosen_params['rating']})
 
 
-@login_required
 def detail(request, game_id):
     try:
         game = get_games_manager().get_game_by_id(game_id)
