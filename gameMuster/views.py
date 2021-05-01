@@ -4,7 +4,7 @@ from django.http import HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 
 from .models import FavoriteGame
-from gameMuster.games_manager import GamesManager
+from gameMuster.games_manager import games_manager
 
 
 def get_list_of_filters(option, data_from_filter):
@@ -41,11 +41,11 @@ def index(request):
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
 
-    game_list = GamesManager().generate_list_of_games(genres=chosen_params['genres'],
-                                                      platforms=chosen_params['platforms'],
-                                                      rating=chosen_params['rating'])
+    game_list = games_manager.generate_list_of_games(genres=chosen_params['genres'],
+                                                     platforms=chosen_params['platforms'],
+                                                     rating=chosen_params['rating'])
 
-    platforms, genres = GamesManager().get_list_of_filters()
+    platforms, genres = games_manager.get_list_of_filters()
 
     return render(request,
                   'gameMuster/index.html',
@@ -66,7 +66,7 @@ def index(request):
 
 def detail(request, game_id):
     try:
-        game = GamesManager().get_game_by_id(game_id)
+        game = games_manager.get_game_by_id(game_id)
     except LookupError as error:
         return HttpResponseNotFound(f'<h1>{error}</h1>')
 
@@ -80,7 +80,7 @@ def detail(request, game_id):
 @login_required
 def favorite(request):
     favorite_games_id = FavoriteGame.objects.filter(user=request.user)
-    favorite_games = [GamesManager().get_game_by_id(game.game_id)
+    favorite_games = [games_manager.get_game_by_id(game.game_id)
                       for game in favorite_games_id]
 
     return render(request,

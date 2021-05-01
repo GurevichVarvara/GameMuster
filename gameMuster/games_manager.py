@@ -1,10 +1,9 @@
-import pickle
-from pathlib import Path
+from django.conf import settings
 
 from gameMuster.temp_models import Game, Tweet
 from gameMuster.api_wrappers.igdb_wrapper import IgdbWrapper
 from gameMuster.api_wrappers.twitter_wrapper import TwitterWrapper
-from django.conf import settings
+from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
 
 
 class GamesManager:
@@ -20,20 +19,6 @@ class GamesManager:
                                  cls).__new__(cls)
         return cls.instance
 
-    @staticmethod
-    def get_mocked_data():
-        with open(Path(__file__).resolve().parent /
-                  'mocked_data.pickle', 'rb') as f:
-            load_data = pickle.load(f)
-
-            games = load_data['games']
-            platforms = load_data['platforms']
-            genres = load_data['genres']
-
-        return {'games': games,
-                'platforms': platforms,
-                'genres': genres}
-
     def create_game_from_igdb_response(self, response_game):
         return Game(response_game['id'], response_game['name'], response_game['cover'],
                     response_game['genres'], response_game['summary'],
@@ -47,8 +32,7 @@ class GamesManager:
     def generate_list_of_games(self, genres=None, platforms=None, rating=None):
         games = self.igdb_wrapper.get_games(genres=genres,
                                             platforms=platforms,
-                                            rating=rating) \
-            if not settings.DEV_DATA_MOD else self.get_mocked_data()['games']
+                                            rating=rating)
 
         return [self.create_game_from_igdb_response(game) for game in games]
 
@@ -58,10 +42,8 @@ class GamesManager:
         return self.create_game_from_igdb_response(game)
 
     def get_list_of_filters(self):
-        platforms = self.igdb_wrapper.get_platforms() \
-            if not settings.DEV_DATA_MOD else self.get_mocked_data()['platforms']
-        genres = self.igdb_wrapper.get_genres() \
-            if not settings.DEV_DATA_MOD else self.get_mocked_data()['genres']
+        platforms = self.igdb_wrapper.get_platforms()
+        genres = self.igdb_wrapper.get_genres()
 
         return platforms, genres
 
@@ -75,3 +57,7 @@ class GamesManager:
         return [self.create_tweet_from_twitter_response(tweet)
                 for tweet in self.twitter_wrapper.get_tweets_by_game_name(game_name,
                                                                           count_of_tweets)]
+
+
+games_manager = MockedGamesManager() if settings.DEV_DATA_MODE \
+                else GamesManager()
