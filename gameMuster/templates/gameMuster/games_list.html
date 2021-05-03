@@ -22,14 +22,19 @@
                         <p class="card-text">{{ game.genres|join:' ' }}</p>
                         <div class="btn-group card-btn-group" role="group" aria-label="First group">
                             <a href="{% url 'detail' game.game_id %}" type="button" class="card-btn-group__btn btn btn-outline-secondary">Open</a>
-                            <a type="button" class="card-btn-group__btn btn btn-outline-secondary"
-                               {% if game.game_id in favorite_game_list %}
+                            <a type="button" class="card-btn-group__btn btn btn-outline-secondary
+                                {% if user.is_authenticated %} "
+                                {% else %}
+                                    disabled" aria-disabled="true"
+                                {% endif %}
+
+                                {% if game.game_id in favorite_game_list %}
                                     href="{% url 'remove_from_favorite' game.game_id %}">
                                     Remove
-                               {% else %}
+                                {% else %}
                                     href="{% url 'add_to_favorite' game.game_id %}">
                                     Must
-                               {% endif %}
+                                {% endif %}
                             </a>
                         </div>
                     </div>

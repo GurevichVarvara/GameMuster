@@ -1,25 +1,15 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
+from gameMuster.games_manager import games_manager
 from gameMuster.models import FavoriteGame, Game, Platform, Genre, Tweet, Screenshot
 from gameMuster.games_manager import GamesManager
-
-try:
-    from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
-except ImportError:
-    pass
 
 
 def get_list_of_filters(option, data_from_filter):
     return list(map(int, data_from_filter.getlist(option)))
-
-
-def get_games_manager():
-    return MockedGamesManager() if \
-        settings.DEV_DATA_MODE else GamesManager()
 
 
 def get_page_obj(request,
@@ -32,12 +22,12 @@ def get_page_obj(request,
     return page_obj
 
 
-def get_favorite_games_id(request):
-    return set(game.game_id for game
-               in FavoriteGame.objects.filter(user=request.user))
+def get_favorite_games_ids(request):
+    return [game.game_id for game
+            in FavoriteGame.objects.filter(user=request.user)] \
+        if request.user.is_authenticated else []
 
 
-@login_required
 def index(request):
     data_from_filter = request.GET
     chosen_params = {'platforms': None,
@@ -63,7 +53,7 @@ def index(request):
     return render(request,
                   'gameMuster/index.html',
                   {'game_list': game_list,
-                   'favorite_game_list': get_favorite_games_id(request),
+                   'favorite_game_list': get_favorite_games_ids(request),
                    'page_obj': get_page_obj(request,
                                             4,
                                             game_list),
@@ -75,10 +65,9 @@ def index(request):
                    'rating': chosen_params['rating']})
 
 
-@login_required
 def detail(request, game_id):
     try:
-        game = get_games_manager().get_game_by_id(game_id)
+        game = games_manager.get_game_by_id(game_id)
     except LookupError as error:
         return HttpResponseNotFound(f'<h1>{error}</h1>')
 
@@ -93,13 +82,13 @@ def detail(request, game_id):
 @login_required
 def favorite(request):
     favorite_games_id = FavoriteGame.objects.filter(user=request.user)
-    favorite_games = [get_games_manager().get_game_by_id(game.game_id)
+    favorite_games = [games_manager.get_game_by_id(game.game_id)
                       for game in favorite_games_id]
 
     return render(request,
                   'gameMuster/favorite_games.html',
                   {'game_list': favorite_games,
-                   'favorite_game_list': get_favorite_games_id(request),
+                   'favorite_game_list': get_favorite_games_ids(request),
                    'page_obj': get_page_obj(request,
                                             4,
                                             favorite_games)})
@@ -107,10 +96,13 @@ def favorite(request):
 
 @login_required
 def add_to_favorite(request, game_id):
-    if not FavoriteGame.objects.filter(game_id=game_id,
-                                       user=request.user).first():
+    current_favorite_game = FavoriteGame.all_objects.filter(game_id=game_id,
+                                                            user=request.user).first()
+    if not current_favorite_game:
         FavoriteGame.objects.create(game_id=game_id,
                                     user=request.user)
+    else:
+        current_favorite_game.restore()
 
     return redirect(request.META.get('HTTP_REFERER',
                                      'index'))

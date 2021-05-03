@@ -1,8 +1,9 @@
 from django.conf import settings
 
+from gameMuster.temp_models import Game, Tweet
 from gameMuster.api_wrappers.igdb_wrapper import IgdbWrapper
 from gameMuster.api_wrappers.twitter_wrapper import TwitterWrapper
-from gameMuster.models import Game, Platform, Genre, Tweet
+from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
 
 
 class GamesManager:
