@@ -22,8 +22,9 @@ def get_page_obj(request,
 
 
 def get_favorite_games_ids(request):
-    return set(game.game_id for game
-               in FavoriteGame.objects.filter(user=request.user))
+    return [game.game_id for game
+            in FavoriteGame.objects.filter(user=request.user)] \
+        if request.user.is_authenticated else []
 
 
 def index(request):
@@ -50,9 +51,7 @@ def index(request):
     return render(request,
                   'gameMuster/index.html',
                   {'game_list': game_list,
-                   'favorite_game_list': get_favorite_games_ids(request)
-                   if request.user.is_authenticated
-                   else set(),
+                   'favorite_game_list': get_favorite_games_ids(request),
                    'page_obj': get_page_obj(request,
                                             4,
                                             game_list),
