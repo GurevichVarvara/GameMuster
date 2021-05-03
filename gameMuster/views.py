@@ -4,7 +4,7 @@ from django.http import HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 
 from gameMuster.models import FavoriteGame, Game, Platform, Genre, Tweet, Screenshot
-from gameMuster.games_manager import GamesManager
+from gameMuster.game_managers.games_manager import games_manager
 
 
 def get_list_of_filters(option, data_from_filter):
@@ -42,7 +42,13 @@ def index(request):
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
 
-    game_list = Game.objects.filter()
+    game_list = list(set(Game.objects.filter(platforms__pk__in=chosen_params['platforms']
+                                                               or list(map(lambda x: x.pk,
+                                                                           Platform.objects.all())))
+                         .filter(genres__pk__in=chosen_params['genres']
+                                                or list(map(lambda x: x.pk,
+                                                            Genre.objects.all())))
+                         .filter(user_rating__gte=chosen_params['rating'])))
 
     platforms = Platform.objects.all()
     genres = Genre.objects.all()
@@ -71,8 +77,10 @@ def detail(request, game_id):
     return render(request,
                   'gameMuster/detail.html',
                   {'game': game,
-                   'tweets': Tweet.objects.filter(game=game),
-                   'screenshots': Screenshot.objects.filter(game=game),
+                   'genres': list(Genre.objects.filter(game=game)),
+                   'platforms': list(Platform.objects.filter(game=game)),
+                   'tweets': list(Tweet.objects.filter(game=game)),
+                   'screenshots': list(Screenshot.objects.filter(game=game)),
                    'game_name': game.name.replace(' ', '')})
 
 

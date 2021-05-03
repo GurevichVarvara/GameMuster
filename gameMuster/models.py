@@ -6,7 +6,6 @@ from users.models import User
 
 
 class SoftDeletionQuerySet(models.QuerySet):
-
     class Meta:
         abstract = True
 
@@ -33,7 +32,6 @@ class SoftDeleteManager(models.Manager):
 
 
 class SoftDeleteModel(models.Model):
-
     deleted = models.DateTimeField(null=True,
                                    default=None)
     objects = SoftDeleteManager()
@@ -53,7 +51,7 @@ class SoftDeleteModel(models.Model):
         self.deleted = None
         self.save()
 
-    
+
 class Platform(models.Model):
     name = models.CharField(max_length=50)
 
@@ -72,17 +70,25 @@ class Game(models.Model):
     game_id = models.IntegerField()
     name = models.CharField(max_length=100)
     must = models.BooleanField(default=False)
-    release_date = models.DateTimeField()
+    release_date = models.DateTimeField(null=True,
+                                        default=None)
     img_url = models.CharField(max_length=120)
     description = models.TextField()
     user_rating = models.DecimalField(max_digits=4,
-                                      decimal_places=2)
-    user_rating_count = models.IntegerField()
+                                      decimal_places=2,
+                                      null=True,
+                                      default=None)
+    user_rating_count = models.IntegerField(null=True,
+                                            default=None)
     critics_rating = models.DecimalField(max_digits=4,
-                                         decimal_places=2)
-    critics_rating_count = models.IntegerField()
+                                         decimal_places=2,
+                                         null=True,
+                                         default=None)
+    critics_rating_count = models.IntegerField(null=True,
+                                               default=None)
     platforms = models.ManyToManyField(Platform)
     genres = models.ManyToManyField(Genre)
+    favorite_games = models.ManyToManyField(User, through='FavoriteGame')
 
     class Meta:
         ordering = ['release_date']
