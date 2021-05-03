@@ -3,8 +3,9 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 
-from .models import FavoriteGame
 from gameMuster.games_manager import games_manager
+from gameMuster.models import FavoriteGame, Game, Platform, Genre, Tweet, Screenshot
+from gameMuster.games_manager import GamesManager
 
 
 def get_list_of_filters(option, data_from_filter):
@@ -42,11 +43,12 @@ def index(request):
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
 
-    game_list = games_manager.generate_list_of_games(genres=chosen_params['genres'],
-                                                     platforms=chosen_params['platforms'],
-                                                     rating=chosen_params['rating'])
+    game_list = get_games_manager().generate_list_of_games(genres=chosen_params['genres'],
+                                                           platforms=chosen_params['platforms'],
+                                                           rating=chosen_params['rating'])
 
-    platforms, genres = games_manager.get_list_of_filters()
+    platforms = Platform.objects.all()
+    genres = Genre.objects.all()
 
     return render(request,
                   'gameMuster/index.html',
@@ -72,7 +74,8 @@ def detail(request, game_id):
     return render(request,
                   'gameMuster/detail.html',
                   {'game': game,
-                   'tweet_list': game.tweets,
+                   'tweets': Tweet.objects.filter(game=game),
+                   'screenshots': Screenshot.objects.filter(game=game),
                    'game_name': game.name.replace(' ', '')})
 
 
