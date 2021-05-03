@@ -1,23 +1,12 @@
 from django.conf import settings
 
+from gameMuster.models import Platform, Genre
 from gameMuster.temp_models import Game, Tweet
 from gameMuster.api_wrappers.igdb_wrapper import IgdbWrapper
 from gameMuster.api_wrappers.twitter_wrapper import TwitterWrapper
-from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
 
 
-class GamesManager:
-
-    def __init__(self):
-        self.igdb_wrapper = IgdbWrapper(settings.IGDB_CLIENT_ID,
-                                        settings.IGDB_CLIENT_SECRET)
-        self.twitter_wrapper = TwitterWrapper(settings.TWITTER_BEARER_TOKEN)
-
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(GamesManager,
-                                 cls).__new__(cls)
-        return cls.instance
+class BaseGameManager:
 
     @staticmethod
     def _create_game_from_igdb_response(response_game):
@@ -31,37 +20,23 @@ class GamesManager:
                                    critics_rating=response_game['aggregated_rating'],
                                    critics_rating_count=response_game['aggregated_rating_count'])
 
-        platforms = [Platform.objects.filter(name=platform).first()
-                     if Platform.objects.filter(name=platform).first()
-                     else Platform.objects.create(name=platform)
-                     for platform in response_game['platforms']]
+        if response_game['platforms']:
+            platforms = [Platform.objects.filter(name=platform).first()
+                         if Platform.objects.filter(name=platform).first()
+                         else Platform.objects.create(name=platform)
+                         for platform in response_game['platforms']]
 
-        genres = [Genre.objects.filter(name=genre).first()
-                  if Genre.objects.filter(name=genre).first()
-                  else Genre.objects.create(name=genre)
-                  for genre in response_game['genres']]
+            game.platforms.add(*platforms)
 
-        for platform in platforms:
-            game.platforms.add(platform)
+        if response_game['genres']:
+            genres = [Genre.objects.filter(name=genre).first()
+                      if Genre.objects.filter(name=genre).first()
+                      else Genre.objects.create(name=genre)
+                      for genre in response_game['genres']]
 
-        for genre in genres:
-            game.genres.add(genre)
+            game.genres.add(*genres)
 
         return game
-
-    def generate_list_of_games(self, genres=None, platforms=None, rating=None):
-        games_from_igdb = self.igdb_wrapper.get_games(genres=genres,
-                                                      platforms=platforms,
-                                                      rating=rating)
-
-        games = []
-        for game_from_igdb in games_from_igdb:
-            game = GamesManager._create_game_from_igdb_response(game_from_igdb)
-            GamesManager._create_tweets_by_game_name(game)
-
-            games.append(game)
-
-        return games
 
     def _create_tweets_by_game_name(self, game, count_of_tweets=None):
         for tweet in self.twitter_wrapper.get_tweets_by_game_name(game.name,
@@ -70,3 +45,29 @@ class GamesManager:
                                  content=tweet['full_text'],
                                  publisher=tweet['user']['name'],
                                  date=tweet['created_at'])
+
+
+class GamesManager(BaseGameManager):
+
+    def __init__(self):
+        self.igdb_wrapper = IgdbWrapper(settings.IGDB_CLIENT_ID,
+                                        settings.IGDB_CLIENT_SECRET)
+        self.twitter_wrapper = TwitterWrapper(settings.TWITTER_BEARER_TOKEN)
+
+    def generate_list_of_games(self,
+                               genres=None,
+                               platforms=None,
+                               rating=None,
+                               last_release_date=None):
+        games_from_igdb = self.igdb_wrapper.get_games(genres=genres,
+                                                      platforms=platforms,
+                                                      rating=rating)
+
+        games = []
+        for game_from_igdb in games_from_igdb:
+            game = self._create_game_from_igdb_response(game_from_igdb)
+            GamesManager._create_tweets_by_game_name(game)
+
+            games.append(game)
+
+        return games

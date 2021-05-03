@@ -53,16 +53,6 @@ class SoftDeleteModel(models.Model):
         self.deleted = None
         self.save()
 
-
-class FavoriteGame(SoftDeleteModel):
-    """
-    As we don't have any game model that's why
-    to define what game was chosen we assume
-    id from igdb
-    """
-    game_id = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
     
 class Platform(models.Model):
     name = models.CharField(max_length=50)
@@ -94,6 +84,9 @@ class Game(models.Model):
     platforms = models.ManyToManyField(Platform)
     genres = models.ManyToManyField(Genre)
 
+    class Meta:
+        ordering = ['release_date']
+
 
 class Screenshot(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
@@ -105,3 +98,8 @@ class Tweet(models.Model):
     content = models.CharField(max_length=280)
     publisher = models.CharField(max_length=30)
     date = models.DateTimeField()
+
+
+class FavoriteGame(SoftDeleteModel):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -3,7 +3,6 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 
-from gameMuster.games_manager import games_manager
 from gameMuster.models import FavoriteGame, Game, Platform, Genre, Tweet, Screenshot
 from gameMuster.games_manager import GamesManager
 
@@ -43,9 +42,7 @@ def index(request):
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
 
-    game_list = get_games_manager().generate_list_of_games(genres=chosen_params['genres'],
-                                                           platforms=chosen_params['platforms'],
-                                                           rating=chosen_params['rating'])
+    game_list = Game.objects.filter()
 
     platforms = Platform.objects.all()
     genres = Genre.objects.all()
@@ -67,7 +64,7 @@ def index(request):
 
 def detail(request, game_id):
     try:
-        game = games_manager.get_game_by_id(game_id)
+        game = Game.objects.filter(game_id=game_id).first()
     except LookupError as error:
         return HttpResponseNotFound(f'<h1>{error}</h1>')
 
@@ -82,7 +79,7 @@ def detail(request, game_id):
 @login_required
 def favorite(request):
     favorite_games_id = FavoriteGame.objects.filter(user=request.user)
-    favorite_games = [games_manager.get_game_by_id(game.game_id)
+    favorite_games = [Game.objects.filter(game_id=game.game_id).first()
                       for game in favorite_games_id]
 
     return render(request,

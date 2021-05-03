@@ -1,9 +1,11 @@
 import pickle
 from pathlib import Path
-from gameMuster.temp_models import Game
+
+from gameMuster.games_manager import BaseGameManager
+from gameMuster.models import Game
 
 
-class MockedGamesManager:
+class MockedGamesManager(BaseGameManager):
 
     def __init__(self):
         mocked_data = self._get_mocked_data()
@@ -25,46 +27,15 @@ class MockedGamesManager:
                 'all_platforms': self.get_data_from_pickle_file('mocked_all_platforms.pickle'),
                 'all_genres': self.get_data_from_pickle_file('mocked_all_genres.pickle')}
 
-    @staticmethod
-    def _create_game_from_igdb_response(response_game):
-        return Game(response_game['id'], response_game['name'], response_game['cover'],
-                    response_game['genres'], response_game['summary'],
-                    response_game['release_dates'], response_game['rating'],
-                    response_game['rating_count'], response_game['aggregated_rating'],
-                    response_game['aggregated_rating_count'],
-                    screenshots=response_game['screenshots'],
-                    platforms=response_game['platforms'],
-                    tweets=[])
+    def generate_list_of_games(self, last_release_date):
+        games = []
+        for game_from_igdb in self.games:
+            if game_from_igdb['release_dates'] > last_release_date:
+                continue
 
-    @staticmethod
-    def if_game_suits_filters(game_params,
-                              filter_ids,
-                              filter_map):
-        if not filter_ids:
-            return True
+            game = self._create_game_from_igdb_response(game_from_igdb)
+            self._create_tweets_by_game_name(game)
 
-        if not game_params:
-            return False
+            games.append(game)
 
-        filter_names = [x['name'] for x in filter_map if x['id'] in filter_ids]
-        return any(f in game_params for f in filter_names)
-
-    def generate_list_of_games(self, genres=None, platforms=None, rating=None):
-        return [game for game in self.games if self.if_game_suits_filters(game.genres,
-                                                                          genres,
-                                                                          self.all_genres) and
-                self.if_game_suits_filters(game.platforms,
-                                           platforms,
-                                           self.all_platforms) and
-                (game.user_rating >= rating if rating else True)]
-
-    def get_list_of_filters(self):
-        return self.all_platforms, self.all_genres
-
-    def get_game_by_id(self, game_id):
-        game = list(filter(lambda x: x.game_id == game_id, self.games))
-
-        if not len(game):
-            raise LookupError('Game not found')
-
-        return game[0]
+        return games
