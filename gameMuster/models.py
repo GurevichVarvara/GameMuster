@@ -43,7 +43,6 @@ class SoftDeleteModel(models.Model):
         abstract = True
 
     def delete(self):
-        print('fal')
         self.deleted = datetime.now()
         self.save()
 

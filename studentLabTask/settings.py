@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '8z$&#-0lhj@nb3%ktz37@8-#9=h!xolz*v_k0^!1$lqtk^wqbd')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
 ALLOWED_HOSTS = ['127.0.0.1',
                  '0.0.0.0',
@@ -51,7 +51,7 @@ AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = ['users.backends.UserBackend']
 
-DEV_DATA_MODE = bool(os.environ.get('DEV_DATA_MODE', False))
+DEV_DATA_MODE = bool(os.environ.get('DEV_DATA_MODE', True))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

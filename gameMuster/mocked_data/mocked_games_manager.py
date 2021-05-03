@@ -46,11 +46,8 @@ class MockedGamesManager:
         if not game_params:
             return False
 
-        filter_ids = set(filter_ids)
-        filter_names = list(map(lambda x: x['name'],
-                                filter(lambda x: x['id'] in filter_ids, filter_map)))
-
-        return len(set(filter_names) & set(game_params)) > 0
+        filter_names = [x['name'] for x in filter_map if x['id'] in filter_ids]
+        return any(f in game_params for f in filter_names)
 
     def generate_list_of_games(self, genres=None, platforms=None, rating=None):
         return [game for game in self.games if self.if_game_suits_filters(game.genres,
