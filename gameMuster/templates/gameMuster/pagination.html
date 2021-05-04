@@ -1,10 +1,12 @@
+{% load page_url %}
+
 <div class="pagination card_pagination">
     <span class="card_pagination__step-links">
         {% for num_of_page in page_obj.paginator.page_range %}
             {% if num_of_page == page_obj.number %}
-                <a class="page-number-link page-number-link_font-size_30" href="{{ request.get_full_path }}&page={{ num_of_page }}">{{ num_of_page }}</a>
+                <a class="page-number-link page-number-link_font-size_30" href="{{ request.get_full_path|get_page_url:num_of_page }}">{{ num_of_page }}</a>
             {% else %}
-                <a class="page-number-link" href="{{ request.get_full_path }}&page={{ num_of_page }}">{{ num_of_page }}</a>
+                <a class="page-number-link" href="{{ request.get_full_path|get_page_url:num_of_page }}">{{ num_of_page }}</a>
             {% endif %}
         {% endfor %}
     </span>

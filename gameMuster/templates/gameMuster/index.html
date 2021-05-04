@@ -17,9 +17,9 @@
                       <form action="{% url 'index' %}" method="get">
                         <li class="mb-4">
                             <label for="customRange3" class="form-label">Platform</label>
-                            <div>
+                            <div class="container-block">
                                 {% for platform in platforms %}
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check">
                                         <input class="form-check-input" type="checkbox" name="platforms" id="platform_{{ platform.id }}" value="{{ platform.id }}"
                                                {% if platform.id in platforms_chosen %}
                                                checked
@@ -32,9 +32,9 @@
 
                         <li class="mb-4">
                             <label for="customRange3" class="form-label">Genres</label>
-                            <div>
+                            <div class="container-block">
                                 {% for genre in genres %}
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check form-check">
                                         <input class="form-check-input" type="checkbox" name="genres" id="genre_{{ genre.id }}" value="{{ genre.id }}"
                                                {% if genre.id in genres_chosen %}
                                                checked
@@ -50,7 +50,7 @@
                             <input type="range" class="form-range" value="{{ rating }}" name="rating" min="0" max="100" step="5" id="customRange3">
                         </li>
 
-                        <li>
+                        <li class="container-block">
                             <button type="submit" class="btn side-bar__btn-apply btn-primary">Apply</button>
                         </li>
                       </form>
@@ -64,42 +64,8 @@
             </div>
 
             <div class="col-lg-9 games-col">
-                <div class="flex-row">
-                    <div class="input-group search-bar rounded">
-                          <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
-                            aria-describedby="search-addon" />
-                          <button type="button" class="btn btn-primary">
-                                <span class="material-icons">
-                                    search
-                                </span>
-                          </button>
-                    </div>
-                </div>
 
-                {% if game_list %}
-                    <div class="games-col__games-container">
-                        <div class="card-grid">
-                            {% for game in page_obj %}
-                            <div class="card-grid-item">
-                                <div class="card">
-                                    <img src={{ game.img_url }} class="card__image" alt="game icon">
-                                    <div class="card__card-body">
-                                        <h5 class="card-title">{{ game.name }}</h5>
-                                        <p class="card-text">{{ game.genres|join:' ' }}</p>
-                                        <div class="btn-group card-btn-group" role="group" aria-label="First group">
-                                            <a href="{% url 'detail' game.game_id %}" type="button" class="card-btn-group__btn btn btn-outline-secondary">Open</a>
-                                            <a type="button" class="card-btn-group__btn btn btn-outline-secondary">Must</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    {% include 'gameMuster/pagination.html' %}
-
-                {% endif %}
+                {% include 'gameMuster/games_list.html' with game_list=game_list %}
 
             </div>
       </div>

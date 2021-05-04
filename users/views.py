@@ -11,6 +11,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.views.generic import CreateView, UpdateView
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
+
 
 from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm, UserEditForm
@@ -90,5 +92,6 @@ def activate(request, uidb64, token):
     return redirect('index')
 
 
+@login_required
 def profile(request):
     return render(request, 'users/profile.html')

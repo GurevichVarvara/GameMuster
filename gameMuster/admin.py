@@ -1,3 +1,13 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import FavoriteGame
+
+
+class FavoriteGameAdmin(admin.ModelAdmin):
+    model = FavoriteGame
+    list_display = ['game_id',
+                    'user',
+                    'deleted']
+
+
+admin.site.register(FavoriteGame, FavoriteGameAdmin)

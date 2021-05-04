@@ -1,7 +1,9 @@
+from django.conf import settings
+
 from gameMuster.temp_models import Game, Tweet
 from gameMuster.api_wrappers.igdb_wrapper import IgdbWrapper
 from gameMuster.api_wrappers.twitter_wrapper import TwitterWrapper
-from django.conf import settings
+from gameMuster.mocked_data.mocked_games_manager import MockedGamesManager
 
 
 class GamesManager:
@@ -49,3 +51,7 @@ class GamesManager:
         return [self.create_tweet_from_twitter_response(tweet)
                 for tweet in self.twitter_wrapper.get_tweets_by_game_name(game_name,
                                                                           count_of_tweets)]
+<
+
+games_manager = MockedGamesManager() if settings.DEV_DATA_MODE \
+                else GamesManager()

@@ -21,12 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8z$&#-0lhj@nb3%ktz37@8-#9=h!xolz*v_k0^!1$lqtk^wqbd'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '8z$&#-0lhj@nb3%ktz37@8-#9=h!xolz*v_k0^!1$lqtk^wqbd')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1',
+                 '0.0.0.0',
+                 'best-of-the-best-gamemuster.herokuapp.com']
 
 
 # Application definition
@@ -57,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'studentLabTask.urls'
@@ -132,11 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
-STATICFILES_FINDERS = (
-    "django.contrib.staticfiles.finders.FileSystemFinder",
-    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 IGDB_CLIENT_ID = os.environ.get('IGDB_CLIENT_ID')
 IGDB_CLIENT_SECRET = os.environ.get('IGDB_CLIENT_SECRET')

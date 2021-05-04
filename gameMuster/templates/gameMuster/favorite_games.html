@@ -1,0 +1,13 @@
+{% extends 'gameMuster/base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'gameMuster/css/index.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'gameMuster/css/favorite.css' %}">
+{% endblock styles %}
+
+{% block content %}
+
+    {% include 'gameMuster/games_list.html' with game_list=game_list %}
+
+{% endblock %}

@@ -5,6 +5,8 @@
 <h2>User Edit</h2>
 <form class="auth-form" method="post">
   {% csrf_token %}
+  {% include 'users/form_base/non_field_errors.html' with form=form %}
+
   {% include 'users/form_base/input_base.html' with field=form.username %}
   {% include 'users/form_base/input_base.html' with field=form.email %}
   {% include 'users/form_base/input_base.html' with field=form.birthday %}

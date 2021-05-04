@@ -13,7 +13,9 @@
 }
 
 .side-bar__btn-apply {
-    margin-left: 55px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .btn-menu {
