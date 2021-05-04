@@ -62,4 +62,3 @@ class FavoriteGame(SoftDeleteModel):
     """
     game_id = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-

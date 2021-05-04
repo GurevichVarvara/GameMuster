@@ -55,7 +55,6 @@ def index(request):
                    'page_obj': get_page_obj(request,
                                             4,
                                             game_list),
-
                    'platforms': platforms,
                    'genres': genres,
                    'platforms_chosen': chosen_params['platforms'],

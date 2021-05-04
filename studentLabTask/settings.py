@@ -31,13 +31,11 @@ ALLOWED_HOSTS = ['127.0.0.1',
                  'best-of-the-best-gamemuster.herokuapp.com']
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
     'gameMuster',
     'users',
-    'safedelete',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -62,7 +60,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
 ]
 
 ROOT_URLCONF = 'studentLabTask.urls'

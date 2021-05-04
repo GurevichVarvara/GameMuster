@@ -13,12 +13,6 @@ class GamesManager:
                                         settings.IGDB_CLIENT_SECRET)
         self.twitter_wrapper = TwitterWrapper(settings.TWITTER_BEARER_TOKEN)
 
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(GamesManager,
-                                 cls).__new__(cls)
-        return cls.instance
-
     def create_game_from_igdb_response(self, response_game):
         return Game(response_game['id'], response_game['name'], response_game['cover'],
                     response_game['genres'], response_game['summary'],
@@ -57,7 +51,7 @@ class GamesManager:
         return [self.create_tweet_from_twitter_response(tweet)
                 for tweet in self.twitter_wrapper.get_tweets_by_game_name(game_name,
                                                                           count_of_tweets)]
-
+<
 
 games_manager = MockedGamesManager() if settings.DEV_DATA_MODE \
                 else GamesManager()
