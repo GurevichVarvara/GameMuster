@@ -107,5 +107,9 @@ class Tweet(models.Model):
 
 
 class FavoriteGame(SoftDeleteModel):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game,
+                             on_delete=models.CASCADE,
+                             null=False)
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             null=False)
