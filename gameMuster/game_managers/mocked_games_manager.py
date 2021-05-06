@@ -22,13 +22,15 @@ class MockedGamesManager(BaseGameManager):
     def _get_mocked_data(self):
         return {'games': self.get_data_from_pickle_file('../mocked_data/mocked_games.pickle')}
 
-    def generate_list_of_games(self, last_release_date=None):
+    def generate_list_of_games(self,
+                               genres=None,
+                               platforms=None,
+                               rating=None,
+                               last_release_date=None,
+                               count_of_games=None):
         games = []
         for game_from_igdb in self.games:
-            if last_release_date:
-                continue
-
-            game = self._create_game_from_igdb_response(game_from_igdb)
+            game = self._create_game_from_igdb_response(game_from_igdb)['game']
 
             games.append(game)
 

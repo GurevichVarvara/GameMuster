@@ -101,8 +101,8 @@ class Screenshot(models.Model):
 
 class Tweet(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    content = models.CharField(max_length=280)
-    publisher = models.CharField(max_length=30)
+    content = models.TextField()
+    publisher = models.CharField(max_length=120)
     date = models.DateTimeField()
 
 

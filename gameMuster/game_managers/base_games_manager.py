@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from gameMuster.models import Platform, Genre, Game, Screenshot
 
 
@@ -8,17 +10,18 @@ class BaseGameManager:
         stored_game = Game.objects.filter(game_id=response_game['id']).first()
 
         if stored_game:
-            return stored_game
+            return {'game': stored_game,
+                    'already_in_database': True}
 
-        game = Game.objects.create(game_id=response_game['id'],
-                                   name=response_game['name'],
-                                   release_date=response_game['release_dates'],
-                                   img_url=response_game['cover'],
-                                   description=response_game['summary'],
-                                   user_rating=response_game['rating'],
-                                   user_rating_count=response_game['rating_count'],
-                                   critics_rating=response_game['aggregated_rating'],
-                                   critics_rating_count=response_game['aggregated_rating_count'])
+        game = Game.objects.create(game_id=response_game.get('id'),
+                                   name=response_game.get('name'),
+                                   release_date=response_game.get('release_dates'),
+                                   img_url=response_game.get('cover'),
+                                   description=response_game.get('summary'),
+                                   user_rating=response_game.get('rating'),
+                                   user_rating_count=response_game.get('rating_count'),
+                                   critics_rating=response_game.get('aggregated_rating'),
+                                   critics_rating_count=response_game.get('aggregated_rating_count'))
 
         for platform in (response_game['platforms'] or []):
             game.platforms.add(Platform.objects.get_or_create(name=platform)[0])
@@ -30,4 +33,5 @@ class BaseGameManager:
             Screenshot.objects.create(game=game,
                                       img_url=screenshot)
 
-        return game
+        return {'game': game,
+                'already_in_database': False}

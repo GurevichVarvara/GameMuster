@@ -18,15 +18,22 @@ class GamesManager(BaseGameManager):
                                genres=None,
                                platforms=None,
                                rating=None,
-                               last_release_date=None):
+                               last_release_date=None,
+                               count_of_games=None):
         games_from_igdb = self.igdb_wrapper.get_games(genres=genres,
                                                       platforms=platforms,
-                                                      rating=rating)
+                                                      rating=rating,
+                                                      last_release_date=last_release_date,
+                                                      count_of_games=count_of_games)
 
         games = []
         for game_from_igdb in games_from_igdb:
-            game = self._create_game_from_igdb_response(game_from_igdb)
-            GamesManager._create_tweets_by_game_name(game)
+            result = self._create_game_from_igdb_response(game_from_igdb)
+            game = result['game']
+            already_in_database = result['already_in_database']
+
+            if not already_in_database:
+                self._create_tweets_by_game_name(game=game)
 
             games.append(game)
 

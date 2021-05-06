@@ -10,16 +10,13 @@ class IgdbWrapper:
         self.client_id = client_id
         self.client_secret = client_secret
         self.header = self._get_header()
-        self.params_for_games = {'fields': 'id, name, cover.image_id, genres.name,'
-                                           'summary, release_dates,'
-                                           'aggregated_rating,'
-                                           'aggregated_rating_count,'
-                                           'rating, rating_count,'
-                                           'screenshots.image_id,'
-                                           'platforms.name',
-                                 'filter[cover][not_eq]': 'null',
-                                 'filter[genres][not_eq]': 'null',
-                                 'filter[screenshots][not_eq]': 'null'}
+        self.base_fields = 'fields game.id, game.name, game.cover.image_id, ' \
+                           'game.genres.name, game.summary, game.release_dates, ' \
+                           'game.aggregated_rating, game.aggregated_rating_count, ' \
+                           'game.rating, game.rating_count, ' \
+                           'game.screenshots.image_id, game.platforms.name;'
+        self.base_filters = 'where game.cover != null & game.genres != null & game.rating != null & ' \
+                            'game.aggregated_rating != null & game.screenshots != null'
 
     def _get_header(self):
         response = requests.post('https://id.twitch.tv/oauth2/'
@@ -38,25 +35,44 @@ class IgdbWrapper:
 
         response = requests.post(url,
                                  headers=self.header,
-                                 params=params)
+                                 data=params)
 
         # if access token has expired
         if response.status_code == 401:
             self.header = self._get_header()
             response = requests.post(url,
                                      headers=self.header,
-                                     params=params)
+                                     data=params)
 
         if not response.ok:
             raise HttpResponseServerError
 
         return response.json()
 
-    @staticmethod
-    def _compose_query(default_params,
+    def _request_latest_game_dates(self,
+                                   last_release_date=None,
+                                   count_of_games=None):
+        endpoint = 'release_dates/'
+        query = 'fields game.id, date;' + \
+                self.base_filters
+
+        if last_release_date:
+            query += f' & date > {int(last_release_date.timestamp())}'
+
+        query += '; sort date asc;'
+
+        if count_of_games:
+            query += f'limit {count_of_games};'
+
+        return {result['game']['id']: datetime.fromtimestamp(result['date'])
+                for result in self._post(endpoint, query)}
+
+    def _request_games(self,
+                       default_params,
                        enumeration_filters=None,
                        rating=None):
-        result_query = {**default_params}
+        endpoint = 'games/'
+        query = default_params
 
         if enumeration_filters:
             for name, values in enumeration_filters.items():
@@ -64,38 +80,39 @@ class IgdbWrapper:
                     continue
 
                 joined_values = ','.join(str(v) for v in values)
-                result_query[f'filter[{name}][eq]'] = f'({joined_values})'
+                query += f' & {name} = ({joined_values})'
 
         if rating:
-            result_query['filter[rating][gte]'] = rating
+            query += f' & rating >= {rating}'
 
-        return result_query
+        query += ';'
+
+        return self._post(endpoint, query)
 
     @staticmethod
     def get_img_path(img_id):
         return 'https://images.igdb.com/igdb/' \
                f'image/upload/t_cover_big/{img_id}.jpg'
 
-    def get_games(self, genres=None, platforms=None,
-                  ids=None, rating=None):
+    def get_games(self,
+                  genres=None,
+                  platforms=None,
+                  rating=None,
+                  last_release_date=None,
+                  count_of_games=None):
+        latest_game_dates = self._request_latest_game_dates(last_release_date, count_of_games)
         enumeration_filters = {'genres': genres,
                                'platforms': platforms,
-                               'id': ids}
-
-        query = self._compose_query(self.params_for_games,
-                                    enumeration_filters,
-                                    rating)
-
-        games = self._post('games/', query)
+                               'id': list(latest_game_dates.keys())}
+        games = self._request_games(default_params=self.base_fields.replace('game.', '') +
+                                                   self.base_filters.replace('game.', ''),
+                                    enumeration_filters=enumeration_filters,
+                                    rating=rating)
 
         for game in games:
             game['cover'] = self.get_img_path(game['cover']['image_id'])
 
-            if 'release_dates' in game:
-                game['release_dates'] = datetime.fromtimestamp(game['release_dates'][0])
-            else:
-                game['release_dates'] = None
-
+            game['release_dates'] = latest_game_dates[game['id']]
             game['rating'] = game.get('rating', None)
             game['rating_count'] = game.get('rating_count', None)
             game['aggregated_rating'] = game.get('aggregated_rating', None)
@@ -108,19 +125,3 @@ class IgdbWrapper:
             game['genres'] = [genre['name'] for genre in game['genres']]
 
         return games
-
-    def get_game_by_id(self, game_id):
-        games = self.get_games(ids=[game_id])
-
-        if not games:
-            raise LookupError('Game not found')
-
-        return games[0]
-
-    def get_platforms(self):
-        return self._post('platforms/',
-                          self._compose_query({'fields': 'name'}))
-
-    def get_genres(self):
-        return self._post('genres/',
-                          self._compose_query({'fields': 'name'}))

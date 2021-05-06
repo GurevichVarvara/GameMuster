@@ -109,8 +109,7 @@ def add_to_favorite(request, game_id):
     else:
         current_favorite_game.restore()
 
-    return redirect(request.META.get('HTTP_REFERER',
-                                     'index'))
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
@@ -120,5 +119,4 @@ def remove_from_favorite(request, game_id):
     if favorite_game:
         favorite_game.delete()
 
-    return redirect(request.META.get('HTTP_REFERER',
-                                     'index'))
+    return redirect(request.META.get('HTTP_REFERER'))

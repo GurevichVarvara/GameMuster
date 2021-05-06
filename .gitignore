@@ -105,7 +105,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+studentLabTask/.env
 .venv
 env/
 venv/
@@ -141,3 +141,4 @@ cython_debug/
 .idea
 
 mocked_*.pickle
+studentLabTask/.env
