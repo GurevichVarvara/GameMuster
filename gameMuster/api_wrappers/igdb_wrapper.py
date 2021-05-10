@@ -10,13 +10,11 @@ class IgdbWrapper:
         self.client_id = client_id
         self.client_secret = client_secret
         self.header = self._get_header()
-        self.base_fields = 'fields game.id, game.name, game.cover.image_id, ' \
-                           'game.genres.name, game.summary, game.release_dates, ' \
-                           'game.aggregated_rating, game.aggregated_rating_count, ' \
-                           'game.rating, game.rating_count, ' \
-                           'game.screenshots.image_id, game.platforms.name;'
-        self.base_filters = 'where game.cover != null & game.genres != null & game.rating != null & ' \
-                            'game.aggregated_rating != null & game.screenshots != null'
+        self.default_params = {'fields': ['id', 'name', 'cover.image_id',
+                                          'genres.name', 'summary', 'release_dates.date',
+                                          'aggregated_rating', 'aggregated_rating_count',
+                                          'rating', 'rating_count',
+                                          'screenshots.image_id', 'platforms.name']}
 
     def _get_header(self):
         response = requests.post('https://id.twitch.tv/oauth2/'
@@ -30,49 +28,56 @@ class IgdbWrapper:
         return {'Client-ID': self.client_id,
                 'Authorization': 'Bearer {}'.format(response.json()['access_token'])}
 
-    def _post(self, endpoint, params=None):
+    def _post(self, endpoint, query):
         url = self.main_url + endpoint
-
         response = requests.post(url,
-                                 headers=self.header,
-                                 data=params)
+                                 **query)
 
         # if access token has expired
         if response.status_code == 401:
             self.header = self._get_header()
             response = requests.post(url,
-                                     headers=self.header,
-                                     data=params)
+                                     **query)
 
         if not response.ok:
             raise HttpResponseServerError
 
         return response.json()
 
-    def _request_latest_game_dates(self,
-                                   last_release_date=None,
-                                   count_of_games=None):
-        endpoint = 'release_dates/'
-        query = 'fields game.id, date;' + \
-                self.base_filters
+    def _compose_query_str(self, params=None):
+        req = {'headers': self.header}
 
-        if last_release_date:
-            query += f' & date > {int(last_release_date.timestamp())}'
+        if params and any(params.values()):
+            req['data'] = ''
+        else:
+            return req
 
-        query += '; sort date asc;'
+        for key, val in params.items():
+            if not params[key]:
+                continue
+            else:
+                req['data'] += key + ' '
 
-        if count_of_games:
-            query += f'limit {count_of_games};'
+            if key == 'fields' or key == 'exclude':
+                req['data'] += ', '.join(map(str, val))
+            elif key == 'where':
+                req['data'] += ' & '.join(map(str, val))
+            elif key == 'sort':
+                req['data'] += ' '.join(map(str, val))
+            else:
+                req['data'] += str(val)
 
-        return {result['game']['id']: datetime.fromtimestamp(result['date'])
-                for result in self._post(endpoint, query)}
+            req['data'] += ';'
 
-    def _request_games(self,
+        return req
+
+    def _compose_query(self,
                        default_params,
                        enumeration_filters=None,
-                       rating=None):
-        endpoint = 'games/'
-        query = default_params
+                       rating=None,
+                       last_release_date=None,
+                       count_of_games=None):
+        params = default_params
 
         if enumeration_filters:
             for name, values in enumeration_filters.items():
@@ -80,14 +85,25 @@ class IgdbWrapper:
                     continue
 
                 joined_values = ','.join(str(v) for v in values)
-                query += f' & {name} = ({joined_values})'
+                params.setdefault('where', [])\
+                    .append(f'{name} = ({joined_values})')
+
+        if last_release_date:
+            params.setdefault('where', []) \
+                .append('release_dates.date > '
+                        f'{int(last_release_date.timestamp())}')
 
         if rating:
-            query += f' & rating >= {rating}'
+            params.setdefault('where', [])\
+                .append(f'rating >= {rating}')
 
-        query += ';'
+        if count_of_games:
+            params['limit'] = f'{count_of_games}'
 
-        return self._post(endpoint, query)
+        params.setdefault('sort', [])\
+            .append('release_dates.date asc')
+
+        return self._compose_query_str(params)
 
     @staticmethod
     def get_img_path(img_id):
@@ -98,30 +114,43 @@ class IgdbWrapper:
                   genres=None,
                   platforms=None,
                   rating=None,
+                  ids=None,
                   last_release_date=None,
                   count_of_games=None):
-        latest_game_dates = self._request_latest_game_dates(last_release_date, count_of_games)
         enumeration_filters = {'genres': genres,
                                'platforms': platforms,
-                               'id': list(latest_game_dates.keys())}
-        games = self._request_games(default_params=self.base_fields.replace('game.', '') +
-                                                   self.base_filters.replace('game.', ''),
+                               'id': ids}
+        query = self._compose_query(default_params=self.default_params.copy(),
                                     enumeration_filters=enumeration_filters,
-                                    rating=rating)
+                                    rating=rating,
+                                    last_release_date=last_release_date,
+                                    count_of_games=count_of_games)
+        games = self._post('games/', query)
 
         for game in games:
-            game['cover'] = self.get_img_path(game['cover']['image_id'])
+            if 'cover' in game:
+                game['cover'] = self.get_img_path(game['cover']['image_id'])
 
-            game['release_dates'] = latest_game_dates[game['id']]
+            if last_release_date and 'release_dates' in game:
+                game['release_dates'] = datetime.fromtimestamp(next(date['date'] for date
+                                                                    in game['release_dates']
+                                                                    if 'date' in date and
+                                                                    date['date'] > int(last_release_date.timestamp())))
+            elif 'release_dates' in game:
+                game['release_dates'] = datetime.fromtimestamp(game['release_dates'][0]['date'])
+
             game['rating'] = game.get('rating', None)
             game['rating_count'] = game.get('rating_count', None)
             game['aggregated_rating'] = game.get('aggregated_rating', None)
             game['aggregated_rating_count'] = game.get('aggregated_rating_count', None)
 
             game['screenshots'] = [self.get_img_path(screenshot['image_id']) for screenshot in
-                                   game['screenshots']]
+                                   game['screenshots']] \
+                if 'screenshots' in game else None
             game['platforms'] = [platform['name'] for platform
-                                 in game['platforms']] if 'platforms' in game else None
-            game['genres'] = [genre['name'] for genre in game['genres']]
+                                 in game['platforms']] \
+                if 'platforms' in game else None
+            game['genres'] = [genre['name'] for genre in game['genres']] \
+                if 'genres' in game else None
 
         return games

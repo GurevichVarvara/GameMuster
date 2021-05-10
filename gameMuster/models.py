@@ -72,8 +72,11 @@ class Game(models.Model):
     must = models.BooleanField(default=False)
     release_date = models.DateTimeField(null=True,
                                         default=None)
-    img_url = models.CharField(max_length=120)
-    description = models.TextField()
+    img_url = models.CharField(max_length=120,
+                               null=True,
+                               default=None)
+    description = models.TextField(null=True,
+                                   default=None)
     user_rating = models.DecimalField(max_digits=4,
                                       decimal_places=2,
                                       null=True,
