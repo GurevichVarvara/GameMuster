@@ -42,13 +42,13 @@ def index(request):
     if 'rating' in data_from_filter:
         chosen_params['rating'] = int(data_from_filter['rating'])
 
-    game_list = list(set(Game.objects.filter(platforms__pk__in=chosen_params['platforms']
-                                                               or list(map(lambda x: x.pk,
-                                                                           Platform.objects.all())))
-                         .filter(genres__pk__in=chosen_params['genres']
-                                                or list(map(lambda x: x.pk,
-                                                            Genre.objects.all())))
-                         .filter(user_rating__gte=chosen_params['rating'])))
+    game_list = Game.objects.all()
+    if chosen_params['platforms']:
+        game_list = game_list.filter(platforms__pk__in=chosen_params['platforms'])
+    if chosen_params['genres']:
+        game_list = game_list.filter(genres__pk__in=chosen_params['genres'])
+    if chosen_params['rating']:
+        game_list = game_list.filter(user_rating__gte=chosen_params['rating'])
 
     platforms = Platform.objects.all()
     genres = Genre.objects.all()
