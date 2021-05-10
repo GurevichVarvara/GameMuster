@@ -79,7 +79,7 @@ def detail(request, game_id):
                   {'game': game,
                    'genres': list(Genre.objects.filter(game=game)),
                    'platforms': list(Platform.objects.filter(game=game)),
-                   'tweets': list(Tweet.objects.filter(game=game)),
+                   'tweets': games_manager.create_tweets_by_game_name(game, 5),
                    'screenshots': list(Screenshot.objects.filter(game=game)),
                    'game_name': game.name.replace(' ', '')})
 

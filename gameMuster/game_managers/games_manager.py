@@ -28,25 +28,24 @@ class GamesManager(BaseGameManager):
 
         games = []
         for game_from_igdb in games_from_igdb:
-            result = self._create_game_from_igdb_response(game_from_igdb)
-            game = result['game']
-            already_in_database = result['already_in_database']
-
-            if not already_in_database:
-                self._create_tweets_by_game_name(game=game)
-
+            game = self._create_game_from_igdb_response(game_from_igdb)
             games.append(game)
 
         return games
 
-    def _create_tweets_by_game_name(self, game, count_of_tweets=None):
+    def create_tweets_by_game_name(self,
+                                   game,
+                                   count_of_tweets=None):
+        tweets = []
+
         for tweet in self.twitter_wrapper.get_tweets_by_game_name(game.name,
                                                                   count_of_tweets):
-            Tweet.objects.create(game=game,
-                                 content=tweet['full_text'],
-                                 publisher=tweet['user']['name'],
-                                 date=tweet['created_at'])
+            tweets.append(Tweet(content=tweet['full_text'],
+                                publisher=tweet['user']['name'],
+                                date=tweet['created_at']))
+
+        return tweets
 
 
 games_manager = MockedGamesManager() if settings.DEV_DATA_MODE \
-                else GamesManager()
+    else GamesManager()

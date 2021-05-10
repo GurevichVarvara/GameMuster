@@ -10,6 +10,7 @@ class MockedGamesManager(BaseGameManager):
     def __init__(self):
         mocked_data = self._get_mocked_data()
         self.games = mocked_data['games']
+        self.tweets = mocked_data['tweets']
 
     @staticmethod
     def get_data_from_pickle_file(file_path):
@@ -20,7 +21,8 @@ class MockedGamesManager(BaseGameManager):
         return data
 
     def _get_mocked_data(self):
-        return {'games': self.get_data_from_pickle_file('../mocked_data/mocked_games.pickle')}
+        return {'games': self.get_data_from_pickle_file('../mocked_data/mocked_games.pickle'),
+                'tweets': self.get_data_from_pickle_file('../mocked_data/mocked_tweets.pickle')}
 
     def generate_list_of_games(self,
                                genres=None,
@@ -35,3 +37,9 @@ class MockedGamesManager(BaseGameManager):
             games.append(game)
 
         return games
+
+    def create_tweets_by_game_name(self,
+                                   game,
+                                   count_of_tweets=None):
+        return self.tweets
+

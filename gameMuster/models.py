@@ -102,13 +102,6 @@ class Screenshot(models.Model):
     img_url = models.CharField(max_length=120)
 
 
-class Tweet(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    content = models.TextField()
-    publisher = models.CharField(max_length=120)
-    date = models.DateTimeField()
-
-
 class FavoriteGame(SoftDeleteModel):
     game = models.ForeignKey(Game,
                              on_delete=models.CASCADE,
@@ -116,3 +109,11 @@ class FavoriteGame(SoftDeleteModel):
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE,
                              null=False)
+
+
+class Tweet:
+
+    def __init__(self, content, publisher, date):
+        self.content = content
+        self.publisher = publisher
+        self.date = date

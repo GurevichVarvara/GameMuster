@@ -10,8 +10,7 @@ class BaseGameManager:
         stored_game = Game.objects.filter(game_id=response_game['id']).first()
 
         if stored_game:
-            return {'game': stored_game,
-                    'already_in_database': True}
+            return stored_game
 
         game = Game.objects.create(game_id=response_game.get('id'),
                                    name=response_game.get('name'),
@@ -33,5 +32,4 @@ class BaseGameManager:
             Screenshot.objects.create(game=game,
                                       img_url=screenshot)
 
-        return {'game': game,
-                'already_in_database': False}
+        return game
