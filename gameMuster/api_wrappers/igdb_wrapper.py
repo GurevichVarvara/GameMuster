@@ -72,7 +72,7 @@ class IgdbWrapper:
         return req
 
     def _compose_query(self,
-                       default_params,
+                       default_params=None,
                        enumeration_filters=None,
                        rating=None,
                        last_release_date=None,
@@ -154,3 +154,21 @@ class IgdbWrapper:
                 if 'genres' in game else None
 
         return games
+
+    def get_game_by_id(self, game_id):
+        games = self.get_games(ids=[game_id])
+
+        if not games:
+            raise LookupError('Game not found')
+
+        return games[0]
+
+    def get_platforms(self):
+        return self._post('platforms/',
+                          self._compose_query(default_params=self.default_params,
+                                              enumeration_filters={'fields': 'name'}))
+
+    def get_genres(self):
+        return self._post('genres/',
+                          self._compose_query(default_params=self.default_params,
+                                              enumeration_filters={'fields': 'name'}))
