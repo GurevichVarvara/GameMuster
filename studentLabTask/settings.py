@@ -156,3 +156,9 @@ EMAIL_PORT = os.environ.get('EMAIL_PORT')
 
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 CELERY_TIMEZONE = 'Europe/Minsk'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
+}
