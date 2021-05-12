@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from gameMuster.models import Game, Platform, Genre
+from gameMuster.models import Game, Platform, Genre, Screenshot
 
 
 class PlatformSerializer(serializers.HyperlinkedModelSerializer):
@@ -23,4 +23,11 @@ class GameSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Game
+        fields = '__all__'
+
+
+class ScreenshotSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Screenshot
         fields = '__all__'

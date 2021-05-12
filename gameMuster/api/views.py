@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework import generics
 
-from gameMuster.models import Game, Platform, Genre
-from gameMuster.api.serializers import GameSerializer, PlatformSerializer, GenreSerializer
+from gameMuster.models import Game, Platform, Genre, Screenshot
+from gameMuster.api.serializers import GameSerializer, PlatformSerializer, GenreSerializer, ScreenshotSerializer
 
 
 class GameViewSet(viewsets.ModelViewSet):
@@ -33,3 +33,26 @@ class GenreViewSet(viewsets.ModelViewSet):
 class GenreDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Genre
     serializer_class = GenreSerializer
+
+
+class ScreenshotViewSet(viewsets.ModelViewSet):
+    queryset = Screenshot.objects.all()
+    serializer_class = ScreenshotSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the screenshots
+        after filtering against a `game` query parameter
+        """
+        queryset = Screenshot.objects.all()
+        game = self.request.query_params.get('game')
+
+        if game:
+            queryset = queryset.filter(game__id=game)
+
+        return queryset
+
+
+class ScreenshotDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Screenshot
+    serializer_class = ScreenshotSerializer
