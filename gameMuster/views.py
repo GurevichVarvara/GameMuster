@@ -43,6 +43,9 @@ def index(request):
         chosen_params['rating'] = int(data_from_filter['rating'])
 
     game_list = Game.objects.all()
+    game_genres = {game.id: [genre.name for genre
+                             in Genre.objects.filter(game=game)]
+                   for game in game_list}
     if chosen_params['platforms']:
         game_list = game_list.filter(platforms__pk__in=chosen_params['platforms'])
     if chosen_params['genres']:
@@ -56,6 +59,7 @@ def index(request):
     return render(request,
                   'gameMuster/index.html',
                   {'game_list': game_list,
+                   'game_genres': game_genres,
                    'favorite_game_list': get_favorite_games_ids(request),
                    'page_obj': get_page_obj(request,
                                             4,
