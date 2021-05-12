@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'widget_tweaks',
     'django_celery_beat',
+    'rest_framework',
 ]
 
 AUTH_USER_MODEL = 'users.User'
