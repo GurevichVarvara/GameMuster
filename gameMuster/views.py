@@ -22,9 +22,17 @@ def get_page_obj(request,
 
 
 def get_favorite_games_ids(request):
-    return [game.game_id for game
+    return [game.game.game_id for game
             in FavoriteGame.objects.filter(user=request.user)] \
         if request.user.is_authenticated else []
+
+
+def get_game_genres(game_list):
+    game_genres = {game.id: [genre.name for genre
+                             in Genre.objects.filter(game=game)]
+                   for game in game_list}
+
+    return game_genres
 
 
 def index(request):
@@ -43,9 +51,8 @@ def index(request):
         chosen_params['rating'] = int(data_from_filter['rating'])
 
     game_list = Game.objects.all()
-    game_genres = {game.id: [genre.name for genre
-                             in Genre.objects.filter(game=game)]
-                   for game in game_list}
+    game_genres = get_game_genres(game_list)
+
     if chosen_params['platforms']:
         game_list = game_list.filter(platforms__pk__in=chosen_params['platforms'])
     if chosen_params['genres']:
@@ -90,13 +97,16 @@ def detail(request, game_id):
 
 @login_required
 def favorite(request):
-    favorite_games_id = FavoriteGame.objects.filter(user=request.user)
-    favorite_games = [Game.objects.filter(game_id=game.game_id).first()
-                      for game in favorite_games_id]
+    favorite_games = [favorite_game.game for favorite_game
+                      in FavoriteGame.objects.filter(user=request.user)]
+    game_genres = get_game_genres(favorite_games)
+
+    test = get_favorite_games_ids(request)
 
     return render(request,
                   'gameMuster/favorite_games.html',
                   {'game_list': favorite_games,
+                   'game_genres': game_genres,
                    'favorite_game_list': get_favorite_games_ids(request),
                    'page_obj': get_page_obj(request,
                                             4,
@@ -105,10 +115,11 @@ def favorite(request):
 
 @login_required
 def add_to_favorite(request, game_id):
-    current_favorite_game = FavoriteGame.all_objects.filter(game_id=game_id,
+    game = Game.objects.filter(game_id=game_id).first()
+    current_favorite_game = FavoriteGame.all_objects.filter(game=game,
                                                             user=request.user).first()
     if not current_favorite_game:
-        FavoriteGame.objects.create(game_id=game_id,
+        FavoriteGame.objects.create(game=game,
                                     user=request.user)
     else:
         current_favorite_game.restore()
@@ -118,7 +129,8 @@ def add_to_favorite(request, game_id):
 
 @login_required
 def remove_from_favorite(request, game_id):
-    favorite_game = FavoriteGame.objects.filter(game_id=game_id,
+    game = Game.objects.filter(game_id=game_id).first()
+    favorite_game = FavoriteGame.objects.filter(game=game,
                                                 user=request.user).first()
     if favorite_game:
         favorite_game.delete()

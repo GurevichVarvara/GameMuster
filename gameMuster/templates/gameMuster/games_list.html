@@ -21,7 +21,9 @@
                     <img src={{ game.img_url }} class="card__image" alt="game icon">
                     <div class="card__card-body">
                         <h5 class="card-title">{{ game.name }}</h5>
-                        <p class="card-text">{{ game_genres|dict_lookup:game.id|join:' ' }}</p>
+                        {% if game_genres %}
+                            <p class="card-text">{{ game_genres|dict_lookup:game.id|join:' ' }}</p>
+                        {% endif %}
                         <div class="btn-group card-btn-group" role="group" aria-label="First group">
                             <a href="{% url 'detail' game.game_id %}" type="button" class="card-btn-group__btn btn btn-outline-secondary">Open</a>
                             <a type="button" class="card-btn-group__btn btn btn-outline-secondary
