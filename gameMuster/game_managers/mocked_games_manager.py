@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 
 from gameMuster.game_managers.base_games_manager import BaseGameManager
+from gameMuster.models import Tweet
 
 
 class MockedGamesManager(BaseGameManager):
@@ -30,16 +31,12 @@ class MockedGamesManager(BaseGameManager):
                                rating=None,
                                last_release_date=None,
                                count_of_games=None):
-        games = []
-        for game_from_igdb in self.games:
-            game = self._create_game_from_igdb_response(game_from_igdb)['game']
-
-            games.append(game)
-
-        return games
+        return [self._create_game_from_igdb_response(game_from_igdb)
+                for game_from_igdb in self.games]
 
     def create_tweets_by_game_name(self,
                                    game,
                                    count_of_tweets=None):
-        return self.tweets
-
+        return [Tweet(content=tweet['full_text'],
+                      publisher=tweet['user']['name'],
+                      date=tweet['created_at']) for tweet in self.tweets]
