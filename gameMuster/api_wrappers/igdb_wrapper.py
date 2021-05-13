@@ -123,33 +123,38 @@ class IgdbWrapper:
                                     rating=rating,
                                     last_release_date=last_release_date,
                                     count_of_games=count_of_games)
-        games = self._post('games/', query)
+        response_games = self._post('games/', query)
 
-        for game in games:
-            if 'cover' in game:
-                game['cover'] = self.get_img_path(game['cover']['image_id'])
+        games = []
+        for response_game in response_games:
+            game = {}
 
-            if last_release_date and 'release_dates' in game:
+            if 'cover' in response_game:
+                game['cover'] = self.get_img_path(response_game['cover']['image_id'])
+
+            if last_release_date and 'release_dates' in response_game:
                 game['release_dates'] = datetime.fromtimestamp(next(date['date'] for date
-                                                                    in game['release_dates']
+                                                                    in response_game['release_dates']
                                                                     if 'date' in date and
                                                                     date['date'] > int(last_release_date.timestamp())))
-            elif 'release_dates' in game:
-                game['release_dates'] = datetime.fromtimestamp(game['release_dates'][0]['date'])
+            elif 'release_dates' in response_game:
+                game['release_dates'] = datetime.fromtimestamp(response_game['release_dates'][0]['date'])
 
-            game['rating'] = game.get('rating', None)
-            game['rating_count'] = game.get('rating_count', None)
-            game['aggregated_rating'] = game.get('aggregated_rating', None)
-            game['aggregated_rating_count'] = game.get('aggregated_rating_count', None)
+            game['rating'] = response_game.get('rating', None)
+            game['rating_count'] = response_game.get('rating_count', None)
+            game['aggregated_rating'] = response_game.get('aggregated_rating', None)
+            game['aggregated_rating_count'] = response_game.get('aggregated_rating_count', None)
 
             game['screenshots'] = [self.get_img_path(screenshot['image_id']) for screenshot in
-                                   game['screenshots']] \
-                if 'screenshots' in game else None
+                                   response_game['screenshots']] \
+                if 'screenshots' in response_game else None
             game['platforms'] = [platform['name'] for platform
-                                 in game['platforms']] \
-                if 'platforms' in game else None
-            game['genres'] = [genre['name'] for genre in game['genres']] \
-                if 'genres' in game else None
+                                 in response_game['platforms']] \
+                if 'platforms' in response_game else None
+            game['genres'] = [genre['name'] for genre in response_game['genres']] \
+                if 'genres' in response_game else None
+
+            games.append(game)
 
         return games
 
