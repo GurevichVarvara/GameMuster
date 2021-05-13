@@ -125,9 +125,9 @@ class IgdbWrapper:
 
         games = []
         for response_game in response_games:
-            game = {'screenshots': None,
-                    'platforms': None,
-                    'genres': None}
+            game = {'screenshots': None, 'platforms': None, 'genres': None,
+                    'id': response_game['id'], 'name': response_game['name'],
+                    'summary': response_game.get('summary')}
 
             if 'cover' in response_game:
                 game['cover'] = self.get_img_path(response_game['cover']['image_id'])
