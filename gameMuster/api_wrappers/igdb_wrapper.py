@@ -53,9 +53,7 @@ class IgdbWrapper:
             return req
 
         for key, val in params.items():
-            if not params[key]:
-                continue
-            else:
+            if params[key]:
                 req['data'] += key + ' '
 
             if key == 'fields' or key == 'exclude':
@@ -127,16 +125,19 @@ class IgdbWrapper:
 
         games = []
         for response_game in response_games:
-            game = {}
+            game = {'screenshots': None,
+                    'platforms': None,
+                    'genres': None}
 
             if 'cover' in response_game:
                 game['cover'] = self.get_img_path(response_game['cover']['image_id'])
 
             if last_release_date and 'release_dates' in response_game:
-                game['release_dates'] = datetime.fromtimestamp(next(date['date'] for date
-                                                                    in response_game['release_dates']
-                                                                    if 'date' in date and
-                                                                    date['date'] > int(last_release_date.timestamp())))
+                release_dates = sorted(datetime.fromtimestamp(date['date']) for date in response_game['release_dates'])
+
+                if release_dates and release_dates[-1] > last_release_date:
+                    game['release_date'] = release_dates[-1]
+
             elif 'release_dates' in response_game:
                 game['release_dates'] = datetime.fromtimestamp(response_game['release_dates'][0]['date'])
 
@@ -145,14 +146,14 @@ class IgdbWrapper:
             game['aggregated_rating'] = response_game.get('aggregated_rating', None)
             game['aggregated_rating_count'] = response_game.get('aggregated_rating_count', None)
 
-            game['screenshots'] = [self.get_img_path(screenshot['image_id']) for screenshot in
-                                   response_game['screenshots']] \
-                if 'screenshots' in response_game else None
-            game['platforms'] = [platform['name'] for platform
-                                 in response_game['platforms']] \
-                if 'platforms' in response_game else None
-            game['genres'] = [genre['name'] for genre in response_game['genres']] \
-                if 'genres' in response_game else None
+            if 'screenshots' in response_game:
+                game['screenshots'] = [self.get_img_path(s['image_id']) for s in response_game['screenshots']]
+
+            if 'platforms' in response_game:
+                game['platforms'] = [p['name'] for p in response_game['platforms']]
+
+            if 'genres' in response_game:
+                game['genres'] = [g['name'] for g in response_game['genres']]
 
             games.append(game)
 
