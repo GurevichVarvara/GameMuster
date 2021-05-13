@@ -77,7 +77,9 @@ class IgdbWrapper:
                        rating=None,
                        last_release_date=None,
                        count_of_games=None):
-        params = default_params
+        params = {**default_params,
+                  'where': [],
+                  'sort': []}
 
         if enumeration_filters:
             for name, values in enumeration_filters.items():
@@ -85,23 +87,19 @@ class IgdbWrapper:
                     continue
 
                 joined_values = ','.join(str(v) for v in values)
-                params.setdefault('where', [])\
-                    .append(f'{name} = ({joined_values})')
+                params['where'].append(f'{name} = ({joined_values})')
 
         if last_release_date:
-            params.setdefault('where', []) \
-                .append('release_dates.date > '
-                        f'{int(last_release_date.timestamp())}')
+            params['where'].append('release_dates.date > '
+                                   f'{int(last_release_date.timestamp())}')
 
         if rating:
-            params.setdefault('where', [])\
-                .append(f'rating >= {rating}')
+            params['where'].append(f'rating >= {rating}')
 
         if count_of_games:
             params['limit'] = f'{count_of_games}'
 
-        params.setdefault('sort', [])\
-            .append('release_dates.date asc')
+        params['sort'].append('release_dates.date asc')
 
         return self._compose_query_str(params)
 
