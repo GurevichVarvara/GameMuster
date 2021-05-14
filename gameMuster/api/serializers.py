@@ -43,3 +43,10 @@ class FavoriteGameSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = FavoriteGame
         fields = '__all__'
+
+
+class TweetSerializer(serializers.Serializer):
+    content = serializers.CharField(max_length=400)
+    publisher = serializers.CharField(max_length=200)
+    date = serializers.DateTimeField()
+
