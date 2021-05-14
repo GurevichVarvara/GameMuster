@@ -101,8 +101,6 @@ def favorite(request):
                       in FavoriteGame.objects.filter(user=request.user)]
     game_genres = get_game_genres(favorite_games)
 
-    test = get_favorite_games_ids(request)
-
     return render(request,
                   'gameMuster/favorite_games.html',
                   {'game_list': favorite_games,
