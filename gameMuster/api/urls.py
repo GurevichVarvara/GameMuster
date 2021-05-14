@@ -4,7 +4,7 @@ from gameMuster.api.views import GameViewSet, GameDetail, \
     PlatformViewSet, PlatformDetail, \
     GenreViewSet, GenreDetail, \
     ScreenshotViewSet, ScreenshotDetail, \
-    FavoriteGameViewSet, FavoriteGameDetail
+    FavoriteGameViewSet, FavoriteGameDetail, TweetViewSet
 
 router = routers.DefaultRouter()
 router.register(r'games', GameViewSet)
@@ -12,6 +12,7 @@ router.register(r'platforms', PlatformViewSet)
 router.register(r'genres', GenreViewSet)
 router.register(r'screenshots', ScreenshotViewSet, basename='Screenshot')
 router.register(r'favorite_games', FavoriteGameViewSet, basename='FavoriteGame')
+router.register(r'tweets', TweetViewSet, basename='Tweet')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,9 +1,11 @@
 from rest_framework import viewsets
 from rest_framework import generics
+from rest_framework.response import Response
 
 from gameMuster.models import Game, Platform, Genre, Screenshot, FavoriteGame
 from gameMuster.api.serializers import GameSerializer, PlatformSerializer, \
-    GenreSerializer, ScreenshotSerializer, FavoriteGameSerializer
+    GenreSerializer, ScreenshotSerializer, FavoriteGameSerializer, TweetSerializer
+from gameMuster.game_managers.games_manager import games_manager
 
 
 class GameViewSet(viewsets.ModelViewSet):
@@ -70,3 +72,14 @@ class FavoriteGameViewSet(viewsets.ModelViewSet):
 class FavoriteGameDetail(generics.RetrieveUpdateDestroyAPIView):
     model = FavoriteGame
     serializer_class = FavoriteGameSerializer
+
+
+class TweetViewSet(viewsets.ViewSet):
+
+    def list(self):
+        game_id = self.request.query_params.get('game')
+        game = Game.objects.filter(game__id=game_id).first()
+        tweets = games_manager.create_tweets_by_game_name(game)
+        serializer = TweetSerializer(tweets, many=True)
+
+        return Response(serializer.data)
