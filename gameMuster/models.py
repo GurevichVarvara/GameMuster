@@ -6,7 +6,6 @@ from users.models import User
 
 
 class SoftDeletionQuerySet(models.QuerySet):
-
     class Meta:
         abstract = True
 
@@ -33,7 +32,6 @@ class SoftDeleteManager(models.Manager):
 
 
 class SoftDeleteModel(models.Model):
-
     deleted = models.DateTimeField(null=True,
                                    default=None)
     objects = SoftDeleteManager()
@@ -54,11 +52,68 @@ class SoftDeleteModel(models.Model):
         self.save()
 
 
-class FavoriteGame(SoftDeleteModel):
-    """
-    As we don't have any game model that's why
-    to define what game was chosen we assume
-    id from igdb
-    """
+class Platform(models.Model):
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ['name']
+
+
+class Genre(models.Model):
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ['name']
+
+
+class Game(models.Model):
     game_id = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    must = models.BooleanField(default=False)
+    release_date = models.DateTimeField(null=True,
+                                        default=None)
+    img_url = models.CharField(max_length=120,
+                               null=True,
+                               default=None)
+    description = models.TextField(null=True,
+                                   default=None)
+    user_rating = models.DecimalField(max_digits=4,
+                                      decimal_places=2,
+                                      null=True,
+                                      default=None)
+    user_rating_count = models.IntegerField(null=True,
+                                            default=None)
+    critics_rating = models.DecimalField(max_digits=4,
+                                         decimal_places=2,
+                                         null=True,
+                                         default=None)
+    critics_rating_count = models.IntegerField(null=True,
+                                               default=None)
+    platforms = models.ManyToManyField(Platform)
+    genres = models.ManyToManyField(Genre)
+    favorite_games = models.ManyToManyField(User, through='FavoriteGame')
+
+    class Meta:
+        ordering = ['release_date']
+
+
+class Screenshot(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    img_url = models.CharField(max_length=120)
+
+
+class FavoriteGame(SoftDeleteModel):
+    game = models.ForeignKey(Game,
+                             on_delete=models.CASCADE,
+                             null=False)
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             null=False)
+
+
+class Tweet:
+
+    def __init__(self, content, publisher, date):
+        self.content = content
+        self.publisher = publisher
+        self.date = date

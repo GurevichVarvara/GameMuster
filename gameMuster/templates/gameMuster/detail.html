@@ -19,8 +19,8 @@
             </div>
 
             <div class="game-genres">
-                {% for genre in game.genres %}
-                    <h6>{{ genre }}</h6>
+                {% for genre in genres %}
+                    <h6>{{ genre.name }}</h6>
                 {% endfor %}
             </div>
 
@@ -42,9 +42,9 @@
                 <h3>Screenshots</h3>
 
                 <div class="screenshot-grid">
-                    {% for screenshot in game.screenshots %}
+                    {% for screenshot in screenshots %}
                         <div class="screenshot-grid-item">
-                            <img class="screenshot-img" src="{{ screenshot }}">
+                            <img class="screenshot-img" src="{{ screenshot.img_url }}">
                         </div>
                     {% endfor %}
                 </div>
@@ -65,16 +65,16 @@
 
             <div>
                 <h3>Genres</h3>
-                {% for genre in game.genres %}
-                    <div class="badge basic ">{{ genre }}</div>
+                {% for genre in genres %}
+                    <div class="badge basic ">{{ genre.name }}</div>
                 {% endfor %}
             </div>
 
             <div>
                 <h3>Platform</h3>
-                {% if game.platforms %}
-                    {% for platform in game.platforms %}
-                    <div class="badge basic">{{ platform }}</div>
+                {% if platforms %}
+                    {% for platform in platforms %}
+                    <div class="badge basic">{{ platform.name }}</div>
                     {% endfor %}
                 {% endif %}
             </div>
@@ -82,11 +82,11 @@
 
         <div class="col-3 social-media-content-container">
             <h3>#{{ game_name }} Tweets</h3>
-            {% for tweet in tweet_list %}
+            {% for tweet in tweets %}
                 <div class="text-background-rectangle">
                     <p>{{ tweet.content }}</p>
                     <div class="row">
-                        <div class="col-5"><p>@{{ tweet.user }}</p></div>
+                        <div class="col-5"><p>@{{ tweet.publisher }}</p></div>
                         <div class="col-7"><p>{{ tweet.date|date:'M Y' }}</p></div>
                     </div>
                 </div>

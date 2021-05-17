@@ -43,13 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    'django_celery_beat',
 ]
 
 AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = ['users.backends.UserBackend']
 
-DEV_DATA_MODE = bool(os.environ.get('DEV_DATA_MODE', True))
+DEV_DATA_MODE = bool(os.environ.get('DEV_DATA_MODE', False))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -149,3 +150,6 @@ EMAIL_HOST = os.environ.get('EMAIL_HOST')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = os.environ.get('EMAIL_PORT')
+
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+CELERY_TIMEZONE = 'Europe/Minsk'
