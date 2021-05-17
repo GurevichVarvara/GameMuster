@@ -138,7 +138,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = '/static/'
 
 IGDB_CLIENT_ID = os.environ.get('IGDB_CLIENT_ID')
 IGDB_CLIENT_SECRET = os.environ.get('IGDB_CLIENT_SECRET')
