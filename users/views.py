@@ -13,6 +13,7 @@ from django.views.generic import CreateView, UpdateView
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 
+
 from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm, UserEditForm
 

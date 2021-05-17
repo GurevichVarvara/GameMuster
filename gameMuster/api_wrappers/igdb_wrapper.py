@@ -53,9 +53,7 @@ class IgdbWrapper:
             return req
 
         for key, val in params.items():
-            if not params[key]:
-                continue
-            else:
+            if params[key]:
                 req['data'] += key + ' '
 
             if key == 'fields' or key == 'exclude':
@@ -77,7 +75,9 @@ class IgdbWrapper:
                        rating=None,
                        last_release_date=None,
                        count_of_games=None):
-        params = default_params
+        params = {**default_params,
+                  'where': [],
+                  'sort': []}
 
         if enumeration_filters:
             for name, values in enumeration_filters.items():
@@ -85,23 +85,19 @@ class IgdbWrapper:
                     continue
 
                 joined_values = ','.join(str(v) for v in values)
-                params.setdefault('where', [])\
-                    .append(f'{name} = ({joined_values})')
+                params['where'].append(f'{name} = ({joined_values})')
 
         if last_release_date:
-            params.setdefault('where', []) \
-                .append('release_dates.date > '
-                        f'{int(last_release_date.timestamp())}')
+            params['where'].append('release_dates.date > '
+                                   f'{int(last_release_date.timestamp())}')
 
         if rating:
-            params.setdefault('where', [])\
-                .append(f'rating >= {rating}')
+            params['where'].append(f'rating >= {rating}')
 
         if count_of_games:
             params['limit'] = f'{count_of_games}'
 
-        params.setdefault('sort', [])\
-            .append('release_dates.date asc')
+        params['sort'].append('release_dates.date asc')
 
         return self._compose_query_str(params)
 
@@ -125,33 +121,41 @@ class IgdbWrapper:
                                     rating=rating,
                                     last_release_date=last_release_date,
                                     count_of_games=count_of_games)
-        games = self._post('games/', query)
+        response_games = self._post('games/', query)
 
-        for game in games:
-            if 'cover' in game:
-                game['cover'] = self.get_img_path(game['cover']['image_id'])
+        games = []
+        for response_game in response_games:
+            game = {'screenshots': None, 'platforms': None, 'genres': None,
+                    'id': response_game['id'], 'name': response_game['name'],
+                    'summary': response_game.get('summary')}
 
-            if last_release_date and 'release_dates' in game:
-                game['release_dates'] = datetime.fromtimestamp(next(date['date'] for date
-                                                                    in game['release_dates']
-                                                                    if 'date' in date and
-                                                                    date['date'] > int(last_release_date.timestamp())))
-            elif 'release_dates' in game:
-                game['release_dates'] = datetime.fromtimestamp(game['release_dates'][0]['date'])
+            if 'cover' in response_game:
+                game['cover'] = self.get_img_path(response_game['cover']['image_id'])
 
-            game['rating'] = game.get('rating', None)
-            game['rating_count'] = game.get('rating_count', None)
-            game['aggregated_rating'] = game.get('aggregated_rating', None)
-            game['aggregated_rating_count'] = game.get('aggregated_rating_count', None)
+            if last_release_date and 'release_dates' in response_game:
+                release_dates = sorted(datetime.fromtimestamp(date['date']) for date in response_game['release_dates'])
 
-            game['screenshots'] = [self.get_img_path(screenshot['image_id']) for screenshot in
-                                   game['screenshots']] \
-                if 'screenshots' in game else None
-            game['platforms'] = [platform['name'] for platform
-                                 in game['platforms']] \
-                if 'platforms' in game else None
-            game['genres'] = [genre['name'] for genre in game['genres']] \
-                if 'genres' in game else None
+                if release_dates and release_dates[-1] > last_release_date:
+                    game['release_date'] = release_dates[-1]
+
+            elif 'release_dates' in response_game:
+                game['release_dates'] = datetime.fromtimestamp(response_game['release_dates'][0]['date'])
+
+            game['rating'] = response_game.get('rating', None)
+            game['rating_count'] = response_game.get('rating_count', None)
+            game['aggregated_rating'] = response_game.get('aggregated_rating', None)
+            game['aggregated_rating_count'] = response_game.get('aggregated_rating_count', None)
+
+            if 'screenshots' in response_game:
+                game['screenshots'] = [self.get_img_path(s['image_id']) for s in response_game['screenshots']]
+
+            if 'platforms' in response_game:
+                game['platforms'] = [p['name'] for p in response_game['platforms']]
+
+            if 'genres' in response_game:
+                game['genres'] = [g['name'] for g in response_game['genres']]
+
+            games.append(game)
 
         return games
 

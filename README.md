@@ -23,6 +23,7 @@ And this time the game you like won’t go out of your head, just click on must-
 - [x] [Internet Game Database](https://www.igdb.com/api) API 
 - [x] [Twitter](https://developer.twitter.com/en/docs) API
 - [x] :cloud: [Heroku](https://www.heroku.com/) :cloud: deployment
+- [ ] Celery tasks 
 - [ ] REST API using DRF
 
 ## Run locally
