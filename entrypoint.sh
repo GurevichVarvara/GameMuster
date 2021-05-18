@@ -1,6 +1,6 @@
 #!/bin/sh
 
-python manage.py migrate
-python manage.py collectstatic
+python3 manage.py migrate
+python3 manage.py collectstatic
 
-guricorn studentLabTask.wsgi:application --bind 0.0.0.0:8000
+exec gunicorn studentLabTask.wsgi:application --bind 0.0.0.0:8000 --reload

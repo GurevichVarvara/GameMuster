@@ -30,9 +30,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '8z$&#-0lhj@nb3%ktz37@8-#9=h!xo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
-ALLOWED_HOSTS = ['127.0.0.1',
-                 '0.0.0.0',
-                 'best-of-the-best-gamemuster.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
