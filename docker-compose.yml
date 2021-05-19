@@ -3,12 +3,15 @@ version: "3.9"
 services:
   postgres_db:
     image: postgres
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
     env_file:
-      - db.env
+      - ./docker/postgres/db.env
     ports:
       - "5432:5432"
+
+  broker:
+    image: redis
+    ports:
+      - "6379:6379"
 
   web:
     build: .
@@ -18,5 +21,6 @@ services:
       - studentLabTask/.env
     depends_on:
       - postgres_db
+      - broker
     ports:
       - "8000:8000"
