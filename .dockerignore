@@ -105,12 +105,8 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-*.env
-.env
 .venv
-env/
 venv/
-ENV/
 env.bak/
 venv.bak/
 
@@ -141,10 +137,4 @@ cython_debug/
 # IDE and Editor files
 .idea
 
-mocked_*.pickle
-
-data/
-
 staticfiles/
-
-celerybeat-schedule*

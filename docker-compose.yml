@@ -21,6 +21,16 @@ services:
       - studentLabTask/.env
     depends_on:
       - postgres_db
-      - broker
     ports:
       - "8000:8000"
+
+  celery:
+    build:
+      context: .
+      dockerfile: ./docker/celery/Dockerfile
+    volumes:
+      - ./:/games
+    env_file:
+      - studentLabTask/.env
+    depends_on:
+      - broker
