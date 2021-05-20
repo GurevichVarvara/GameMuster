@@ -90,6 +90,7 @@ class IgdbWrapper:
         if last_release_date:
             params['where'].append('release_dates.date > '
                                    f'{int(last_release_date.timestamp())}')
+            params['where'].append('release_dates.date != null')
 
         if rating:
             params['where'].append(f'rating >= {rating}')
@@ -133,9 +134,10 @@ class IgdbWrapper:
                 game['cover'] = self.get_img_path(response_game['cover']['image_id'])
 
             if last_release_date and 'release_dates' in response_game:
-                release_dates = sorted(datetime.fromtimestamp(date['date']) for date in response_game['release_dates'])
+                release_dates = sorted(datetime.fromtimestamp(date['date'])
+                                       for date in response_game['release_dates'] if 'date' in date)
 
-                if release_dates and release_dates[-1] > last_release_date:
+                if release_dates and release_dates[-1].timestamp() > last_release_date.timestamp():
                     game['release_date'] = release_dates[-1]
 
             elif 'release_dates' in response_game:

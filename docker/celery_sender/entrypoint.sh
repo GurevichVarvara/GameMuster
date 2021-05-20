@@ -3,4 +3,4 @@
 python3 manage.py migrate
 python3 manage.py collectstatic
 
-celery -A studentLabTask beat -l info
+celery -A studentLabTask beat -l INFO

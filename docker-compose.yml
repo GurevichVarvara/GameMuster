@@ -8,7 +8,7 @@ services:
     ports:
       - "5432:5432"
 
-  broker:
+  redis:
     image: redis
     ports:
       - "6379:6379"
@@ -24,13 +24,27 @@ services:
     ports:
       - "8000:8000"
 
-  celery:
+  game_refresh_receiver:
     build:
       context: .
-      dockerfile: ./docker/celery/Dockerfile
+      dockerfile: ./docker/celery_receiver/Dockerfile
     volumes:
       - ./:/games
     env_file:
       - studentLabTask/.env
     depends_on:
-      - broker
+      - postgres_db
+      - redis
+
+  game_refresh_sender:
+    build:
+      context: .
+      dockerfile: ./docker/celery_sender/Dockerfile
+    volumes:
+      - ./:/games
+    env_file:
+      - studentLabTask/.env
+    depends_on:
+      - game_refresh_receiver
+      - postgres_db
+      - redis
