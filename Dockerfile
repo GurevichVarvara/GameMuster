@@ -1,5 +1,7 @@
 FROM python:3.9-slim-buster
 
+EXPOSE 8000/tcp
+
 RUN pip install --upgrade pip
 
 COPY . /games
