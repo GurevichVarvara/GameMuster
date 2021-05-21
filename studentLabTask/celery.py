@@ -12,6 +12,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'add_new_games': {
         'task': 'gameMuster.tasks.refresh_games',
-        'schedule': 10.0
+        'schedule': 100.0
     }
 }
