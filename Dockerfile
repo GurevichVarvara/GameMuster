@@ -7,6 +7,8 @@ RUN pip install --upgrade pip
 COPY . /games
 WORKDIR /games
 
+ADD ./ /games
+
 RUN pip install -r requirements.txt
 
 RUN chmod +x entrypoint.sh

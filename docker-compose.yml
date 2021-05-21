@@ -15,8 +15,6 @@ services:
 
   web:
     build: .
-    volumes:
-      - ./:/games
     env_file:
       - studentLabTask/.env
     depends_on:
@@ -25,9 +23,9 @@ services:
       - "8000:8000"
 
   nginx:
-    build: ./docker/nginx
-    volumes:
-      - ./static:/static
+    build:
+      context: .
+      dockerfile: Dockerfile_nginx
     ports:
       - "80:80"
     depends_on:
@@ -37,8 +35,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/celery_receiver/Dockerfile
-    volumes:
-      - ./:/games
     env_file:
       - studentLabTask/.env
     depends_on:
@@ -49,8 +45,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/celery_sender/Dockerfile
-    volumes:
-      - ./:/games
     env_file:
       - studentLabTask/.env
     depends_on:

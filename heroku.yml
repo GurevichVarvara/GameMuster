@@ -1,5 +1,12 @@
 build:
   docker:
     web: Dockerfile
-run:
-  web: bundle exec puma -C config/puma.rb
+
+    postgres_db:
+      build: ./docker/postgres
+
+      redis:
+        build: ./docker/redis
+
+        nginx:
+          build: ./docker/nginx
