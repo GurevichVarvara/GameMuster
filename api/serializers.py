@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from gameMuster.models import Game, Platform, Genre, Screenshot, FavoriteGame
+from users.models import User
 
 
 class PlatformSerializer(serializers.HyperlinkedModelSerializer):
@@ -49,4 +50,10 @@ class TweetSerializer(serializers.Serializer):
     content = serializers.CharField(max_length=400)
     publisher = serializers.CharField(max_length=200)
     date = serializers.DateTimeField()
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
 

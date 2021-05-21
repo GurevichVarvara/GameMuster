@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 
 from gameMuster.models import Game, Platform, Genre, Screenshot, FavoriteGame
-from gameMuster.api.serializers import GameSerializer, PlatformSerializer, \
+from api.serializers import GameSerializer, PlatformSerializer, \
     GenreSerializer, ScreenshotSerializer, FavoriteGameSerializer, TweetSerializer
 from gameMuster.game_managers.games_manager import games_manager
 
