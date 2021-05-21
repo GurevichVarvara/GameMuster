@@ -15,8 +15,6 @@ services:
 
   web:
     build: .
-    env_file:
-      - studentLabTask/.env
     depends_on:
       - postgres_db
     ports:
@@ -25,29 +23,25 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: Dockerfile_nginx
-    ports:
-      - "80:80"
+      dockerfile: ./docker/nginx/Dockerfile
     depends_on:
       - web
+    ports:
+      - "80:80"
 
-  game_refresh_receiver:
+  celery:
     build:
       context: .
-      dockerfile: ./docker/celery_receiver/Dockerfile
-    env_file:
-      - studentLabTask/.env
+      dockerfile: ./Dockerfile.celery
     depends_on:
       - postgres_db
       - redis
 
-  game_refresh_sender:
+  refresher:
     build:
       context: .
-      dockerfile: ./docker/celery_sender/Dockerfile
-    env_file:
-      - studentLabTask/.env
+      dockerfile: ./Dockerfile.refresher
     depends_on:
-      - game_refresh_receiver
+      - celery
       - postgres_db
       - redis
