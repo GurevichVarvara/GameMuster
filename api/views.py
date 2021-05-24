@@ -1,6 +1,9 @@
+from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.response import Response
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 from gameMuster.models import Game, Platform, Genre, Screenshot, FavoriteGame
 from api.serializers import GameSerializer, PlatformSerializer, \
@@ -88,6 +91,14 @@ class TweetViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
+def is_email_valid(email):
+    try:
+        validate_email(email)
+        return True
+    except ValidationError:
+        return False
+
+
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     model = User
     serializer_class = UserSerializer
@@ -96,13 +107,19 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
         return self.request.user
 
     def partial_update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
+        partial = True
         instance = self.get_object()
         new_email = request.data.pop('email', None)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
-        if new_email:
-            pass
+        if new_email != self.request.user.email and \
+                is_email_valid(new_email):
+            send_confirmation_email(self.request, self.request.user, new_email)
 
+            return render(request, 'users/message.html',
+                          {'message': 'Please confirm your '
+                                      'new email address'})
+
+        return Response(serializer.data)

@@ -18,7 +18,7 @@ from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm, UserEditForm
 
 
-def send_confirmation_email(request, user):
+def send_confirmation_email(request, user, email):
     current_site = get_current_site(request)
     send_mail(
         subject='Email confirmation',
@@ -29,7 +29,7 @@ def send_confirmation_email(request, user):
             'token': EmailConfirmationTokenGenerator().make_token(user),
         }),
         from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user.email],
+        recipient_list=[email],
         fail_silently=False,
     )
 
@@ -40,7 +40,7 @@ def update_user_with_email(request, form, message):
 
     user = form.save()
 
-    send_confirmation_email(request, user)
+    send_confirmation_email(request, user, user.email)
 
     return render(request, 'users/message.html',
                   {'message': message})
