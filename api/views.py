@@ -1,6 +1,9 @@
-from django.shortcuts import render
+from django.contrib.auth.views import PasswordChangeView
+from django.shortcuts import render, redirect
 from rest_framework import viewsets
 from rest_framework import generics
+from rest_framework.decorators import permission_classes, api_view
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -125,3 +128,9 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
                 return Response({'Errors': 'Incorrect email', **serializer.data})
 
         return Response(serializer.date)
+
+
+@api_view(['GET'])
+@permission_classes([])
+def change_user_password(request):
+    return redirect('password_reset')
