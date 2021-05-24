@@ -1,9 +1,7 @@
-from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import render, redirect
 from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.decorators import permission_classes, api_view
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError

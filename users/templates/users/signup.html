@@ -9,7 +9,7 @@
   {% include 'users/form_base/non_field_errors.html' with form=form %}
 
   {% include 'users/form_base/input_base.html' with field=form.username %}
-  {% include 'users/form_base/input_base.html' with field=form.email %}
+  {% include 'users/form_base/input_base.html' with field=form.unconfirmed_email %}
   {% include 'users/form_base/input_base.html' with field=form.birthday %}
   {% include 'users/form_base/input_base.html' with field=form.first_name %}
   {% include 'users/form_base/input_base.html' with field=form.last_name %}

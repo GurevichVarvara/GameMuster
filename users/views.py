@@ -13,7 +13,6 @@ from django.views.generic import CreateView, UpdateView
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 
-
 from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm, UserEditForm
 
@@ -35,10 +34,9 @@ def send_confirmation_email(request, user, email):
 
 
 def update_user_with_email(request, form, message):
-    if request.user.is_authenticated:
-        logout(request)
-
     user = form.save()
+
+    user.save()
 
     send_confirmation_email(request, user, user.email)
 
@@ -54,8 +52,8 @@ class SignUpView(CreateView):
     def form_valid(self, form):
         return update_user_with_email(self.request,
                                       form,
-                                       'Please confirm your email address '
-                                       'to complete the registration')
+                                      'Please confirm your email address '
+                                      'to complete the registration')
 
 
 def is_user_email_changed(prev_email, form):
@@ -75,8 +73,8 @@ class UserEditView(UpdateView):
                                  form):
             response = update_user_with_email(self.request,
                                               form,
-                                               'Please confirm your '
-                                               'new email address')
+                                              'Please confirm your '
+                                              'new email address')
         else:
             response = super(UserEditView, self).form_valid(form)
 
@@ -91,6 +89,8 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
 
     user.active_time = datetime.now()
+    user.email = user.unconfirmed_email
+    user.unconfirmed_email = None
     user.save()
     login(request, user)
     return redirect('index')
