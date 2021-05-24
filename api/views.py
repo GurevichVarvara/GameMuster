@@ -8,6 +8,7 @@ from api.serializers import GameSerializer, PlatformSerializer, \
     TweetSerializer, UserSerializer
 from gameMuster.game_managers.games_manager import games_manager
 from users.models import User
+from users.views import send_confirmation_email
 
 
 class GameViewSet(viewsets.ModelViewSet):
@@ -93,3 +94,15 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         return self.request.user
+
+    def partial_update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        new_email = request.data.pop('email', None)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if new_email:
+            pass
+

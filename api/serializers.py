@@ -59,5 +59,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                   'email',
                   'birthday',
                   'first_name',
-                  'last_name',
-                  'active_time']
+                  'last_name']

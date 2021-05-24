@@ -18,12 +18,7 @@ from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm, UserEditForm
 
 
-def send_confirmation_email(request, form, message):
-    if request.user.is_authenticated:
-        logout(request)
-
-    user = form.save()
-
+def send_confirmation_email(request, user):
     current_site = get_current_site(request)
     send_mail(
         subject='Email confirmation',
@@ -38,6 +33,15 @@ def send_confirmation_email(request, form, message):
         fail_silently=False,
     )
 
+
+def update_user_with_email(request, form, message):
+    if request.user.is_authenticated:
+        logout(request)
+
+    user = form.save()
+
+    send_confirmation_email(request, user)
+
     return render(request, 'users/message.html',
                   {'message': message})
 
@@ -48,8 +52,8 @@ class SignUpView(CreateView):
     template_name = 'users/signup.html'
 
     def form_valid(self, form):
-        return send_confirmation_email(self.request,
-                                       form,
+        return update_user_with_email(self.request,
+                                      form,
                                        'Please confirm your email address '
                                        'to complete the registration')
 
@@ -69,8 +73,8 @@ class UserEditView(UpdateView):
     def form_valid(self, form):
         if is_user_email_changed(self.get_object().email,
                                  form):
-            response = send_confirmation_email(self.request,
-                                               form,
+            response = update_user_with_email(self.request,
+                                              form,
                                                'Please confirm your '
                                                'new email address')
         else:
