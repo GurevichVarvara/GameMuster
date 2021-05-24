@@ -65,16 +65,10 @@ class ScreenshotDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class FavoriteGameViewSet(viewsets.ModelViewSet):
-    serializer_class = ScreenshotSerializer
+    serializer_class = FavoriteGameSerializer
 
     def get_queryset(self):
-        queryset = FavoriteGame.objects.all()
-        username = self.request.query_params.get('username')
-
-        if username:
-            queryset = queryset.filter(user__name=username)
-
-        return queryset
+        return FavoriteGame.objects.filter(user=self.request.user)
 
 
 class FavoriteGameDetail(generics.RetrieveUpdateDestroyAPIView):
