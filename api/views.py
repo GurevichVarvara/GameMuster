@@ -122,6 +122,10 @@ class BaseUserDetail(generics.RetrieveUpdateDestroyAPIView):
 
         if new_email != self.request.user.email:
             if is_email_valid(new_email):
+                user = request.user
+                user.unconfirmed_email = new_email
+                user.save()
+
                 send_confirmation_email(self.request, self.request.user, new_email)
 
                 return render(request, 'users/message.html',
