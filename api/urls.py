@@ -19,7 +19,8 @@ router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('games/<int:pk>', GameDetail.as_view(), name='user-detail'),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('games/<int:pk>', GameDetail.as_view(), name='game-detail'),
     path('platforms/<int:pk>', PlatformDetail.as_view(), name='platform-detail'),
     path('genres/<int:pk>', GenreDetail.as_view(), name='genre-detail'),
     path('screenshots/<int:pk>', ScreenshotDetail.as_view(), name='screenshot-detail'),
