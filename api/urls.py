@@ -4,7 +4,8 @@ from api.views import GameViewSet, GameDetail, \
     PlatformViewSet, PlatformDetail, \
     GenreViewSet, GenreDetail, \
     ScreenshotViewSet, ScreenshotDetail, \
-    FavoriteGameViewSet, FavoriteGameDetail, TweetViewSet
+    FavoriteGameViewSet, FavoriteGameDetail, \
+    TweetViewSet, UserDetail
 
 router = routers.DefaultRouter()
 router.register(r'games', GameViewSet)
@@ -21,5 +22,5 @@ urlpatterns = [
     path('genres/<int:pk>', GenreDetail.as_view(), name='genre-detail'),
     path('screenshots/<int:pk>', ScreenshotDetail.as_view(), name='screenshot-detail'),
     path('favorite_games/<int:pk>', FavoriteGameDetail.as_view(), name='favorite_game-detail'),
-    path('create_user')
+    path('user', UserDetail.as_view(), name='user-detail')
 ]

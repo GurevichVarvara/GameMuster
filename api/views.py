@@ -4,8 +4,10 @@ from rest_framework.response import Response
 
 from gameMuster.models import Game, Platform, Genre, Screenshot, FavoriteGame
 from api.serializers import GameSerializer, PlatformSerializer, \
-    GenreSerializer, ScreenshotSerializer, FavoriteGameSerializer, TweetSerializer
+    GenreSerializer, ScreenshotSerializer, FavoriteGameSerializer, \
+    TweetSerializer, UserSerializer
 from gameMuster.game_managers.games_manager import games_manager
+from users.models import User
 
 
 class GameViewSet(viewsets.ModelViewSet):
@@ -83,3 +85,8 @@ class TweetViewSet(viewsets.ViewSet):
         serializer = TweetSerializer(tweets, many=True)
 
         return Response(serializer.data)
+
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = User
+    serializer_class = UserSerializer
