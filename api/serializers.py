@@ -55,7 +55,8 @@ class TweetSerializer(serializers.Serializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['username',
+        fields = ['url',
+                  'username',
                   'email',
                   'birthday',
                   'first_name',
