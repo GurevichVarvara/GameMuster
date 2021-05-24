@@ -90,3 +90,6 @@ class TweetViewSet(viewsets.ViewSet):
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     model = User
     serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
