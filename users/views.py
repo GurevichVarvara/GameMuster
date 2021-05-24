@@ -38,7 +38,7 @@ def update_user_with_email(request, form, message):
 
     user.save()
 
-    send_confirmation_email(request, user, user.email)
+    send_confirmation_email(request, user, user.unconfirmed_email)
 
     return render(request, 'users/message.html',
                   {'message': message})

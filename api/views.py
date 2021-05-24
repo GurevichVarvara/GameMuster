@@ -95,7 +95,8 @@ class TweetViewSet(viewsets.ViewSet):
 def is_email_valid(email):
     try:
         validate_email(email)
-        return not User.objects.filter(email=email).first()
+        return not (User.objects.filter(email=email).first() or
+                User.objects.filter(unconfirmed_email=email).first())
     except ValidationError:
         return False
 
@@ -105,7 +106,12 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
 
     def get_object(self):
-        return self.request.user
+        if self.request.user.is_superuser:
+            user_id = self.request.query_params.get('user')
+
+            return User.objects.filter(id=user_id).first()
+        else:
+            return self.request.user
 
     def partial_update(self, request, *args, **kwargs):
         partial = True
@@ -123,9 +129,9 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
                               {'message': 'Please confirm your '
                                           'new email address'})
             else:
-                return Response({'Errors': 'Incorrect email', **serializer.data})
+                return Response({'Errors': 'Incorrect new email', **serializer.data})
 
-        return Response(serializer.date)
+        return Response(serializer.data)
 
 
 @api_view(['GET'])
