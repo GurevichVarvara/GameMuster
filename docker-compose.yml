@@ -15,9 +15,11 @@ services:
 
   web:
     build: .
-    command: gunicorn studentLabTask.wsgi:application
+    command: gunicorn studentLabTask.wsgi:application 0.0.0.0:8000
+    env_file:
+      - ./.env
     volumes:
-      - ./static:/games/static
+      - .:/games
     depends_on:
       - postgres_db
     ports:
@@ -27,6 +29,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
+    volumes:
+      - ./static:/static
     depends_on:
       - web
     ports:
@@ -34,14 +38,22 @@ services:
 
   celery:
     build: .
-    command: -A studentLabTask worker -l INFO
+    command: celery -A studentLabTask worker -l INFO
+    env_file:
+      - ./.env
+    volumes:
+      - .:/games
     depends_on:
       - postgres_db
       - redis
 
   refresher:
     build: .
-    command: -A studentLabTask beat -l INFO
+    command: celery -A studentLabTask beat -l INFO
+    env_file:
+      - ./.env
+    volumes:
+      - .:/games
     depends_on:
       - celery
       - postgres_db
