@@ -16,6 +16,8 @@ services:
   web:
     build: .
     command: gunicorn studentLabTask.wsgi:application
+    volumes:
+      - ./static:/games/static
     depends_on:
       - postgres_db
     ports:

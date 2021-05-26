@@ -145,6 +145,6 @@ mocked_*.pickle
 
 data/
 
-staticfiles/
+static/
 
 celerybeat-schedule*
