@@ -1,15 +1,17 @@
-FROM python:3.9-slim-buster
+FROM python:3.9-alpine as base
 
-EXPOSE 8000/tcp
+FROM base as builder
 
-RUN pip install --upgrade pip
+RUN mkdir /install
+WORKDIR /install
 
+COPY requirements.txt /requirements.txt
+
+RUN pip install --install-option="--prefix=/install" -r requirements.txt
+
+FROM base
+
+COPY --from=builder /install /usr/local
 COPY . /games
+
 WORKDIR /games
-
-ADD ./ /games
-
-RUN pip install -r requirements.txt
-
-RUN chmod +x entrypoint.sh
-ENTRYPOINT ["sh", "/games/entrypoint.sh"]

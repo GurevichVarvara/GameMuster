@@ -15,6 +15,7 @@ services:
 
   web:
     build: .
+    command: gunicorn studentLabTask.wsgi:application
     depends_on:
       - postgres_db
     ports:
@@ -30,17 +31,15 @@ services:
       - "80:80"
 
   celery:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.celery
+    build: .
+    command: -A studentLabTask worker -l INFO
     depends_on:
       - postgres_db
       - redis
 
   refresher:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.refresher
+    build: .
+    command: -A studentLabTask beat -l INFO
     depends_on:
       - celery
       - postgres_db
