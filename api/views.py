@@ -59,13 +59,6 @@ class FavoriteGameViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return FavoriteGame.objects.filter(user=self.request.user)
 
-    def retrieve(self, request, pk):
-        game = self.get_queryset().filter(id=pk).first()
-        serializer = FavoriteGameSerializer(game,
-                                            context={'request': request})
-
-        return Response(serializer.data)
-
 
 def is_email_valid(email):
     try:
