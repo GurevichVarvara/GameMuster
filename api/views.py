@@ -1,12 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from rest_framework import viewsets, status
+from django.shortcuts import render, redirect
+from rest_framework import viewsets
 from rest_framework import generics
-from rest_framework.decorators import permission_classes, api_view, action
+from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from django.http import Http404
 
 from gameMuster.models import Game, Platform, Genre, Screenshot, FavoriteGame
 from api.serializers import GameSerializer, PlatformSerializer, \
@@ -20,8 +19,8 @@ from users.views import send_confirmation_email
 class BaseViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk):
-        target_object = get_object_or_404(self.queryset,
-                                          pk=pk)
+        target_object = self.queryset.filter(id=pk).first()
+
         return Response(self.serializer_class(target_object,
                                               context={'request': request}).data)
 
@@ -41,10 +40,15 @@ class GenreViewSet(BaseViewSet):
     serializer_class = GenreSerializer
 
 
-class BaseDependentViewSet(viewsets.ModelViewSet):
+class ScreenshotViewSet(viewsets.ModelViewSet):
+    serializer_class = ScreenshotSerializer
 
-    def list(self, request, game):
-        queryset = self.get_queryset(game)
+    def get_queryset(self, game_id=None):
+        return Screenshot.objects.filter(game__id=game_id) \
+            if game_id else Screenshot.objects.all()
+
+    def list(self, request, target):
+        queryset = self.get_queryset(target)
 
         return Response(self.serializer_class(queryset,
                                               context={'request': request},
@@ -57,37 +61,20 @@ class BaseDependentViewSet(viewsets.ModelViewSet):
                                               context={'request': request}).data)
 
 
-class ScreenshotViewSet(BaseDependentViewSet):
-    serializer_class = ScreenshotSerializer
-
-    def get_queryset(self, game_id=None):
-        return Screenshot.objects.filter(game__id=game_id) \
-            if game_id else Screenshot.objects.all()
-
-
-class FavoriteGameViewSet(viewsets.ModelViewSet):
+class FavoriteGameViewSet(BaseViewSet):
     serializer_class = FavoriteGameSerializer
 
     def get_queryset(self):
         return FavoriteGame.objects.filter(user=self.request.user)
 
-    def retrieve(self, request, pk):
-        game = self.get_queryset().filter(game__id=pk).first()
-
-        if not game:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        return Response(self.serializer_class(game,
-                                              context={'request': request}).data)
-
 
 class TweetViewSet(viewsets.ViewSet):
+    serializer_class = TweetSerializer
 
-    def list(self):
-        game_id = self.request.query_params.get('game')
-        game = Game.objects.filter(game__id=game_id).first()
+    def list(self, request, target):
+        game = Game.objects.filter(id=target).first()
         tweets = games_manager.create_tweets_by_game_name(game)
-        serializer = TweetSerializer(tweets, many=True)
+        serializer = self.serializer_class(tweets, many=True)
 
         return Response(serializer.data)
 
