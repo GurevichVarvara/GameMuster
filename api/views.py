@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from rest_framework import viewsets
 from rest_framework import generics
-from rest_framework.decorators import permission_classes, api_view
+from rest_framework.decorators import permission_classes, api_view, action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from django.core.validators import validate_email
@@ -28,6 +28,14 @@ class BaseViewSet(viewsets.ModelViewSet):
 class GameViewSet(BaseViewSet):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
+
+    @action(detail=True, methods=['get'])
+    def tweets(self, request, pk):
+        game = Game.objects.filter(id=pk).first()
+        tweets = games_manager.create_tweets_by_game_name(game)
+        serializer = TweetSerializer(tweets, many=True)
+
+        return Response(serializer.data)
 
 
 class PlatformViewSet(BaseViewSet):
