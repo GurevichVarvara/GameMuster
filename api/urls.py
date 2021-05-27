@@ -12,9 +12,7 @@ router = routers.DefaultRouter()
 router.register(r'games', GameViewSet)
 router.register(r'platforms', PlatformViewSet)
 router.register(r'genres', GenreViewSet)
-router.register(r'screenshots', ScreenshotViewSet, basename='screenshot')
 router.register(r'favorite', FavoriteGameViewSet, basename='favorite')
-router.register(r'tweets', TweetViewSet, basename='tweet')
 router.register(r'users', UserViewSet)
 
 urlpatterns = [
@@ -23,7 +21,18 @@ urlpatterns = [
     path('games/<int:pk>', GameViewSet.as_view({'get': 'retrieve'}), name='game-detail'),
     path('platforms/<int:pk>', PlatformViewSet.as_view({'get': 'retrieve'}), name='platform-detail'),
     path('genres/<int:pk>', GenreViewSet.as_view({'get': 'retrieve'}), name='genre-detail'),
-    path('screenshots/<int:pk>', ScreenshotViewSet.as_view({'get': 'retrieve'}), name='screenshot-detail'),
+    path('games/<int:game>/screenshots',
+         ScreenshotViewSet.as_view({'get': 'list'}),
+         name='screenshot'),
+    path('screenshots/<int:pk>',
+         ScreenshotViewSet.as_view({'get': 'retrieve'}),
+         name='screenshot-detail'),
+    path('games/<int:game>/tweets',
+         ScreenshotViewSet.as_view({'get': 'list'}),
+         name='tweets'),
+    path('tweets/<int:pk>',
+         ScreenshotViewSet.as_view({'get': 'retrieve'}),
+         name='tweets-detail'),
     path('favorite/<int:pk>', FavoriteGameViewSet.as_view({'get': 'retrieve'}), name='favorite-detail'),
     path('users/<int:pk>', BaseUserDetail.as_view(), name='admin-user-detail'),
     path('user', UserDetail.as_view(), name='user-detail'),
