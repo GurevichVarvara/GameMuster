@@ -1,10 +1,8 @@
 from django.urls import include, path
 from rest_framework import routers
 from api.views import GameViewSet, \
-    PlatformViewSet, \
-    GenreViewSet, \
-    ScreenshotViewSet, \
-    FavoriteGameViewSet, \
+    PlatformViewSet, GenreViewSet, \
+    ScreenshotViewSet, FavoriteGameViewSet, \
     TweetViewSet, UserDetail, \
     change_user_password, UserViewSet, BaseUserDetail
 
@@ -17,10 +15,8 @@ router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('games/<int:pk>', GameViewSet.as_view({'get': 'retrieve'}), name='game-detail'),
-    path('platforms/<int:pk>', PlatformViewSet.as_view({'get': 'retrieve'}), name='platform-detail'),
-    path('genres/<int:pk>', GenreViewSet.as_view({'get': 'retrieve'}), name='genre-detail'),
+    path('api-auth/',
+         include('rest_framework.urls', namespace='rest_framework')),
     path('games/<int:target>/screenshots',
          ScreenshotViewSet.as_view({'get': 'list'}),
          name='screenshot'),
@@ -30,8 +26,16 @@ urlpatterns = [
     path('games/<int:target>/tweets',
          TweetViewSet.as_view({'get': 'list'}),
          name='tweets'),
-    path('favorite/<int:pk>', FavoriteGameViewSet.as_view({'get': 'retrieve'}), name='favorite-detail'),
-    path('users/<int:pk>', BaseUserDetail.as_view(), name='admin-user-detail'),
-    path('user', UserDetail.as_view(), name='user-detail'),
-    path('change_password', change_user_password, name='change_user_password')
+    path('favorite/<int:pk>',
+         FavoriteGameViewSet.as_view({'get': 'retrieve'}),
+         name='favorite-detail'),
+    path('users/<int:pk>',
+         BaseUserDetail.as_view(),
+         name='admin-user-detail'),
+    path('user',
+         UserDetail.as_view(),
+         name='user-detail'),
+    path('change_password',
+         change_user_password,
+         name='change_user_password')
 ]
