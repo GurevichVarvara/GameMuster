@@ -16,15 +16,6 @@ from users.models import User
 from users.views import send_confirmation_email
 
 
-class BaseViewSet(viewsets.ModelViewSet):
-
-    def retrieve(self, request, pk):
-        target_object = self.queryset.filter(id=pk).first()
-
-        return Response(self.serializer_class(target_object,
-                                              context={'request': request}).data)
-
-
 class GameViewSet(viewsets.ModelViewSet):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
