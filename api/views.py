@@ -86,16 +86,18 @@ def is_email_valid(email):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAdminUser]
-    queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            queryset = User.objects.all()
+        else:
+            user_id = self.request.user.id
+            queryset = User.objects.filter(id=user_id)
 
-class BaseUserDetail(generics.RetrieveUpdateDestroyAPIView):
-    model = User
-    serializer_class = UserSerializer
+        return queryset
 
-    def partial_update(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         partial = True
         instance = self.get_object()
         new_email = request.data.pop('email', None)
@@ -103,7 +105,7 @@ class BaseUserDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
-        if new_email != self.request.user.email:
+        if new_email and new_email.lower() != self.request.user.email.lower():
             if is_email_valid(new_email):
                 user = request.user
                 user.unconfirmed_email = new_email
@@ -119,14 +121,6 @@ class BaseUserDetail(generics.RetrieveUpdateDestroyAPIView):
 
         return Response(serializer.data)
 
-
-class UserDetail(BaseUserDetail):
-
-    def get_object(self):
-        return self.request.user
-
-
-@api_view(['GET'])
-@permission_classes([])
-def change_user_password(request):
-    return redirect('password_reset')
+    @action(detail=False, methods=['get'], permission_classes=[])
+    def change_user_password(self, request):
+        return redirect('password_reset')

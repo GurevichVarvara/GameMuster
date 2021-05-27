@@ -59,7 +59,7 @@ class SignUpView(CreateView):
 def is_user_email_changed(prev_email, form):
     current_email = form['email'].value()
 
-    return current_email != prev_email
+    return current_email.lower() != prev_email.lower()
 
 
 class UserEditView(UpdateView):
