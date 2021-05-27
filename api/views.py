@@ -25,7 +25,7 @@ class BaseViewSet(viewsets.ModelViewSet):
                                               context={'request': request}).data)
 
 
-class GameViewSet(BaseViewSet):
+class GameViewSet(viewsets.ModelViewSet):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
 
@@ -37,52 +37,41 @@ class GameViewSet(BaseViewSet):
 
         return Response(serializer.data)
 
+    @action(detail=True, methods=['get'])
+    def screenshots(self, request, pk):
+        screenshots = Screenshot.objects.filter(game__id=pk)
+        serializer = ScreenshotSerializer(screenshots,
+                                          context={'request': request},
+                                          many=True)
 
-class PlatformViewSet(BaseViewSet):
+        return Response(serializer.data)
+
+
+class PlatformViewSet(viewsets.ModelViewSet):
     queryset = Platform.objects.all()
     serializer_class = PlatformSerializer
 
 
-class GenreViewSet(BaseViewSet):
+class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
 
 
 class ScreenshotViewSet(viewsets.ModelViewSet):
+    queryset = Screenshot.objects.all()
     serializer_class = ScreenshotSerializer
 
-    def get_queryset(self, game_id=None):
-        return Screenshot.objects.filter(game__id=game_id) \
-            if game_id else Screenshot.objects.all()
 
-    def list(self, request, target):
-        queryset = self.get_queryset(target)
-
-        return Response(self.serializer_class(queryset,
-                                              context={'request': request},
-                                              many=True).data)
-
-    def retrieve(self, request, pk):
-        target_object = self.get_queryset().filter(id=pk).first()
-
-        return Response(self.serializer_class(target_object,
-                                              context={'request': request}).data)
-
-
-class FavoriteGameViewSet(BaseViewSet):
+class FavoriteGameViewSet(viewsets.ModelViewSet):
     serializer_class = FavoriteGameSerializer
 
     def get_queryset(self):
         return FavoriteGame.objects.filter(user=self.request.user)
 
-
-class TweetViewSet(viewsets.ViewSet):
-    serializer_class = TweetSerializer
-
-    def list(self, request, target):
-        game = Game.objects.filter(id=target).first()
-        tweets = games_manager.create_tweets_by_game_name(game)
-        serializer = self.serializer_class(tweets, many=True)
+    def retrieve(self, request, pk):
+        game = self.get_queryset().filter(id=pk).first()
+        serializer = FavoriteGameSerializer(game,
+                                            context={'request': request})
 
         return Response(serializer.data)
 
