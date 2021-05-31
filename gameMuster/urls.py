@@ -1,4 +1,4 @@
-"""Games url schema"""
+"""gameMuster URL Configuration"""
 from django.urls import path
 from gameMuster import views
 
