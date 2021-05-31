@@ -1,11 +1,13 @@
-from django import template
+"""Generating page url templatetag"""
 import string
+from django import template
 
 register = template.Library()
 
 
 @register.filter(name='get_page_url')
 def get_page_url(full_path, num_of_page):
+    """Generate page url by current full url path"""
     num_of_page = str(num_of_page)
 
     if '?' in full_path and 'page' in full_path:
