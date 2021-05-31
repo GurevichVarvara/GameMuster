@@ -1,4 +1,4 @@
-"""API views"""
+"""API logic views"""
 from django.shortcuts import render, redirect
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError

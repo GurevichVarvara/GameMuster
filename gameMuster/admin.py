@@ -5,7 +5,7 @@ from .models import FavoriteGame
 
 
 class FavoriteGameAdmin(admin.ModelAdmin):
-    """Describe how to represent favorite game on admin page"""
+    """Describe how to represent favorite game objects on admin page"""
     model = FavoriteGame
     list_display = ['game_id',
                     'user',

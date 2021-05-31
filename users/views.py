@@ -1,5 +1,6 @@
-from django.contrib.auth import login, logout
-from .models import User
+"""Related to user logic views"""
+from datetime import datetime
+from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -10,14 +11,15 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.views.generic import CreateView, UpdateView
-from datetime import datetime
 from django.contrib.auth.decorators import login_required
 
+from users.models import User
 from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm, UserEditForm
 
 
 def send_confirmation_email(request, user, email):
+    """Send confirmation email"""
     current_site = get_current_site(request)
     send_mail(
         subject='Email confirmation',
@@ -34,6 +36,7 @@ def send_confirmation_email(request, user, email):
 
 
 def update_user_with_email(request, form, message):
+    """Update user data when email's been changed"""
     user = form.save()
 
     user.save()
@@ -45,11 +48,13 @@ def update_user_with_email(request, form, message):
 
 
 class SignUpView(CreateView):
+    """Signing up view"""
     form_class = SignupForm
     success_url = reverse_lazy('login')
     template_name = 'users/signup.html'
 
     def form_valid(self, form):
+        """Create user if data from form is valid"""
         return update_user_with_email(self.request,
                                       form,
                                       'Please confirm your email address '
@@ -57,18 +62,24 @@ class SignUpView(CreateView):
 
 
 def is_user_email_changed(prev_email, form):
+    """Check if email's been changed"""
     current_email = form['email'].value()
 
     return current_email.lower() != prev_email.lower()
 
 
 class UserEditView(UpdateView):
+    """User editing view"""
     form_class = UserEditForm
     model = User
     success_url = reverse_lazy('profile')
     template_name = 'users/user_update_form.html'
 
     def form_valid(self, form):
+        """Update user
+        Send confirmation email if it's been changed.
+        """
+
         if is_user_email_changed(self.get_object().email,
                                  form):
             response = update_user_with_email(self.request,
@@ -82,6 +93,7 @@ class UserEditView(UpdateView):
 
 
 def activate(request, uidb64, token):
+    """Activating profile view"""
     uid = force_text(urlsafe_base64_decode(uidb64))
     user = User.objects.filter(pk=uid).first()
 
@@ -98,4 +110,5 @@ def activate(request, uidb64, token):
 
 @login_required
 def profile(request):
+    """Profile view"""
     return render(request, 'users/profile.html')
