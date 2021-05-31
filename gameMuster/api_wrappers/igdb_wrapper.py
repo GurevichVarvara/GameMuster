@@ -1,10 +1,11 @@
-import requests
+"""IGDB API wrapper"""
 from datetime import datetime
+import requests
 from django.http import HttpResponseServerError
 
 
 class IgdbWrapper:
-
+    """IGDB API wrapper"""
     def __init__(self, client_id, client_secret):
         self.main_url = 'https://api.igdb.com/v4/'
         self.client_id = client_id
@@ -56,7 +57,7 @@ class IgdbWrapper:
             if params[key]:
                 req['data'] += key + ' '
 
-            if key == 'fields' or key == 'exclude':
+            if key in ('fields', 'exclude'):
                 req['data'] += ', '.join(map(str, val))
             elif key == 'where':
                 req['data'] += ' & '.join(map(str, val))
@@ -103,6 +104,7 @@ class IgdbWrapper:
 
     @staticmethod
     def get_img_path(img_id):
+        """Return path of IGDB API image"""
         return 'https://images.igdb.com/igdb/' \
                f'image/upload/t_cover_big/{img_id}.jpg'
 
@@ -113,6 +115,7 @@ class IgdbWrapper:
                   ids=None,
                   last_release_date=None,
                   count_of_games=None):
+        """Return filtered games"""
         enumeration_filters = {'genres': genres,
                                'platforms': platforms,
                                'id': ids}
@@ -133,13 +136,15 @@ class IgdbWrapper:
                 game['cover'] = self.get_img_path(response_game['cover']['image_id'])
 
             if last_release_date and 'release_dates' in response_game:
-                release_dates = sorted(datetime.fromtimestamp(date['date']) for date in response_game['release_dates'])
+                release_dates = sorted(datetime.fromtimestamp(date['date'])
+                                       for date in response_game['release_dates'])
 
                 if release_dates and release_dates[-1] > last_release_date:
                     game['release_date'] = release_dates[-1]
 
             elif 'release_dates' in response_game:
-                game['release_dates'] = datetime.fromtimestamp(response_game['release_dates'][0]['date'])
+                game['release_dates'] = datetime.fromtimestamp(
+                    response_game['release_dates'][0]['date'])
 
             game['rating'] = response_game.get('rating', None)
             game['rating_count'] = response_game.get('rating_count', None)
@@ -147,7 +152,8 @@ class IgdbWrapper:
             game['aggregated_rating_count'] = response_game.get('aggregated_rating_count', None)
 
             if 'screenshots' in response_game:
-                game['screenshots'] = [self.get_img_path(s['image_id']) for s in response_game['screenshots']]
+                game['screenshots'] = [self.get_img_path(s['image_id'])
+                                       for s in response_game['screenshots']]
 
             if 'platforms' in response_game:
                 game['platforms'] = [p['name'] for p in response_game['platforms']]
@@ -160,6 +166,7 @@ class IgdbWrapper:
         return games
 
     def get_game_by_id(self, game_id):
+        """Return game by id"""
         games = self.get_games(ids=[game_id])
 
         if not games:
@@ -168,11 +175,13 @@ class IgdbWrapper:
         return games[0]
 
     def get_platforms(self):
+        """Return all IGDB API platforms"""
         return self._post('platforms/',
                           self._compose_query(default_params=self.default_params,
                                               enumeration_filters={'fields': 'name'}))
 
     def get_genres(self):
+        """Return all IGDB API genres"""
         return self._post('genres/',
                           self._compose_query(default_params=self.default_params,
                                               enumeration_filters={'fields': 'name'}))

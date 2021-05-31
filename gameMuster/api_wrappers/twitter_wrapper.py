@@ -1,9 +1,10 @@
-import requests
+"""Twitter API wrapper"""
 import datetime
+import requests
 
 
 class TwitterWrapper:
-
+    """Twitter API wrapper"""
     def __init__(self, bearer_token):
         self.bearer_token = bearer_token
         self.twitter_search_url = 'https://api.twitter.com' \
@@ -18,6 +19,7 @@ class TwitterWrapper:
                             params=params).json()
 
     def get_tweets_by_game_name(self, game_name, count_of_tweets=3):
+        """Return tweets related to game"""
         params = {'q': '%23{}'.format(game_name.replace(' ', '')),
                   'tweet_mode': 'extended',
                   'tweet.fields': 'full_text, created_at, user.name',
