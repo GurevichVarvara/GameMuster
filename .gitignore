@@ -106,7 +106,10 @@ celerybeat.pid
 
 # Environments
 *.env
+<<<<<<< HEAD
 .env
+=======
+>>>>>>> master
 .venv
 env/
 venv/

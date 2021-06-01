@@ -13,17 +13,11 @@ from django.views.generic import CreateView, UpdateView
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 
-
 from users.tokens import EmailConfirmationTokenGenerator
 from users.forms import SignupForm, UserEditForm
 
 
-def send_confirmation_email(request, form, message):
-    if request.user.is_authenticated:
-        logout(request)
-
-    user = form.save()
-
+def send_confirmation_email(request, user, email):
     current_site = get_current_site(request)
     send_mail(
         subject='Email confirmation',
@@ -34,9 +28,17 @@ def send_confirmation_email(request, form, message):
             'token': EmailConfirmationTokenGenerator().make_token(user),
         }),
         from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user.email],
+        recipient_list=[email],
         fail_silently=False,
     )
+
+
+def update_user_with_email(request, form, message):
+    user = form.save()
+
+    user.save()
+
+    send_confirmation_email(request, user, user.unconfirmed_email)
 
     return render(request, 'users/message.html',
                   {'message': message})
@@ -48,16 +50,16 @@ class SignUpView(CreateView):
     template_name = 'users/signup.html'
 
     def form_valid(self, form):
-        return send_confirmation_email(self.request,
-                                       form,
-                                       'Please confirm your email address '
-                                       'to complete the registration')
+        return update_user_with_email(self.request,
+                                      form,
+                                      'Please confirm your email address '
+                                      'to complete the registration')
 
 
 def is_user_email_changed(prev_email, form):
     current_email = form['email'].value()
 
-    return current_email != prev_email
+    return current_email.lower() != prev_email.lower()
 
 
 class UserEditView(UpdateView):
@@ -69,10 +71,10 @@ class UserEditView(UpdateView):
     def form_valid(self, form):
         if is_user_email_changed(self.get_object().email,
                                  form):
-            response = send_confirmation_email(self.request,
-                                               form,
-                                               'Please confirm your '
-                                               'new email address')
+            response = update_user_with_email(self.request,
+                                              form,
+                                              'Please confirm your '
+                                              'new email address')
         else:
             response = super(UserEditView, self).form_valid(form)
 
@@ -87,6 +89,8 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
 
     user.active_time = datetime.now()
+    user.email = user.unconfirmed_email
+    user.unconfirmed_email = None
     user.save()
     login(request, user)
     return redirect('index')

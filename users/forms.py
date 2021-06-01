@@ -8,7 +8,7 @@ class DateInput(forms.DateInput):
 
 
 class BaseUserForm(forms.Form):
-    email = forms.EmailField(max_length=200, required=True, help_text='Required')
+    unconfirmed_email = forms.EmailField(max_length=200, required=True, help_text='Required')
     first_name = forms.CharField(max_length=40, required=True, help_text='Required')
     last_name = forms.CharField(max_length=40, required=True, help_text='Required')
     birthday = forms.DateField(widget=DateInput, required=False)
@@ -19,7 +19,7 @@ class SignupForm(UserCreationForm, BaseUserForm):
     class Meta:
         model = User
         fields = ('username',
-                  'email',
+                  'unconfirmed_email',
                   'birthday',
                   'first_name',
                   'last_name')
@@ -30,7 +30,7 @@ class UserEditForm(UserChangeForm, BaseUserForm):
     class Meta:
         model = User
         fields = ('username',
-                  'email',
+                  'unconfirmed_email',
                   'birthday',
                   'first_name',
                   'last_name')
