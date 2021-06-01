@@ -105,6 +105,3 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], permission_classes=[])
-    def change_user_password(self, request):
-        return redirect('password_reset')
