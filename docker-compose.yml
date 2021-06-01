@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  postgres_db:
+    image: postgres
+    env_file:
+      - ./docker/postgres/db.env
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  web:
+    build: .
+    command: gunicorn studentLabTask.wsgi:application 0.0.0.0:8000
+    env_file:
+      - ./.env
+    volumes:
+      - .:/games
+    depends_on:
+      - postgres_db
+    ports:
+      - "8000:8000"
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    volumes:
+      - ./static:/static
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+
+  celery:
+    build: .
+    command: celery -A studentLabTask worker -l INFO
+    env_file:
+      - ./.env
+    volumes:
+      - .:/games
+    depends_on:
+      - postgres_db
+      - redis
+
+  refresher:
+    build: .
+    command: celery -A studentLabTask beat -l INFO
+    env_file:
+      - ./.env
+    volumes:
+      - .:/games
+    depends_on:
+      - celery
+      - postgres_db
+      - redis

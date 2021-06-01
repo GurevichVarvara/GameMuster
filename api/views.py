@@ -118,8 +118,3 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    @staticmethod
-    @action(detail=False, methods=['get'], permission_classes=[])
-    def change_user_password(request):
-        """Redirect user to reset password page"""
-        return redirect('password_reset')
