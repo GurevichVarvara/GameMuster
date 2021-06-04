@@ -24,8 +24,8 @@ class MockedGamesManager(BaseGameManager):
         return data
 
     def _get_mocked_data(self):
-        return {'games': self.get_data_from_pickle_file('../mocked_data/mocked_games.pickle'),
-                'tweets': self.get_data_from_pickle_file('../mocked_data/mocked_tweets.pickle')}
+        return {'games': self.get_data_from_pickle_file('mocked_games.pickle'),
+                'tweets': self.get_data_from_pickle_file('mocked_tweets.pickle')}
 
     def generate_list_of_games(self,
                                genres=None,
