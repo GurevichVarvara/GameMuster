@@ -1,27 +1,18 @@
 """Games manager tests"""
-import os
 import pickle
 
-from django.test import TestCase
+from gameMuster.tests.base_test import BaseTest
 from gameMuster.models import Game, Tweet
 from gameMuster.game_managers.games_manager import games_manager
 
-GAME_DATA_FILENAME = os.path.join(os.path.dirname(__file__), 'game_data.pickle')
 
-
-class GamesManagerTestCase(TestCase):
-
+class GamesManagerTestCase(BaseTest):
+    """Games manager tests"""
     def setUp(self):
-        with open(GAME_DATA_FILENAME, 'rb') as file:
+        with open(self.game_data_path, 'rb') as file:
             self.game_data = pickle.load(file)
 
         self.game = games_manager._create_game_from_igdb_response(self.game_data)
-
-    def check_list(self, container, target_class):
-        self.assertIsInstance(container, list)
-
-        for item in container:
-            self.assertIsInstance(item, target_class)
 
     def test_create_game_from_igdb_response(self):
         """Test that method creates Game instance"""
