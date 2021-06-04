@@ -76,9 +76,11 @@ class IgdbWrapper:
                        rating=None,
                        last_release_date=None,
                        count_of_games=None):
-        params = {**default_params,
-                  'where': [],
+        params = {'where': [],
                   'sort': []}
+
+        if default_params:
+            params = {**default_params, **params}
 
         if enumeration_filters:
             for name, values in enumeration_filters.items():
@@ -178,11 +180,9 @@ class IgdbWrapper:
     def get_platforms(self):
         """Return all IGDB API platforms"""
         return self._post('platforms/',
-                          self._compose_query(default_params=self.default_params,
-                                              enumeration_filters={'fields': 'name'}))
+                          self._compose_query(enumeration_filters={'fields': 'name'}))
 
     def get_genres(self):
         """Return all IGDB API genres"""
         return self._post('genres/',
-                          self._compose_query(default_params=self.default_params,
-                                              enumeration_filters={'fields': 'name'}))
+                          self._compose_query(enumeration_filters={'fields': 'name'}))
