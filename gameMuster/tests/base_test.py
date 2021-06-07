@@ -19,6 +19,7 @@ class BaseTest(TestCase):
             self.assertIsInstance(item, target_class)
 
     def get_game(self):
+        """Get one mocked game"""
         with open(self.game_data_path, 'rb') as file:
             self.game_data = pickle.load(file)
 
