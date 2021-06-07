@@ -1,3 +1,4 @@
+"""users URL Configuration"""
 from django.urls import path
 from users.views import SignUpView, activate, profile, UserEditView
 

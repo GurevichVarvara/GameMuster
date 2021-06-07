@@ -1,10 +1,9 @@
-from datetime import datetime
-
+"""Base game manager"""
 from gameMuster.models import Platform, Genre, Game, Screenshot
 
 
 class BaseGameManager:
-
+    """Base game manager"""
     @staticmethod
     def _create_game_from_igdb_response(response_game):
         stored_game = Game.objects.filter(game_id=response_game['id']).first()
@@ -20,7 +19,8 @@ class BaseGameManager:
                                    user_rating=response_game.get('rating'),
                                    user_rating_count=response_game.get('rating_count'),
                                    critics_rating=response_game.get('aggregated_rating'),
-                                   critics_rating_count=response_game.get('aggregated_rating_count'))
+                                   critics_rating_count=response_game.get(
+                                       'aggregated_rating_count'))
 
         for platform in (response_game['platforms'] or []):
             game.platforms.add(Platform.objects.get_or_create(name=platform)[0])

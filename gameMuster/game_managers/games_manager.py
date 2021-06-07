@@ -1,3 +1,4 @@
+"""IGDB API games manager"""
 from django.conf import settings
 
 from gameMuster.game_managers.mocked_games_manager import MockedGamesManager
@@ -8,7 +9,7 @@ from gameMuster.models import Tweet
 
 
 class GamesManager(BaseGameManager):
-
+    """IGDB API games manager"""
     def __init__(self):
         self.igdb_wrapper = IgdbWrapper(settings.IGDB_CLIENT_ID,
                                         settings.IGDB_CLIENT_SECRET)
@@ -20,6 +21,7 @@ class GamesManager(BaseGameManager):
                                rating=None,
                                last_release_date=None,
                                count_of_games=None):
+        """Return filtered games"""
         games_from_igdb = self.igdb_wrapper.get_games(genres=genres,
                                                       platforms=platforms,
                                                       rating=rating,
@@ -36,6 +38,7 @@ class GamesManager(BaseGameManager):
     def create_tweets_by_game_name(self,
                                    game,
                                    count_of_tweets=None):
+        """Return tweets related to game"""
         tweets = []
 
         for tweet in self.twitter_wrapper.get_tweets_by_game_name(game.name,

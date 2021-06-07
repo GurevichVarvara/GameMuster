@@ -148,6 +148,8 @@ mocked_*.pickle
 
 data/
 
+docs/
+
 static/
 
 celerybeat-schedule*
