@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from gameMuster.models import FavoriteGame, Game, Platform, Genre, Screenshot
 from gameMuster.game_managers.games_manager import games_manager
 
+from gameMuster.tests.test_twitter_wrapper import TwitterWrapperTestCase
 
 def get_list_of_filters(option, data_from_filter):
     """Return list of int values by key from data from filter"""
@@ -41,6 +42,12 @@ def get_game_genres(game_list):
 
 
 def index(request):
+    t = TwitterWrapperTestCase()
+    game = t.get_game()
+    count_of_tweets = 5
+    tweets = t.twitter_wrapper.get_tweets_by_game_name(
+        game.name,
+        count_of_tweets)
     """Main page view"""
     data_from_filter = request.GET
     chosen_params = {'platforms': None,
