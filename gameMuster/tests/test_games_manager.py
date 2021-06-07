@@ -1,6 +1,4 @@
 """Games manager tests"""
-import pickle
-
 from gameMuster.tests.base_test import BaseTest
 from gameMuster.models import Game, Tweet
 from gameMuster.game_managers.games_manager import games_manager
@@ -9,10 +7,7 @@ from gameMuster.game_managers.games_manager import games_manager
 class GamesManagerTestCase(BaseTest):
     """Games manager tests"""
     def setUp(self):
-        with open(self.game_data_path, 'rb') as file:
-            self.game_data = pickle.load(file)
-
-        self.game = games_manager._create_game_from_igdb_response(self.game_data)
+        self.game = self.get_game()
 
     def test_create_game_from_igdb_response(self):
         """Test that method creates Game instance"""

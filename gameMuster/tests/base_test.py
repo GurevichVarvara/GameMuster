@@ -1,7 +1,10 @@
 """Base test class"""
 import os
+import pickle
 
 from django.test import TestCase
+
+from gameMuster.game_managers.games_manager import games_manager
 
 
 class BaseTest(TestCase):
@@ -14,3 +17,9 @@ class BaseTest(TestCase):
 
         for item in container:
             self.assertIsInstance(item, target_class)
+
+    def get_game(self):
+        with open(self.game_data_path, 'rb') as file:
+            self.game_data = pickle.load(file)
+
+        return games_manager._create_game_from_igdb_response(self.game_data)
