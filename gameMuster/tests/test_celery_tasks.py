@@ -1,7 +1,7 @@
 """Celery tasks tests"""
-from datetime import datetime
+import datetime
 
-from base_test import BaseTest
+from gameMuster.tests.base_test import BaseTest
 
 from gameMuster.tasks import refresh_games
 from gameMuster.models import Game
