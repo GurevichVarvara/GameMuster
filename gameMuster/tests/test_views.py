@@ -54,11 +54,11 @@ class IndexViewTestCase(BaseTest):
             [self.game.id]
         )
         self.assertCountEqual(
-            [platform for platform in response.context['platforms_chosen']],
+            response.context['platforms_chosen'],
             [self.platform_1.id]
         )
         self.assertCountEqual(
-            [genre for genre in response.context['genres_chosen']],
+            response.context['genres_chosen'],
             [self.genre_1.id]
         )
         self.assertEqual(response.context['rating'], 50)
