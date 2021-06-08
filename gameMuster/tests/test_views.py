@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.test.client import RequestFactory
 
 from gameMuster.tests.base_test import BaseTest
-from gameMuster.models import Platform, Genre
+from gameMuster.models import Platform, Genre, Screenshot
 from gameMuster.views import get_game_genres, get_page_obj
 
 ITEMS_ON_PAGE = 4
@@ -53,8 +53,8 @@ class GamesIndexViewTestCase(BaseGamesViewTestCase):
         response = self.client.get(reverse('index'))
 
         self.assertCountEqual(
-            [g.id for g in response.context['game_list']],
-            [self.game.id]
+            response.context['game_list'],
+            [self.game]
         )
         self.assertDictEqual(
             response.context['game_genres'],
@@ -87,8 +87,8 @@ class GamesIndexViewTestCase(BaseGamesViewTestCase):
         )
 
         self.assertCountEqual(
-            [g.id for g in response.context['game_list']],
-            [self.game.id]
+            response.context['game_list'],
+            [self.game]
         )
         self.assertDictEqual(
             response.context['game_genres'],
@@ -116,4 +116,32 @@ class GamesIndexViewTestCase(BaseGamesViewTestCase):
 class GamesDetailViewTestCase(BaseGamesViewTestCase):
     """Detail view tests"""
     def test_detail_get(self):
-        pass
+        """If game exists"""
+        url = reverse('detail', args=(self.game.game_id,))
+        response = self.client.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEqual(self.game, response.context['game'])
+        self.assertEqual(self.game.name.replace(' ', ''),
+                         response.context['game_name'])
+        self.assertCountEqual(
+            list(Genre.objects.filter(game=self.game)),
+            response.context['genres']
+        )
+        self.assertCountEqual(
+            list(Platform.objects.filter(game=self.game)),
+            response.context['platforms']
+        )
+        self.assertCountEqual(
+            list(Screenshot.objects.filter(game=self.game)),
+            response.context['screenshots']
+        )
+
+    def test_game_does_not_exit(self):
+        """If game does not exist"""
+        url = reverse('detail', args=(self.game.id + 1,))
+        self.client.get(url)
+
+        self.assertRaises(LookupError)
+
+

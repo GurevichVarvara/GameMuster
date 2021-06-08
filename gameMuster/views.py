@@ -88,8 +88,11 @@ def detail(request, game_id):
     """Detail page view"""
     try:
         game = Game.objects.filter(game_id=game_id).first()
-    except LookupError as error:
-        return HttpResponseNotFound(f'<h1>{error}</h1>')
+
+        if not game:
+            raise LookupError
+    except LookupError:
+        return HttpResponseNotFound(f'<h1>No game are found</h1>')
 
     return render(request,
                   'gameMuster/detail.html',
