@@ -1,17 +1,24 @@
 """View tests"""
+import datetime
+import os
+
+from django.contrib.auth import authenticate, login
 from django.test import Client
 from django.urls import reverse
 from django.test.client import RequestFactory
 
 from gameMuster.tests.base_test import BaseTest
-from gameMuster.models import Platform, Genre, Screenshot
+from gameMuster.models import Platform, Genre, Screenshot, FavoriteGame
 from gameMuster.views import get_game_genres, get_page_obj
+
+from users.models import User
 
 ITEMS_ON_PAGE = 4
 
 
 class BaseGamesViewTestCase(BaseTest):
     """Base class for games view tests"""
+
     def setUp(self):
         self.client = Client()
         self.game = self.get_game()
@@ -29,6 +36,7 @@ class BaseGamesViewTestCase(BaseTest):
 
 class GamesIndexViewTestCase(BaseGamesViewTestCase):
     """Index view tests"""
+
     def test_get_page_obj(self):
         request = self.factory.get(reverse('index'))
         response = self.client.get(reverse('index'))
@@ -115,6 +123,7 @@ class GamesIndexViewTestCase(BaseGamesViewTestCase):
 
 class GamesDetailViewTestCase(BaseGamesViewTestCase):
     """Detail view tests"""
+
     def test_detail_get(self):
         """If game exists"""
         url = reverse('detail', args=(self.game.game_id,))
@@ -145,3 +154,22 @@ class GamesDetailViewTestCase(BaseGamesViewTestCase):
         self.assertRaises(LookupError)
 
 
+class FavoriteGamesViewTestCase(BaseGamesViewTestCase):
+    """Favorite games view tests"""
+
+    def setUp(self):
+        super().setUp()
+        self.user = User.objects.create_user('var',
+                                             'var@gmail.com',
+                                             'vvva112233',
+                                             active_time=datetime.datetime.now())
+        self.favorite_game = FavoriteGame.objects.create(user=self.user,
+                                                         game=self.game)
+
+    def test_favorite(self):
+        print(User.objects.all())
+        self.client.login(username='var',
+                          password='vvva112233')
+        response = self.client.get(reverse('favorite'))
+
+        self.assertEqual(response.status_code, 200)
