@@ -16,8 +16,12 @@ class IndexViewTestCase(BaseTest):
         self.client = Client()
         self.game = self.get_game()
         self.factory = RequestFactory()
-        self.platform_1 = Platform.objects.create(name='Linux')
-        self.genre_1 = Genre.objects.create(name='Puzzle')
+        self.platform_1 = Platform.objects.get_or_create(
+            name='Linux'
+        )[0]
+        self.genre_1 = Genre.objects.get_or_create(
+            name='Puzzle'
+        )[0]
         self.game.genres.add(self.genre_1)
         self.game.platforms.add(self.platform_1)
         self.game.save()
@@ -53,6 +57,14 @@ class IndexViewTestCase(BaseTest):
             response.context['game_genres'],
             get_game_genres([self.game])
         )
+        self.assertCountEqual(
+            response.context['platforms'],
+            Platform.objects.all()
+        )
+        self.assertCountEqual(
+            response.context['genres'],
+            Genre.objects.all()
+        )
         self.assertEqual(
             response.context['platforms_chosen'],
             None
@@ -78,6 +90,14 @@ class IndexViewTestCase(BaseTest):
         self.assertDictEqual(
             response.context['game_genres'],
             get_game_genres([self.game])
+        )
+        self.assertCountEqual(
+            response.context['platforms'],
+            Platform.objects.all()
+        )
+        self.assertCountEqual(
+            response.context['genres'],
+            Genre.objects.all()
         )
         self.assertCountEqual(
             response.context['platforms_chosen'],
