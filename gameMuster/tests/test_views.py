@@ -10,8 +10,8 @@ from gameMuster.views import get_game_genres, get_page_obj
 ITEMS_ON_PAGE = 4
 
 
-class IndexViewTestCase(BaseTest):
-    """Index view tests"""
+class BaseGamesViewTestCase(BaseTest):
+    """Base class for games view tests"""
     def setUp(self):
         self.client = Client()
         self.game = self.get_game()
@@ -26,6 +26,9 @@ class IndexViewTestCase(BaseTest):
         self.game.platforms.add(self.platform_1)
         self.game.save()
 
+
+class GamesIndexViewTestCase(BaseGamesViewTestCase):
+    """Index view tests"""
     def test_get_page_obj(self):
         request = self.factory.get(reverse('index'))
         response = self.client.get(reverse('index'))
@@ -108,3 +111,9 @@ class IndexViewTestCase(BaseTest):
             [self.genre_1.id]
         )
         self.assertEqual(response.context['rating'], 50)
+
+
+class GamesDetailViewTestCase(BaseGamesViewTestCase):
+    """Detail view tests"""
+    def test_detail_get(self):
+        pass
