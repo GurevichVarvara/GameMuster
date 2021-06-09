@@ -1,8 +1,6 @@
 """View tests"""
 import datetime
-import os
 
-from django.contrib.auth import authenticate, login
 from django.test import Client
 from django.urls import reverse
 from django.test.client import RequestFactory
