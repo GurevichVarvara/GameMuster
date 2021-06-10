@@ -1,38 +1,17 @@
 """View tests"""
-import datetime
-
-from django.test import Client
 from django.urls import reverse
-from django.test.client import RequestFactory
+from factory import Factory
+
+from seed.factories import UserFactory
 
 from gameMuster.tests.base_test import BaseTest
-from gameMuster.models import Platform, Genre, Screenshot, FavoriteGame
+from gameMuster.models import Platform, Genre, Screenshot
 from gameMuster.views import get_game_genres, get_page_obj
-
-from users.models import User
 
 ITEMS_ON_PAGE = 4
 
 
-class BaseGamesViewTestCase(BaseTest):
-    """Base class for games view tests"""
-
-    def setUp(self):
-        self.client = Client()
-        self.game = self.get_game()
-        self.factory = RequestFactory()
-        self.platform_1 = Platform.objects.get_or_create(
-            name='Linux'
-        )[0]
-        self.genre_1 = Genre.objects.get_or_create(
-            name='Puzzle'
-        )[0]
-        self.game.genres.add(self.genre_1)
-        self.game.platforms.add(self.platform_1)
-        self.game.save()
-
-
-class GamesIndexViewTestCase(BaseGamesViewTestCase):
+class GamesIndexViewTestCase(BaseTest):
     """Index view tests"""
 
     def test_get_page_obj(self):
@@ -56,6 +35,8 @@ class GamesIndexViewTestCase(BaseGamesViewTestCase):
 
     def test_no_filters_selected(self):
         """If no filters are selected by user"""
+        self.game.user_rating = 90
+        self.game.save()
         response = self.client.get(reverse('index'))
 
         self.assertCountEqual(
@@ -88,8 +69,8 @@ class GamesIndexViewTestCase(BaseGamesViewTestCase):
         """If filters are selected by user"""
         response = self.client.get(
             reverse('index'),
-            {'platforms': [self.platform_1.id],
-             'genres': [self.genre_1.id]}
+            {'platforms': [self.platform.id],
+             'genres': [self.genre.id]}
         )
 
         self.assertCountEqual(
@@ -110,16 +91,16 @@ class GamesIndexViewTestCase(BaseGamesViewTestCase):
         )
         self.assertCountEqual(
             response.context['platforms_chosen'],
-            [self.platform_1.id]
+            [self.platform.id]
         )
         self.assertCountEqual(
             response.context['genres_chosen'],
-            [self.genre_1.id]
+            [self.genre.id]
         )
         self.assertEqual(response.context['rating'], 50)
 
 
-class GamesDetailViewTestCase(BaseGamesViewTestCase):
+class GamesDetailViewTestCase(BaseTest):
     """Detail view tests"""
 
     def test_detail_get(self):
@@ -152,22 +133,19 @@ class GamesDetailViewTestCase(BaseGamesViewTestCase):
         self.assertRaises(LookupError)
 
 
-class FavoriteGamesViewTestCase(BaseGamesViewTestCase):
+class FavoriteGamesViewTestCase(BaseTest):
     """Favorite games view tests"""
 
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user('var',
-                                             'var@gmail.com',
-                                             'vvva112233',
-                                             active_time=datetime.datetime.now())
-        self.favorite_game = FavoriteGame.objects.create(user=self.user,
-                                                         game=self.game)
+        self.user_password = '11111'
+        self.user = UserFactory()
+        self.user.set_password(self.user_password)
+        self.user.save()
 
     def test_favorite(self):
-        print(User.objects.all())
-        self.client.login(username='var',
-                          password='vvva112233')
+        self.client.login(username=self.user.username,
+                          password=self.user_password)
         response = self.client.get(reverse('favorite'))
 
         self.assertEqual(response.status_code, 200)

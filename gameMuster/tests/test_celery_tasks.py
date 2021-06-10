@@ -1,7 +1,7 @@
 """Celery tasks tests"""
 import datetime
 
-from gameMuster.tests.base_test import BaseTest
+from django.test import TestCase
 
 from gameMuster.tasks import refresh_games
 from gameMuster.models import Game
@@ -10,7 +10,7 @@ LAST_RELEASE_DATE = datetime.date(2010, 1, 1)
 COUNT_OF_GAMES_TO_LOAD = 30
 
 
-class CeleryTasksTestCase(BaseTest):
+class CeleryTasksTestCase(TestCase):
     """Celery tasks tests"""
 
     def test_refresh_games(self):

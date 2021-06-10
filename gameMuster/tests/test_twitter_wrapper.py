@@ -26,7 +26,6 @@ class TwitterWrapperTestCase(BaseTest):
             COUNT_OF_TWEETS_TO_LOAD)
         tweet_fields = ['full_text', 'created_at', 'user']
 
-        self.check_list(tweets, dict)
         self.assertEqual(len(tweets), COUNT_OF_TWEETS_TO_LOAD)
 
         for field in tweet_fields:

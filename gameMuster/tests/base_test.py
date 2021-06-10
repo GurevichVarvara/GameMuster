@@ -1,26 +1,20 @@
 """Base test class"""
-import os
-import pickle
-
+from django.test import Client
 from django.test import TestCase
+from django.test.client import RequestFactory
 
-from gameMuster.game_managers.games_manager import games_manager
+from seed.factories import GameFactory, PlatformFactory, GenreFactory
 
 
 class BaseTest(TestCase):
     """Base test class"""
-    game_data_path = os.path.join(os.path.dirname(__file__), 'game_data.pickle')
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
 
-    def check_list(self, container, target_class):
-        """Test elements in the list to be instances of specified class"""
-        self.assertIsInstance(container, list)
+        self.game = GameFactory()
+        self.platform = PlatformFactory()
+        self.genre = GenreFactory()
 
-        for item in container:
-            self.assertIsInstance(item, target_class)
-
-    def get_game(self):
-        """Get one mocked game"""
-        with open(self.game_data_path, 'rb') as file:
-            self.game_data = pickle.load(file)
-
-        return games_manager._create_game_from_igdb_response(self.game_data)
+        self.game.platforms.add(self.platform)
+        self.game.genres.add(self.genre)
