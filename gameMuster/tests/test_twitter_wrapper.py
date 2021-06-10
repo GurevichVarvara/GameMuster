@@ -12,13 +12,6 @@ class TwitterWrapperTestCase(BaseTest):
     """Twitter API wrapper tests"""
     twitter_wrapper = TwitterWrapper(settings.TWITTER_BEARER_TOKEN)
 
-    def test_get_header(self):
-        """Test that method returns header with proper fields"""
-        header = self.twitter_wrapper._get_header()
-
-        self.assertIsInstance(header, dict)
-        self.assertIn('Authorization', header)
-
     def test_get_tweets_by_game_name(self):
         """Test that method returns tweets related to specified game"""
         tweets = self.twitter_wrapper.get_tweets_by_game_name(

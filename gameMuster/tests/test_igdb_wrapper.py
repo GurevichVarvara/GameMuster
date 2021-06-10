@@ -11,47 +11,6 @@ class IgdbWrapperTestCase(BaseTest):
     igdb_wrapper = IgdbWrapper(settings.IGDB_CLIENT_ID,
                                settings.IGDB_CLIENT_SECRET)
 
-    def test_get_header(self):
-        """Test that igdb wrapper returns right fields in header"""
-        header = self.igdb_wrapper._get_header()
-
-        self.assertIn('Client-ID', header)
-        self.assertIn('Authorization', header)
-
-    def test_compose_query_str(self):
-        """Test that wrapper make right query string from query params"""
-        query_str = self.igdb_wrapper._compose_query_str(
-            {'fields': ['id', 'name'],
-             'exclude': ['surname'],
-             'where': ['name = (var)',
-                       'id > 4'],
-             'sort': ['release_dates.date asc'],
-             'limit': '5'})
-
-        self.assertIn('data', query_str)
-        self.assertEquals(query_str['data'],
-                          'fields id, name;'
-                          'exclude surname;'
-                          'where name = (var) & id > 4;'
-                          'sort release_dates.date asc;'
-                          'limit 5;')
-
-    def test_compose_query(self):
-        """Test that wrapper make right query string from dict with filters"""
-        query_str = self.igdb_wrapper._compose_query(
-            enumeration_filters={'genres': [1, 2],
-                                 'platforms': [1, 2]},
-            rating=50,
-            count_of_games=10)
-
-        self.assertIn('data', query_str)
-        self.assertEquals(query_str['data'],
-                          'where genres = (1,2) & '
-                          'platforms = (1,2) & '
-                          'rating >= 50;'
-                          'sort release_dates.date asc;'
-                          'limit 10;')
-
     def test_get_img_path(self):
         """Test that method returns right image path"""
         img_path = IgdbWrapper.get_img_path('1')
