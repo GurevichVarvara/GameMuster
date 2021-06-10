@@ -1,6 +1,5 @@
 """View tests"""
 from django.urls import reverse
-from factory import Factory
 
 from seed.factories import UserFactory
 
@@ -35,8 +34,6 @@ class GamesIndexViewTestCase(BaseTest):
 
     def test_no_filters_selected(self):
         """If no filters are selected by user"""
-        self.game.user_rating = 90
-        self.game.save()
         response = self.client.get(reverse('index'))
 
         self.assertCountEqual(
@@ -70,7 +67,8 @@ class GamesIndexViewTestCase(BaseTest):
         response = self.client.get(
             reverse('index'),
             {'platforms': [self.platform.id],
-             'genres': [self.genre.id]}
+             'genres': [self.genre.id],
+             'rating': 0}
         )
 
         self.assertCountEqual(
@@ -97,7 +95,7 @@ class GamesIndexViewTestCase(BaseTest):
             response.context['genres_chosen'],
             [self.genre.id]
         )
-        self.assertEqual(response.context['rating'], 50)
+        self.assertEqual(response.context['rating'], 0)
 
 
 class GamesDetailViewTestCase(BaseTest):
