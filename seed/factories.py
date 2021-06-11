@@ -12,6 +12,7 @@ faker = Factory.create()
 
 class GameFactory(factory.django.DjangoModelFactory):
     """Game factory model"""
+
     class Meta:
         model = Game
 
@@ -44,6 +45,7 @@ class GameFactory(factory.django.DjangoModelFactory):
 
 class PlatformFactory(factory.django.DjangoModelFactory):
     """Platform factory model"""
+
     class Meta:
         model = Platform
 
@@ -52,6 +54,7 @@ class PlatformFactory(factory.django.DjangoModelFactory):
 
 class GenreFactory(factory.django.DjangoModelFactory):
     """Genre factory model"""
+
     class Meta:
         model = Genre
 
@@ -60,6 +63,7 @@ class GenreFactory(factory.django.DjangoModelFactory):
 
 class UserFactory(factory.django.DjangoModelFactory):
     """User factory model"""
+
     class Meta:
         model = User
 

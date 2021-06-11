@@ -8,6 +8,7 @@ from seed.factories import GameFactory, PlatformFactory, GenreFactory
 
 class BaseTest(TestCase):
     """Base test class"""
+
     def setUp(self):
         self.client = Client()
         self.factory = RequestFactory()

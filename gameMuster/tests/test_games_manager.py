@@ -5,6 +5,7 @@ from gameMuster.game_managers.games_manager import games_manager
 
 class GamesManagerTestCase(BaseTest):
     """Games manager tests"""
+
     def test_generate_list_of_games(self):
         """Test that method returns list of Game instances"""
         games = games_manager.generate_list_of_games()

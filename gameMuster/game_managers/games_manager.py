@@ -10,23 +10,29 @@ from gameMuster.models import Tweet
 
 class GamesManager(BaseGameManager):
     """IGDB API games manager"""
+
     def __init__(self):
-        self.igdb_wrapper = IgdbWrapper(settings.IGDB_CLIENT_ID,
-                                        settings.IGDB_CLIENT_SECRET)
+        self.igdb_wrapper = IgdbWrapper(
+            settings.IGDB_CLIENT_ID, settings.IGDB_CLIENT_SECRET
+        )
         self.twitter_wrapper = TwitterWrapper(settings.TWITTER_BEARER_TOKEN)
 
-    def generate_list_of_games(self,
-                               genres=None,
-                               platforms=None,
-                               rating=None,
-                               last_release_date=None,
-                               count_of_games=None):
+    def generate_list_of_games(
+        self,
+        genres=None,
+        platforms=None,
+        rating=None,
+        last_release_date=None,
+        count_of_games=None,
+    ):
         """Return filtered games"""
-        games_from_igdb = self.igdb_wrapper.get_games(genres=genres,
-                                                      platforms=platforms,
-                                                      rating=rating,
-                                                      last_release_date=last_release_date,
-                                                      count_of_games=count_of_games)
+        games_from_igdb = self.igdb_wrapper.get_games(
+            genres=genres,
+            platforms=platforms,
+            rating=rating,
+            last_release_date=last_release_date,
+            count_of_games=count_of_games,
+        )
 
         games = []
         for game_from_igdb in games_from_igdb:
@@ -35,20 +41,22 @@ class GamesManager(BaseGameManager):
 
         return games
 
-    def create_tweets_by_game_name(self,
-                                   game,
-                                   count_of_tweets=None):
+    def create_tweets_by_game_name(self, game, count_of_tweets=None):
         """Return tweets related to game"""
         tweets = []
 
-        for tweet in self.twitter_wrapper.get_tweets_by_game_name(game.name,
-                                                                  count_of_tweets):
-            tweets.append(Tweet(content=tweet['full_text'],
-                                publisher=tweet['user']['name'],
-                                date=tweet['created_at']))
+        for tweet in self.twitter_wrapper.get_tweets_by_game_name(
+            game.name, count_of_tweets
+        ):
+            tweets.append(
+                Tweet(
+                    content=tweet["full_text"],
+                    publisher=tweet["user"]["name"],
+                    date=tweet["created_at"],
+                )
+            )
 
         return tweets
 
 
-games_manager = MockedGamesManager() if settings.DEV_DATA_MODE \
-    else GamesManager()
+games_manager = MockedGamesManager() if settings.DEV_DATA_MODE else GamesManager()

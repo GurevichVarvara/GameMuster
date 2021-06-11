@@ -24,10 +24,7 @@ class CeleryTasksTestCase(TestCase):
         games = refresh_games(COUNT_OF_GAMES_TO_LOAD)
 
         self.check_list(games, Game)
-        self.assertGreaterEqual(COUNT_OF_GAMES_TO_LOAD,
-                                len(games))
+        self.assertGreaterEqual(COUNT_OF_GAMES_TO_LOAD, len(games))
 
         for new_game in games:
-            self.assertGreater(new_game.release_date,
-                               game.release_date)
-
+            self.assertGreater(new_game.release_date, game.release_date)
