@@ -11,3 +11,4 @@ djangorestframework==3.12.4
 django-environ==0.4.5
 Faker==8.6.0
 factory-boy==3.2.0
+requests-mock==1.9.3
