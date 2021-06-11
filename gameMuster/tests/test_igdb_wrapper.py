@@ -2,8 +2,8 @@
 
 from django.conf import settings
 
-from gameMuster.tests.base_test import BaseTest
 from gameMuster.api_wrappers.igdb_wrapper import IgdbWrapper
+from gameMuster.tests.base_test import BaseTest
 
 
 class IgdbWrapperTestCase(BaseTest):

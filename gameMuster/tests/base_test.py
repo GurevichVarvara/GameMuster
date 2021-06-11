@@ -1,4 +1,5 @@
 """Base test class"""
+
 from django.test import Client
 from django.test import TestCase
 from django.test.client import RequestFactory
