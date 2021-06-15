@@ -61,7 +61,7 @@ class SignUpView(CreateView):
         return update_user_with_email(
             self.request,
             form,
-            "Please confirm your email address " "to complete the registration",
+            "Please confirm your email address to complete the registration",
         )
 
 

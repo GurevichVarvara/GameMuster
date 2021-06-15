@@ -13,13 +13,13 @@ class UserBackendTestCase(BaseTest):
 
         login_result = self.login_user()
 
-        self.assertEqual(login_result, False)
+        self.assertFalse(login_result)
 
     def test_user_with_active_time_login(self):
         """Test that user with not empty active time could login"""
         login_result = self.login_user()
 
-        self.assertEqual(login_result, True)
+        self.assertTrue(login_result)
 
     def test_admin_with_no_active_time_login(self):
         """Test that admin with empty active time could login"""
@@ -29,4 +29,4 @@ class UserBackendTestCase(BaseTest):
 
         login_result = self.login_user()
 
-        self.assertEqual(login_result, True)
+        self.assertTrue(login_result)
