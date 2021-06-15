@@ -4,7 +4,7 @@ from django.urls import reverse
 from seed.factories import UserFactory
 
 from gameMuster.tests.base_test import BaseTest
-from gameMuster.models import Platform, Genre, Screenshot
+from gameMuster.models import Platform, Genre, Screenshot, FavoriteGame, Game
 from gameMuster.views import get_game_genres, get_page_obj
 
 ITEMS_ON_PAGE = 4
@@ -96,13 +96,30 @@ class FavoriteGamesViewTestCase(BaseTest):
 
     def setUp(self):
         super().setUp()
-        self.user_password = "11111"
         self.user = UserFactory()
+
+        self.user_password = "11111"
         self.user.set_password(self.user_password)
         self.user.save()
-
-    def test_favorite(self):
         self.client.login(username=self.user.username, password=self.user_password)
+
+    def add_game_to_favorite(self):
+        return FavoriteGame.objects.create(game=self.game, user=self.user)
+
+    def test_favorite_authenticated(self):
+        """Favorite main page test if user is authenticated"""
+        favorite_game = self.add_game_to_favorite()
         response = self.client.get(reverse("favorite"))
 
         self.assertEqual(response.status_code, 200)
+        self.assertCountEqual([favorite_game.game], response.context["game_list"])
+        self.assertCountEqual(
+            [favorite_game.game.game_id], response.context["favorite_game_list"]
+        )
+
+    def test_favorite_not_authenticated(self):
+        """Favorite main page test if user is not authenticated"""
+        self.client.logout()
+        response = self.client.get(reverse("favorite"))
+
+        self.assertEqual(response.status_code, 302)
