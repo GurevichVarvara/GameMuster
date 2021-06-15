@@ -1,10 +1,8 @@
 """View tests"""
 from django.urls import reverse
 
-from seed.factories import UserFactory
-
 from gameMuster.tests.base_test import BaseTest
-from gameMuster.models import Platform, Genre, Screenshot, FavoriteGame, Game
+from gameMuster.models import Platform, Genre, Screenshot, FavoriteGame
 from gameMuster.views import get_game_genres, get_page_obj
 
 ITEMS_ON_PAGE = 4
@@ -96,12 +94,7 @@ class FavoriteGamesViewTestCase(BaseTest):
 
     def setUp(self):
         super().setUp()
-        self.user = UserFactory()
-
-        self.user_password = "11111"
-        self.user.set_password(self.user_password)
-        self.user.save()
-        self.client.login(username=self.user.username, password=self.user_password)
+        self.login_user()
 
     def add_game_to_favorite(self):
         return FavoriteGame.objects.create(game=self.game, user=self.user)

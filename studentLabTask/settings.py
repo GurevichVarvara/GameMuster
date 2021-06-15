@@ -34,8 +34,8 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    "gameMuster",
     "users",
+    "gameMuster",
     "api",
     "django.contrib.admin",
     "django.contrib.auth",
