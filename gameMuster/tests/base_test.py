@@ -3,6 +3,7 @@
 from django.test import Client
 from django.test import TestCase
 from django.test.client import RequestFactory
+from faker import Factory
 
 from seed.factories import GameFactory, PlatformFactory, GenreFactory, UserFactory
 
@@ -18,6 +19,7 @@ class BaseTest(TestCase):
         self.user_password = USER_PASSWORD
         self.user = self._create_user()
         self.factory = RequestFactory()
+        self.faker = Factory.create()
 
         self.game = GameFactory()
         self.platform = PlatformFactory()

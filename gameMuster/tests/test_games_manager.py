@@ -4,14 +4,12 @@ import re
 
 import requests
 import requests_mock
-from faker import Factory
 
 from gameMuster.tests.base_test import BaseTest
 from gameMuster.game_managers.games_manager import games_manager
 
 from seed.factories import GameFactory
 
-faker = Factory.create()
 COUNT_OF_TWEETS_TO_LOAD = 1
 adapter = requests_mock.Adapter()
 session = requests.Session()
@@ -31,16 +29,18 @@ class GamesManagerTestCase(BaseTest):
             json={
                 "games": [
                     {
-                        "id": faker.pyint(min_value=0),
-                        "name": faker.name(),
-                        "summary": faker.pystr(max_chars=10),
-                        "release_dates": [{"date": faker.unix_time()}],
-                        "rating": faker.pyint(min_value=50, max_value=100),
-                        "rating_count": faker.pyint(),
-                        "aggregated_rating": faker.pyint(min_value=50, max_value=100),
-                        "aggregated_rating_count": faker.pyint(),
-                        "platforms": [{"name": faker.name()}],
-                        "genres": [{"name": faker.name()}],
+                        "id": self.faker.pyint(min_value=0),
+                        "name": self.faker.name(),
+                        "summary": self.faker.pystr(max_chars=10),
+                        "release_dates": [{"date": self.faker.unix_time()}],
+                        "rating": self.faker.pyint(min_value=50, max_value=100),
+                        "rating_count": self.faker.pyint(),
+                        "aggregated_rating": self.faker.pyint(
+                            min_value=50, max_value=100
+                        ),
+                        "aggregated_rating_count": self.faker.pyint(),
+                        "platforms": [{"name": self.faker.name()}],
+                        "genres": [{"name": self.faker.name()}],
                     }
                 ]
             },
@@ -80,8 +80,8 @@ class GamesManagerTestCase(BaseTest):
             json={
                 "statuses": {
                     "created_at": "Fri Jun 11 12:45:10 +0000 2021",
-                    "user": {"name": faker.name()},
-                    "full_text": faker.pystr(max_chars=10),
+                    "user": {"name": self.faker.name()},
+                    "full_text": self.faker.pystr(max_chars=10),
                 }
             },
         )
@@ -90,7 +90,7 @@ class GamesManagerTestCase(BaseTest):
             "statuses"
         ]
         tweet = games_manager.create_tweets_by_game_name(
-            GameFactory(name=faker.name()), COUNT_OF_TWEETS_TO_LOAD
+            GameFactory(name=self.faker.name()), COUNT_OF_TWEETS_TO_LOAD
         )[0]
 
         self.assertEqual(

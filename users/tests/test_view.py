@@ -62,7 +62,7 @@ class ViewTestCase(BaseTest):
 
         url = reverse("profile-edit", args=(self.user.id,))
         request = self.factory.get(url, data=data_for_form)
-        print(request)
+
         response = UserEditView.as_view()(request)
 
         self.assertEqual(response.status_code, 200)
