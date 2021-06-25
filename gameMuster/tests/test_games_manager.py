@@ -1,9 +1,9 @@
 """Games manager tests"""
 import datetime
+import re
 
 import requests
 import requests_mock
-from django.conf import settings
 from faker import Factory
 
 from gameMuster.tests.base_test import BaseTest
@@ -13,24 +13,21 @@ from seed.factories import GameFactory
 
 faker = Factory.create()
 COUNT_OF_TWEETS_TO_LOAD = 1
+adapter = requests_mock.Adapter()
+session = requests.Session()
+session.mount("https://", adapter)
 
 
 class GamesManagerTestCase(BaseTest):
     """Games manager tests"""
 
-    @requests_mock.Mocker()
-    def test_generate_list_of_games(self, m):
+    def test_generate_list_of_games(self):
         """Test that method returns list of games"""
 
-        m.get(
-            "https://id.twitch.tv/oauth2/"
-            f"token?client_id={settings.IGDB_CLIENT_ID}"
-            f"&client_secret={settings.IGDB_CLIENT_SECRET}"
-            "&grant_type=client_credentials",
-            json={"Client-ID": faker.pystr(), "Authorization": faker.pystr()},
-        )
-        m.get(
-            "https://api.igdb.com/v4/games/",
+        game_pattern = re.compile("https://api.igdb.com/v4/games/")
+        adapter.register_uri(
+            "GET",
+            game_pattern,
             json={
                 "games": [
                     {
@@ -49,8 +46,8 @@ class GamesManagerTestCase(BaseTest):
             },
         )
 
-        response = requests.get("https://api.igdb.com/v4/games/").json()["games"][0]
-        game = games_manager.get_games()[0]
+        response = session.get("https://api.igdb.com/v4/games/").json()["games"][0]
+        game = games_manager.generate_list_of_games()[0]
 
         self.assertEqual(game.game_id, response["id"])
         self.assertEqual(game.name, response["name"])
@@ -73,12 +70,13 @@ class GamesManagerTestCase(BaseTest):
             [genre["name"] for genre in response["genres"]],
         )
 
-    @requests_mock.Mocker()
-    def test_create_tweets_by_game_name(self, m):
+    def test_create_tweets_by_game_name(self):
         """Test that method returns tweets related to specified game"""
 
-        m.get(
-            "https://api.twitter.com/1.1/search/tweets.json",
+        tweet_pattern = re.compile("https://api.twitter.com/1.1/search/tweets.json")
+        adapter.register_uri(
+            "GET",
+            tweet_pattern,
             json={
                 "statuses": {
                     "created_at": "Fri Jun 11 12:45:10 +0000 2021",
@@ -88,9 +86,9 @@ class GamesManagerTestCase(BaseTest):
             },
         )
 
-        response = requests.get(
-            "https://api.twitter.com/1.1/search/tweets.json"
-        ).json()["statuses"]
+        response = session.get("https://api.twitter.com/1.1/search/tweets.json").json()[
+            "statuses"
+        ]
         tweet = games_manager.create_tweets_by_game_name(
             GameFactory(name=faker.name()), COUNT_OF_TWEETS_TO_LOAD
         )[0]

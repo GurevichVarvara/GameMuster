@@ -1,12 +1,8 @@
 """View additional functions tests"""
-import pickle
-
 from django.http.request import QueryDict, MultiValueDict
 
 from gameMuster.tests.base_test import BaseTest
 from gameMuster import views
-from gameMuster.models import Genre
-from gameMuster.game_managers.games_manager import games_manager
 
 
 class ViewAdditionalFuncsTest(BaseTest):
