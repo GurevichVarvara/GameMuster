@@ -4,9 +4,12 @@ import re
 
 import requests
 import requests_mock
+import mock
 
 from gameMuster.tests.base_test import BaseTest
 from gameMuster.game_managers.games_manager import games_manager
+from gameMuster.api_wrappers.igdb_wrapper import IgdbWrapper
+from gameMuster.api_wrappers.twitter_wrapper import TwitterWrapper
 
 from seed.factories import GameFactory
 
@@ -20,9 +23,10 @@ class GamesManagerTestCase(BaseTest):
     """Games manager tests"""
 
     @requests_mock.Mocker()
-    def test_generate_list_of_games(self, mock):
+    @mock.patch.object(IgdbWrapper, '_get_header')
+    def test_generate_list_of_games(self, mock, _get_header):
         """Test that method returns list of games"""
-
+        _get_header.return_value = {}
         game_pattern = re.compile("https://api.igdb.com/v4/games/")
         mock.register_uri(
             "POST",
@@ -62,9 +66,11 @@ class GamesManagerTestCase(BaseTest):
         self.assertEqual(game.critics_rating_count, response["aggregated_rating_count"])
 
     @requests_mock.Mocker()
-    def test_create_tweets_by_game_name(self, mock):
+    @mock.patch.object(TwitterWrapper, '_get_header')
+    def test_create_tweets_by_game_name(self, mock, _get_header):
         """Test that method returns tweets related to specified game"""
 
+        _get_header.return_value = {}
         mock.get(
             "https://api.twitter.com/1.1/search/tweets.json",
             json={
