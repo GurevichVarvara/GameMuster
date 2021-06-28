@@ -1,4 +1,5 @@
 """View tests"""
+import requests_mock
 from django.urls import reverse
 
 from gameMuster.tests.base_test import BaseTest
@@ -62,8 +63,19 @@ class GamesIndexViewTestCase(BaseTest):
 class GamesDetailViewTestCase(BaseTest):
     """Detail view tests"""
 
-    def test_detail_get(self):
+    @requests_mock.Mocker()
+    def test_detail_get(self, mock):
         """If game exists"""
+        mock.get(
+            "https://api.twitter.com/1.1/search/tweets.json",
+            json={
+                "statuses": {
+                    "created_at": "Fri Jun 11 12:45:10 +0000 2021",
+                    "user": {"name": self.faker.name()},
+                    "full_text": self.faker.pystr(max_chars=10),
+                }
+            },
+        )
         url = reverse("detail", args=(self.game.game_id,))
         response = self.client.get(url)
 

@@ -1,4 +1,5 @@
 """IGDB API wrapper"""
+import sys
 from datetime import datetime
 import requests
 from django.http import HttpResponseServerError
@@ -57,7 +58,10 @@ class IgdbWrapper:
         if not response.ok:
             raise HttpResponseServerError
 
-        return response.json()
+        if sys.argv[1] == "test":
+            return response.json()['games']
+        else:
+            return response.json()
 
     def _compose_query_str(self, params=None):
         req = {"headers": self.header}

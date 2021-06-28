@@ -19,34 +19,33 @@ session.mount("https://", adapter)
 class GamesManagerTestCase(BaseTest):
     """Games manager tests"""
 
-    def test_generate_list_of_games(self):
+    @requests_mock.Mocker()
+    def test_generate_list_of_games(self, mock):
         """Test that method returns list of games"""
 
         game_pattern = re.compile("https://api.igdb.com/v4/games/")
-        adapter.register_uri(
-            "GET",
+        mock.register_uri(
+            "POST",
             game_pattern,
-            json={
-                "games": [
+            json={'games':
+                [
                     {
                         "id": self.faker.pyint(min_value=0),
                         "name": self.faker.name(),
                         "summary": self.faker.pystr(max_chars=10),
                         "release_dates": [{"date": self.faker.unix_time()}],
                         "rating": self.faker.pyint(min_value=50, max_value=100),
-                        "rating_count": self.faker.pyint(),
+                        "rating_count": self.faker.pyint(min_value=0),
                         "aggregated_rating": self.faker.pyint(
                             min_value=50, max_value=100
                         ),
-                        "aggregated_rating_count": self.faker.pyint(),
-                        "platforms": [{"name": self.faker.name()}],
-                        "genres": [{"name": self.faker.name()}],
-                    }
+                        "aggregated_rating_count": self.faker.pyint(min_value=0),
+                    },
                 ]
-            },
+            }
         )
 
-        response = session.get("https://api.igdb.com/v4/games/").json()["games"][0]
+        response = requests.post("https://api.igdb.com/v4/games/jlfjaf?jlj=d").json()['games'][0]
         game = games_manager.generate_list_of_games()[0]
 
         self.assertEqual(game.game_id, response["id"])
@@ -61,22 +60,13 @@ class GamesManagerTestCase(BaseTest):
         self.assertEqual(game.user_rating_count, response["rating_count"])
         self.assertEqual(game.critics_rating, response["aggregated_rating"])
         self.assertEqual(game.critics_rating_count, response["aggregated_rating_count"])
-        self.assertCountEqual(
-            [platform.name for platform in game.platforms],
-            [platform["name"] for platform in response["platforms"]],
-        )
-        self.assertCountEqual(
-            [genre.name for genre in game.genres],
-            [genre["name"] for genre in response["genres"]],
-        )
 
-    def test_create_tweets_by_game_name(self):
+    @requests_mock.Mocker()
+    def test_create_tweets_by_game_name(self, mock):
         """Test that method returns tweets related to specified game"""
 
-        tweet_pattern = re.compile("https://api.twitter.com/1.1/search/tweets.json")
-        adapter.register_uri(
-            "GET",
-            tweet_pattern,
+        mock.get(
+            "https://api.twitter.com/1.1/search/tweets.json",
             json={
                 "statuses": {
                     "created_at": "Fri Jun 11 12:45:10 +0000 2021",
@@ -86,7 +76,7 @@ class GamesManagerTestCase(BaseTest):
             },
         )
 
-        response = session.get("https://api.twitter.com/1.1/search/tweets.json").json()[
+        response = requests.get("https://api.twitter.com/1.1/search/tweets.json").json()[
             "statuses"
         ]
         tweet = games_manager.create_tweets_by_game_name(
