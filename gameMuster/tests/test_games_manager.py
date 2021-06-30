@@ -4,34 +4,34 @@ import re
 
 import requests
 import requests_mock
-import mock
 
 from gameMuster.tests.base_test import BaseTest
-from gameMuster.game_managers.games_manager import games_manager
-from gameMuster.api_wrappers.igdb_wrapper import IgdbWrapper
-from gameMuster.api_wrappers.twitter_wrapper import TwitterWrapper
+from gameMuster.game_managers.games_manager import GamesManager
 
 from seed.factories import GameFactory
 
 COUNT_OF_TWEETS_TO_LOAD = 1
-adapter = requests_mock.Adapter()
-session = requests.Session()
-session.mount("https://", adapter)
 
 
 class GamesManagerTestCase(BaseTest):
     """Games manager tests"""
 
     @requests_mock.Mocker()
-    @mock.patch.object(IgdbWrapper, '_get_header')
-    def test_generate_list_of_games(self, mock, _get_header):
+    def test_generate_list_of_games(self, mock):
         """Test that method returns list of games"""
-        _get_header.return_value = {}
+
+        game_header_pattern = re.compile("https://id.twitch.tv/oauth2/")
+        mock.register_uri(
+            "POST",
+            game_header_pattern,
+            json={"access_token": None}
+        )
+
         game_pattern = re.compile("https://api.igdb.com/v4/games/")
         mock.register_uri(
             "POST",
             game_pattern,
-            json={'games':
+            json={"games":
                 [
                     {
                         "id": self.faker.pyint(min_value=0),
@@ -49,8 +49,9 @@ class GamesManagerTestCase(BaseTest):
             }
         )
 
-        response = requests.post("https://api.igdb.com/v4/games/jlfjaf?jlj=d").json()['games'][0]
-        game = games_manager.generate_list_of_games()[0]
+        response = requests.post("https://api.igdb.com/v4/games/jlfjaf?jlj=d").json()["games"][0]
+        manager = GamesManager()
+        game = manager.generate_list_of_games()[0]
 
         self.assertEqual(game.game_id, response["id"])
         self.assertEqual(game.name, response["name"])
@@ -66,11 +67,16 @@ class GamesManagerTestCase(BaseTest):
         self.assertEqual(game.critics_rating_count, response["aggregated_rating_count"])
 
     @requests_mock.Mocker()
-    @mock.patch.object(TwitterWrapper, '_get_header')
-    def test_create_tweets_by_game_name(self, mock, _get_header):
+    def test_create_tweets_by_game_name(self, mock):
         """Test that method returns tweets related to specified game"""
 
-        _get_header.return_value = {}
+        game_header_pattern = re.compile("https://id.twitch.tv/oauth2/")
+        mock.register_uri(
+            "POST",
+            game_header_pattern,
+            json={"access_token": None}
+        )
+
         mock.get(
             "https://api.twitter.com/1.1/search/tweets.json",
             json={
@@ -85,7 +91,9 @@ class GamesManagerTestCase(BaseTest):
         response = requests.get("https://api.twitter.com/1.1/search/tweets.json").json()[
             "statuses"
         ]
-        tweet = games_manager.create_tweets_by_game_name(
+
+        manager = GamesManager()
+        tweet = manager.create_tweets_by_game_name(
             GameFactory(name=self.faker.name()), COUNT_OF_TWEETS_TO_LOAD
         )[0]
 
