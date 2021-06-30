@@ -56,8 +56,13 @@ class ViewTestCase(BaseTest):
 
     def test_user_edit_view_with_changes(self):
         """Test user edit view with changed fields"""
+        self.login_user()
+
         data_for_form = self.get_data_for_user_edit_form()
-        new_first_name = faker.first_name
+        new_first_name = faker.first_name()
         data_for_form["first_name"] = new_first_name
 
         url = reverse("profile-edit", args=(self.user.id,))
+        response = self.client.post(url, data=data_for_form)
+
+        self.assertEqual(response.status_code, 200)
