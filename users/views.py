@@ -58,6 +58,8 @@ class SignUpView(CreateView):
 
     def form_valid(self, form):
         """Create user if data from form is valid"""
+
+        print("FORM VALID")
         return update_user_with_email(
             self.request,
             form,
@@ -84,7 +86,6 @@ class UserEditView(UpdateView):
         """Update user
         Send confirmation email if it's been changed.
         """
-        print("IIII")
 
         if is_user_email_changed(self.get_object().email, form):
             response = update_user_with_email(

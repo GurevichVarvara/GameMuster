@@ -1,13 +1,13 @@
 """View test"""
 
 from django.urls import reverse
-from django.test.client import RequestFactory
+from django.utils import timezone
 from faker import Factory
 
 from gameMuster.tests.base_test import BaseTest
 
-from users.views import is_user_email_changed, UserEditView
-from users.forms import UserEditForm
+from users.views import is_user_email_changed
+from users.forms import UserEditForm, SignupForm
 
 faker = Factory.create()
 
@@ -29,6 +29,7 @@ class ViewTestCase(BaseTest):
         self.assertEqual(response.status_code, 302)
 
     def get_data_for_user_edit_form(self):
+        """Data for edit form"""
         return {
             "username": self.user.username,
             "unconfirmed_email": self.user.email,
@@ -61,8 +62,83 @@ class ViewTestCase(BaseTest):
         data_for_form = self.get_data_for_user_edit_form()
         new_first_name = faker.first_name()
         data_for_form["first_name"] = new_first_name
+        form = UserEditForm(data=data_for_form)
 
         url = reverse("profile-edit", args=(self.user.id,))
-        response = self.client.post(url, data=data_for_form)
+        response = self.client.post(url, form=form)
 
         self.assertEqual(response.status_code, 200)
+
+    def get_data_for_signup_form(self):
+        """Data for signup form"""
+        password = self.faker.password()
+        new_user_form = {
+            "username": self.faker.first_name(),
+            "unconfirmed_email": self.faker.email(),
+            "first_name": self.faker.first_name(),
+            "last_name": self.faker.last_name(),
+            "birthday": timezone.now(),
+            "password1": password,
+            "password2": password,
+        }
+
+        return new_user_form
+
+    def test_create_user(self):
+        """Test user creation"""
+        form = SignupForm(data=self.get_data_for_signup_form())
+
+        response = self.client.post(reverse("signup"), form=form)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(form.is_valid())
+
+    def test_create_user_without_username(self):
+        """Test user creation with no username"""
+        data_for_form = self.get_data_for_signup_form()
+        data_for_form["username"] = None
+        form = SignupForm(data=data_for_form)
+
+        response = self.client.post(reverse("signup"), form=form)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(form.is_valid())
+        self.assertFormError(response, "form", "username", "This field is required.")
+
+    def test_create_user_without_first_name(self):
+        """Test user creation with no first name"""
+        data_for_form = self.get_data_for_signup_form()
+        data_for_form["first_name"] = None
+        form = SignupForm(data=data_for_form)
+
+        response = self.client.post(reverse("signup"), form=form)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(form.is_valid())
+        self.assertFormError(response, "form", "first_name", "This field is required.")
+
+    def test_create_user_without_last_name(self):
+        """Test user creation with no last name"""
+        data_for_form = self.get_data_for_signup_form()
+        data_for_form["last_name"] = None
+        form = SignupForm(data=data_for_form)
+
+        response = self.client.post(reverse("signup"), form=form)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(form.is_valid())
+        self.assertFormError(response, "form", "last_name", "This field is required.")
+
+    def test_create_user_without_email(self):
+        """Test user creation with no email"""
+        data_for_form = self.get_data_for_signup_form()
+        data_for_form["unconfirmed_email"] = None
+        form = SignupForm(data=data_for_form)
+
+        response = self.client.post(reverse("signup"), form=form)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(form.is_valid())
+        self.assertFormError(
+            response, "form", "unconfirmed_email", "This field is required."
+        )
