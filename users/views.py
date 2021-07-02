@@ -59,7 +59,6 @@ class SignUpView(CreateView):
     def form_valid(self, form):
         """Create user if data from form is valid"""
 
-        print("FORM VALID")
         return update_user_with_email(
             self.request,
             form,

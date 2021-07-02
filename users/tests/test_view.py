@@ -68,6 +68,7 @@ class ViewTestCase(BaseTest):
         response = self.client.post(url, form=form)
 
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("users/user_update_form.html")
 
     def get_data_for_signup_form(self):
         """Data for signup form"""
