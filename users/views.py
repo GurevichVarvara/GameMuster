@@ -58,16 +58,17 @@ class SignUpView(CreateView):
 
     def form_valid(self, form):
         """Create user if data from form is valid"""
+
         return update_user_with_email(
             self.request,
             form,
-            "Please confirm your email address " "to complete the registration",
+            "Please confirm your email address to complete the registration",
         )
 
 
 def is_user_email_changed(prev_email, form):
     """Check if email's been changed"""
-    current_email = form["email"].value()
+    current_email = form["unconfirmed_email"].value()
 
     return current_email.lower() != prev_email.lower()
 
@@ -87,7 +88,7 @@ class UserEditView(UpdateView):
 
         if is_user_email_changed(self.get_object().email, form):
             response = update_user_with_email(
-                self.request, form, "Please confirm your " "new email address"
+                self.request, form, "Please confirm your new email address"
             )
         else:
             response = super(UserEditView, self).form_valid(form)

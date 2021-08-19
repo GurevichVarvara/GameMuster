@@ -8,7 +8,7 @@ class TwitterWrapper:
 
     def __init__(self, bearer_token):
         self.bearer_token = bearer_token
-        self.twitter_search_url = "https://api.twitter.com" "/1.1/search/tweets.json"
+        self.twitter_search_url = "https://api.twitter.com/1.1/search/tweets.json"
 
     def _get_header(self):
         return {"Authorization": "Bearer {}".format(self.bearer_token)}
@@ -27,7 +27,9 @@ class TwitterWrapper:
             "count": count_of_tweets,
         }
 
-        tweets = self._post(params)["statuses"]
+        response = self._post(params)
+        tweets = response["statuses"]
+        tweets = [tweets] if type(tweets) == dict else tweets
 
         for tweet in tweets:
             tweet["created_at"] = datetime.datetime.strptime(

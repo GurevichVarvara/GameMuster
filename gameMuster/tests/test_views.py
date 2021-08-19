@@ -1,10 +1,9 @@
 """View tests"""
+import requests_mock
 from django.urls import reverse
 
-from seed.factories import UserFactory
-
 from gameMuster.tests.base_test import BaseTest
-from gameMuster.models import Platform, Genre, Screenshot
+from gameMuster.models import Platform, Genre, Screenshot, FavoriteGame
 from gameMuster.views import get_game_genres, get_page_obj
 
 ITEMS_ON_PAGE = 4
@@ -64,8 +63,19 @@ class GamesIndexViewTestCase(BaseTest):
 class GamesDetailViewTestCase(BaseTest):
     """Detail view tests"""
 
-    def test_detail_get(self):
+    @requests_mock.Mocker()
+    def test_detail_get(self, mock):
         """If game exists"""
+        mock.get(
+            "https://api.twitter.com/1.1/search/tweets.json",
+            json={
+                "statuses": {
+                    "created_at": "Fri Jun 11 12:45:10 +0000 2021",
+                    "user": {"name": self.faker.name()},
+                    "full_text": self.faker.pystr(max_chars=10),
+                }
+            },
+        )
         url = reverse("detail", args=(self.game.game_id,))
         response = self.client.get(url)
 
@@ -96,13 +106,25 @@ class FavoriteGamesViewTestCase(BaseTest):
 
     def setUp(self):
         super().setUp()
-        self.user_password = "11111"
-        self.user = UserFactory()
-        self.user.set_password(self.user_password)
-        self.user.save()
+        self.login_user()
 
-    def test_favorite(self):
-        self.client.login(username=self.user.username, password=self.user_password)
+    def add_game_to_favorite(self):
+        return FavoriteGame.objects.create(game=self.game, user=self.user)
+
+    def test_favorite_authenticated(self):
+        """Favorite main page test if user is authenticated"""
+        favorite_game = self.add_game_to_favorite()
         response = self.client.get(reverse("favorite"))
 
         self.assertEqual(response.status_code, 200)
+        self.assertCountEqual([favorite_game.game], response.context["game_list"])
+        self.assertCountEqual(
+            [favorite_game.game.game_id], response.context["favorite_game_list"]
+        )
+
+    def test_favorite_not_authenticated(self):
+        """Favorite main page test if user is not authenticated"""
+        self.client.logout()
+        response = self.client.get(reverse("favorite"))
+
+        self.assertEqual(response.status_code, 302)

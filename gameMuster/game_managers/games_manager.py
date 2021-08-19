@@ -44,10 +44,11 @@ class GamesManager(BaseGameManager):
     def create_tweets_by_game_name(self, game, count_of_tweets=None):
         """Return tweets related to game"""
         tweets = []
-
-        for tweet in self.twitter_wrapper.get_tweets_by_game_name(
+        response = self.twitter_wrapper.get_tweets_by_game_name(
             game.name, count_of_tweets
-        ):
+        )
+
+        for tweet in response:
             tweets.append(
                 Tweet(
                     content=tweet["full_text"],
