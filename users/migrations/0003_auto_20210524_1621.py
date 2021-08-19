@@ -6,19 +6,20 @@ import users.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0002_auto_20210430_1515'),
-    ]
+    dependencies = [("users", "0002_auto_20210430_1515")]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='unconfirmed_email',
-            field=models.EmailField(default=None, max_length=254, null=True, validators=[users.models.is_email_unique]),
+            model_name="user",
+            name="unconfirmed_email",
+            field=models.EmailField(
+                default=None,
+                max_length=254,
+                null=True,
+                validators=[users.models.is_email_unique],
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='email',
-            field=models.EmailField(max_length=254),
+            model_name="user", name="email", field=models.EmailField(max_length=254)
         ),
     ]

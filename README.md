@@ -8,22 +8,22 @@ The main goal is to develop architecture and code structuring skills :muscle:
 
 ## Overview
 
-The site is created for those who’s looking for games to play. 
+The site is created for those who’s looking for games to play.
 
-You can discover latest games selected by rating, genre and platform. Beautiful icon pics, related tweets and detailed description would help you to choose what game you are take a fancy :hearts: 
+You can discover latest games selected by rating, genre and platform. Beautiful icon pics, related tweets and detailed description would help you to choose what game you are take a fancy :hearts:
 
 And this time the game you like won’t go out of your head, just click on must-button on a game preview card and it’d imminently be included to your favorite games page
 
 ## Technologies
 
 - [x] Python
-- [x] Django 
+- [x] Django
 - [x] HTML
 - [x] CSS
-- [x] [Internet Game Database](https://www.igdb.com/api) API 
+- [x] [Internet Game Database](https://www.igdb.com/api) API
 - [x] [Twitter](https://developer.twitter.com/en/docs) API
 - [x] :cloud: [Heroku](https://www.heroku.com/) :cloud: deployment
-- [ ] Celery tasks 
+- [ ] Celery tasks
 - [ ] REST API using DRF
 
 ## Run locally
@@ -44,13 +44,13 @@ After cloning repository and downloading dependencies you need to set environmen
   - EMAIL_HOST_USER
   - EMAIL_HOST_PASSWORD
   - EMAIL_PORT
-- IGDB API credentials: 
+- IGDB API credentials:
   - IGDB_CLIENT_ID
   - IGDB_CLIENT_SECRET
 - Twitter API credentials:
   - TWITTER_BEARER_TOKEN
 
-Now you're ready to run the server: 
+Now you're ready to run the server:
 ```sh
 export YOUR_VAR=<value>
 ...

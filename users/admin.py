@@ -7,15 +7,18 @@ from .forms import SignupForm, UserEditForm
 
 class CustomUserAdmin(UserAdmin):
     """Describe how to represent user objects on admin page"""
+
     add_form = SignupForm
     form = UserEditForm
     model = User
-    list_display = ['username',
-                    'email',
-                    'birthday',
-                    'first_name',
-                    'last_name',
-                    'active_time']
+    list_display = [
+        "username",
+        "email",
+        "birthday",
+        "first_name",
+        "last_name",
+        "active_time",
+    ]
 
 
 admin.site.register(User, CustomUserAdmin)

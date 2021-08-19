@@ -9,80 +9,125 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('gameMuster', '0002_auto_20210429_1605'),
+        ("gameMuster", "0002_auto_20210429_1605"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Game',
+            name="Game",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('game_id', models.IntegerField()),
-                ('name', models.CharField(max_length=100)),
-                ('must', models.BooleanField(default=False)),
-                ('release_date', models.DateTimeField(default=None, null=True)),
-                ('img_url', models.CharField(default=None, max_length=120, null=True)),
-                ('description', models.TextField(default=None, null=True)),
-                ('user_rating', models.DecimalField(decimal_places=2, default=None, max_digits=4, null=True)),
-                ('user_rating_count', models.IntegerField(default=None, null=True)),
-                ('critics_rating', models.DecimalField(decimal_places=2, default=None, max_digits=4, null=True)),
-                ('critics_rating_count', models.IntegerField(default=None, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("game_id", models.IntegerField()),
+                ("name", models.CharField(max_length=100)),
+                ("must", models.BooleanField(default=False)),
+                ("release_date", models.DateTimeField(default=None, null=True)),
+                ("img_url", models.CharField(default=None, max_length=120, null=True)),
+                ("description", models.TextField(default=None, null=True)),
+                (
+                    "user_rating",
+                    models.DecimalField(
+                        decimal_places=2, default=None, max_digits=4, null=True
+                    ),
+                ),
+                ("user_rating_count", models.IntegerField(default=None, null=True)),
+                (
+                    "critics_rating",
+                    models.DecimalField(
+                        decimal_places=2, default=None, max_digits=4, null=True
+                    ),
+                ),
+                ("critics_rating_count", models.IntegerField(default=None, null=True)),
             ],
-            options={
-                'ordering': ['release_date'],
-            },
+            options={"ordering": ["release_date"]},
         ),
         migrations.CreateModel(
-            name='Genre',
+            name="Genre",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
-            options={
-                'ordering': ['name'],
-            },
+            options={"ordering": ["name"]},
         ),
         migrations.CreateModel(
-            name='Platform',
+            name="Platform",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
-            options={
-                'ordering': ['name'],
-            },
+            options={"ordering": ["name"]},
         ),
-        migrations.RemoveField(
-            model_name='favoritegame',
-            name='game_id',
-        ),
+        migrations.RemoveField(model_name="favoritegame", name="game_id"),
         migrations.CreateModel(
-            name='Screenshot',
+            name="Screenshot",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('img_url', models.CharField(max_length=120)),
-                ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='gameMuster.game')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("img_url", models.CharField(max_length=120)),
+                (
+                    "game",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="gameMuster.game",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='game',
-            name='favorite_games',
-            field=models.ManyToManyField(through='gameMuster.FavoriteGame', to=settings.AUTH_USER_MODEL),
+            model_name="game",
+            name="favorite_games",
+            field=models.ManyToManyField(
+                through="gameMuster.FavoriteGame", to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='game',
-            name='genres',
-            field=models.ManyToManyField(to='gameMuster.Genre'),
+            model_name="game",
+            name="genres",
+            field=models.ManyToManyField(to="gameMuster.Genre"),
         ),
         migrations.AddField(
-            model_name='game',
-            name='platforms',
-            field=models.ManyToManyField(to='gameMuster.Platform'),
+            model_name="game",
+            name="platforms",
+            field=models.ManyToManyField(to="gameMuster.Platform"),
         ),
         migrations.AddField(
-            model_name='favoritegame',
-            name='game',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='gameMuster.game'),
+            model_name="favoritegame",
+            name="game",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="gameMuster.game",
+            ),
             preserve_default=False,
         ),
     ]
